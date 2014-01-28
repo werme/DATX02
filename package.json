@@ -1,0 +1,25 @@
+{
+  "name": "kandidat",
+  "description": "",
+  "repository": "",
+  "version": "0.0.0",
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "*",
+    "grunt-contrib-connect": "*",
+    "grunt-contrib-copy": "*",
+    "grunt-contrib-clean": "*",
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-cssmin": "*",
+    "grunt-contrib-htmlmin": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-curl": "*",
+    "grunt-processhtml": "*"
+  },
+
+  "scripts": {
+    "start":   "node -e \"require('grunt').tasks(['server']);\"",
+    "install": "node -e \"require('grunt').tasks(['dist']);\""
+  }
+}

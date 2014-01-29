@@ -18,7 +18,7 @@
     update: function () {
       this.input.onDown.add(function() {
         console.log(this);
-        console.log("Clicked!");
+        console.log('Clicked!');
       }, this);
     }
 

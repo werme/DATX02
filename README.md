@@ -1,4 +1,6 @@
-# Kandidatprojekt
+# Darwinator
+
+A game about evolution, with rainbows and unicorns.
 
 ## Instructions
 

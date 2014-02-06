@@ -27,7 +27,6 @@
     }
   };
 
-  window['kandidat'] = window['kandidat'] || {};
-  window['kandidat'].Menu = Menu;
+  window.darwinator.Menu = Menu;
 
 }());

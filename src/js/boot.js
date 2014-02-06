@@ -29,7 +29,7 @@
     }
   };
 
-  window['kandidat'] = window['kandidat'] || {};
-  window['kandidat'].Boot = Boot;
+  window.darwinator =  {};
+  window.darwinator.Boot = Boot;
 
 }());

@@ -33,7 +33,6 @@
     }
   };
 
-  window['kandidat'] = window['kandidat'] || {};
-  window['kandidat'].Preloader = Preloader;
+  window.darwinator.Preloader = Preloader;
 
 }());

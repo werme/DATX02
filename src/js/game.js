@@ -24,7 +24,6 @@
 
   };
 
-  window['kandidat'] = window['kandidat'] || {};
-  window['kandidat'].Game = Game;
+  window.darwinator.Game = Game;
 
 }());

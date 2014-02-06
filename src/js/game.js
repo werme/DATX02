@@ -23,17 +23,18 @@
     },
 
     update: function () {
+      this.player.body.velocity.setTo(0,0);
       if (this.cursors.up.isDown) {
-        this.player.y--;
+        this.player.body.velocity.y = -100;
       } 
       if (this.cursors.left.isDown) {
-        this.player.x--;
+        this.player.body.velocity.x = -100;
       }
       if (this.cursors.right.isDown) {
-        this.player.x++;
+        this.player.body.velocity.x = 100;
       }
       if (this.cursors.down.isDown) {
-        this.player.y++;
+        this.player.body.velocity.y = 100;
       }
     }
 

@@ -37,6 +37,9 @@
       this.bullets.setAll('scale.y', 0.1);
       this.bullets.setAll('outOfBoundsKill', true);
 
+      this.coolDown = 200;
+      this.nextFire = 0;
+
       this.cursors = this.game.input.keyboard.createCursorKeys();
       this.game.camera.follow(this.player);
     },
@@ -66,7 +69,12 @@
 
       this.playerWeapon.rotation = this.game.physics.angleToPointer(this.playerWeapon);
       if (this.game.input.activePointer.isDown){
-        console.log('You fired your weapon!')
+        if (this.game.time.now > this.nextFire && this.bullets.countDead() > 0){
+          this.nextFire = this.game.time.now + this.coolDown;
+          var bullet = this.bullets.getFirstDead();
+          bullet.reset(this.playerWeapon.x, this.playerWeapon.y);
+          bullet.rotation = this.game.physics.moveToPointer(bullet, 1000);
+        }
         //fire();
       }
     }

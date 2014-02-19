@@ -4,6 +4,9 @@
   function Game() {
     this.player = null;
     this.cursors = null;
+    this.map = null;
+    this.tileset = null;
+    this.layer = null;
   }
 
   Game.prototype = {
@@ -12,8 +15,19 @@
       this.game.world.setBounds(0,0, 1280, 940);
       this.background = this.add.sprite(0,0, 'background');
 
-      var x = this.game.width / 2
+      var x = 680
         , y = this.game.height / 2;
+
+      this.map = this.game.add.tilemap('level1');
+      this.map.addTilesetImage('tiles', 'tiles');
+      //to be changed
+      this.map.setCollisionByExclusion([7, 2]);
+
+
+      this.layer = this.map.createLayer('Tile Layer 1');
+
+      this.layer.resizeWorld();
+
 
       this.player = this.add.sprite(x, y, 'player');
       this.player.anchor.setTo(0.5, 0.5);
@@ -32,6 +46,8 @@
 
     update: function () {
       this.player.body.velocity.setTo(0,0);
+      this.game.physics.collide(this.player, this.layer);
+
 
       if (this.cursors.up.isDown) {
         this.player.body.velocity.y = -100;

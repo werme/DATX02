@@ -24,6 +24,8 @@
 
       this.player.scale.setTo(3,3);
 
+      this.player.body.collideWorldBounds = true;
+
       this.cursors = this.game.input.keyboard.createCursorKeys();
       this.game.camera.follow(this.player);
     },

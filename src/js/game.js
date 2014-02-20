@@ -3,6 +3,7 @@
 
   function Game() {
     this.player = null;
+    this.enemy = null;
     this.cursors = null;
     this.map = null;
     this.tileset = null;
@@ -37,8 +38,10 @@
       this.player.animations.add('walk-down', [4,5,6,7], 10, true);
 
       this.player.scale.setTo(2,2);
-
       this.player.body.collideWorldBounds = true;
+
+      this.enemy = new Enemy(this.game, 100, 100, 100);
+      this.game.add.existing(this.enemy);
 
       this.cursors = this.game.input.keyboard.createCursorKeys();
       this.game.camera.follow(this.player);

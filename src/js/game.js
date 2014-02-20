@@ -36,7 +36,7 @@
       this.player.animations.add('walk-up', [0,1,2,3], 10, true);
       this.player.animations.add('walk-down', [4,5,6,7], 10, true);
 
-      this.player.scale.setTo(3,3);
+      this.player.scale.setTo(2,2);
 
       this.player.body.collideWorldBounds = true;
 

@@ -51,6 +51,7 @@
       this.player.body.velocity.setTo(0,0);
       this.game.physics.collide(this.player, this.layer);
 
+      this.game.physics.moveToObject(this.enemy, this.player, 50);
 
       if (this.cursors.up.isDown) {
         this.player.body.velocity.y = -100;

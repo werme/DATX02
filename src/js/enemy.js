@@ -1,5 +1,5 @@
 (function() {
-  "use strict";
+  'use strict';
 
   function Enemy(game, x, y, health) {
     Phaser.Sprite.call(this, game, x, y, 'enemy');
@@ -12,7 +12,7 @@
 
   Enemy.prototype.update = function() {
 
-  }
+  };
 
   window.Darwinator = window.Darwinator || {};
   window.Darwinator.Enemy = Enemy;

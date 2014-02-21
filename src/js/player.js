@@ -22,7 +22,7 @@
      if (this.cursors.up.isDown) {
         this.body.velocity.y = -100;
         this.animations.play('walk-up');
-      } 
+      }
       if (this.cursors.left.isDown) {
         this.body.velocity.x = -100;
         this.animations.play('walk-left');
@@ -35,7 +35,7 @@
         this.body.velocity.y = 100;
         this.animations.play('walk-down');
       }
-  }
+  };
 
   window.Darwinator = window.Darwinator || {};
   window.Darwinator.Player = Player;

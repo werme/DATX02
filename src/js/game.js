@@ -2,12 +2,13 @@
   'use strict';
 
   function Game() {
-    this.player = null;
-    this.enemy = null;
-    this.cursors = null;
-    this.map = null;
-    this.tileset = null;
-    this.layer = null;
+    this.player   = null;
+    this.enemy    = null;
+    this.cursors  = null;
+    this.map      = null;
+    this.tileset  = null;
+    this.layer    = null;
+    this.fps      = null;
   }
 
   Game.prototype = {
@@ -38,11 +39,18 @@
       this.game.add.existing(this.enemy);
       this.game.add.existing(this.player);
       this.game.camera.follow(this.player);
+
+      // For development only
+      this.fps = this.game.add.text(16, 16, 'FPS: 0', { fontSize: '16px', fill: '#F08' });
+      this.fps.fixedToCamera = true;
     },
 
     update: function () {
       this.game.physics.collide(this.player, this.layer);
       this.game.physics.moveToObject(this.enemy, this.player, 50);
+
+      // For development only
+      this.fps.content = 'FPS: ' + this.game.time.fps;
     }
 
   };

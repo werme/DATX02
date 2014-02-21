@@ -29,46 +29,20 @@
 
       this.layer.resizeWorld();
 
-
-      this.player = this.add.sprite(x, y, 'player');
-      this.player.anchor.setTo(0.5, 0.5);
-      this.player.animations.add('walk-left', [8,9,10,11], 10, true);
-      this.player.animations.add('walk-right', [12,13,14,15], 10, true);
-      this.player.animations.add('walk-up', [0,1,2,3], 10, true);
-      this.player.animations.add('walk-down', [4,5,6,7], 10, true);
-
-      this.player.scale.setTo(2,2);
-      this.player.body.collideWorldBounds = true;
-
-      this.enemy = new window.Darwinator.Enemy(this.game, 100, 100, 100);
-      this.game.add.existing(this.enemy);
-
       this.cursors = this.game.input.keyboard.createCursorKeys();
+
+      this.player = new window.Darwinator.Player(this.game, x, y, 100, this.cursors);
+      this.player.scale.setTo(2,2);
+      this.enemy = new window.Darwinator.Enemy(this.game, 100, 100, 100);
+
+      this.game.add.existing(this.enemy);
+      this.game.add.existing(this.player);
       this.game.camera.follow(this.player);
     },
 
     update: function () {
-      this.player.body.velocity.setTo(0,0);
       this.game.physics.collide(this.player, this.layer);
-
       this.game.physics.moveToObject(this.enemy, this.player, 50);
-
-      if (this.cursors.up.isDown) {
-        this.player.body.velocity.y = -100;
-        this.player.animations.play('walk-up');
-      } 
-      if (this.cursors.left.isDown) {
-        this.player.body.velocity.x = -100;
-        this.player.animations.play('walk-left');
-      }
-      if (this.cursors.right.isDown) {
-        this.player.body.velocity.x = 100;
-        this.player.animations.play('walk-right');
-      }
-      if (this.cursors.down.isDown) {
-        this.player.body.velocity.y = 100;
-        this.player.animations.play('walk-down');
-      }
     }
 
   };

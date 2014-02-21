@@ -2,7 +2,7 @@ window.onload = function () {
   'use strict';
 
   var game
-    , ns = window.darwinator;
+    , ns = window.Darwinator;
 
   game = new Phaser.Game(640, 480, Phaser.AUTO, 'darwinator-container');
   game.state.add('boot', ns.Boot);

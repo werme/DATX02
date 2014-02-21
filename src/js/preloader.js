@@ -39,6 +39,7 @@
     }
   };
 
-  window.darwinator.Preloader = Preloader;
+  window.Darwinator = window.Darwinator || {};
+  window.Darwinator.Preloader = Preloader;
 
 }());

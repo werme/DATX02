@@ -40,7 +40,7 @@
       this.player.scale.setTo(2,2);
       this.player.body.collideWorldBounds = true;
 
-      this.enemy = new Enemy(this.game, 100, 100, 100);
+      this.enemy = new window.Darwinator.Enemy(this.game, 100, 100, 100);
       this.game.add.existing(this.enemy);
 
       this.cursors = this.game.input.keyboard.createCursorKeys();
@@ -73,6 +73,7 @@
 
   };
 
-  window.darwinator.Game = Game;
+  window.Darwinator = window.Darwinator || {};
+  window.Darwinator.Game = Game;
 
 }());

@@ -9,6 +9,7 @@
     this.tileset  = null;
     this.layer    = null;
     this.fps      = null;
+    this.stats    = null;
   }
 
   Game.prototype = {
@@ -43,6 +44,9 @@
       // For development only
       this.fps = this.game.add.text(16, 16, 'FPS: 0', { fontSize: '16px', fill: '#F08' });
       this.fps.fixedToCamera = true;
+
+      this.stats = this.game.add.text(16, 40, '', { fontSize: '16px', fill: '#F08' });
+      this.stats.fixedToCamera = true;
     },
 
     update: function () {
@@ -51,6 +55,7 @@
 
       // For development only
       this.fps.content = 'FPS: ' + this.game.time.fps;
+      this.stats.content = 'Player stamina: ' + Math.round(this.player.currBreath) + '/' + this.player.stamina;
     }
 
   };

@@ -2,14 +2,16 @@
   'use strict';
 
   function Game() {
-    this.player   = null;
-    this.enemy    = null;
-    this.cursors  = null;
-    this.map      = null;
-    this.tileset  = null;
-    this.layer    = null;
-    this.fps      = null;
-    this.stats    = null;
+    this.player       = null;
+    this.enemy        = null;
+    this.cursors      = null;
+    this.map          = null;
+    this.tileset      = null;
+    this.layer        = null;
+    this.fps          = null;
+    this.stats        = null;
+    this.bullets      = null;
+    this.playerWeapon = null;
   }
 
   Game.prototype = {
@@ -32,11 +34,6 @@
 
       this.layer.resizeWorld();
 
-      this.playerWeapon = this.add.sprite(x, y, 'enemy');
-      this.playerWeapon.anchor.setTo(0.5, 0.5);
-      this.playerWeapon.scale.setTo(0.2, 0.2);
-      this.playerWeapon.body.collideWorldBounds = true;
-
       this.bullets = this.game.add.group();
       this.bullets.createMultiple(30, 'enemy');
       this.bullets.setAll('anchor.x', 0.5);
@@ -45,19 +42,18 @@
       this.bullets.setAll('scale.y', 0.1);
       this.bullets.setAll('outOfBoundsKill', true);
 
-      this.coolDown = 200;
-      this.nextFire = 0;
-
       this.cursors = this.game.input.keyboard.createCursorKeys();
 
+      this.playerWeapon = new window.Darwinator.Weapon(this.game, x, y, 200, 'enemy', this.bullets);
       this.player = new window.Darwinator.Player(this.game, x, y, 100, this.cursors);
+      this.player.weapon = this.playerWeapon;
       this.player.scale.setTo(2,2);
       this.enemy = new window.Darwinator.Enemy(this.game, 100, 100, 100);
 
       this.game.add.existing(this.enemy);
       this.game.add.existing(this.player);
+      this.game.add.existing(this.playerWeapon);
       this.game.camera.follow(this.player);
-
       // For development only
       this.fps = this.game.add.text(16, 16, 'FPS: 0', { fontSize: '16px', fill: '#F08' });
       this.fps.fixedToCamera = true;
@@ -67,18 +63,6 @@
     },
 
     update: function () {
-      this.playerWeapon.x = this.player.x;
-      this.playerWeapon.y = this.player.y;
-
-      this.playerWeapon.rotation = this.game.physics.angleToPointer(this.playerWeapon);
-      if (this.game.input.activePointer.isDown){
-        if (this.game.time.now > this.nextFire && this.bullets.countDead() > 0){
-          this.nextFire = this.game.time.now + this.coolDown;
-          var bullet = this.bullets.getFirstDead();
-          bullet.reset(this.playerWeapon.x, this.playerWeapon.y);
-          bullet.rotation = this.game.physics.moveToPointer(bullet, 1000);
-        }
-      }
       this.game.physics.collide(this.player, this.layer);
       this.game.physics.moveToObject(this.enemy, this.player, 50);
 

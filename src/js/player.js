@@ -16,11 +16,18 @@
     this.body.collideWorldBounds = true;
     this.stamina = 50;
     this.currBreath = this.stamina;
+    this.weapon = null;
   }
 
   Player.prototype = Object.create(Phaser.Sprite.prototype);
 
   Player.prototype.update = function() {
+
+    if(this.weapon !== null){
+      this.weapon.x = this.x;
+      this.weapon.y = this.y;
+    }
+
     this.body.velocity.setTo(0,0);
      if (this.cursors.up.isDown) {
         this.body.velocity.y = -100;
@@ -46,6 +53,7 @@
         this.currBreath += 0.2;
       }
   };
+
 
   window.Darwinator = window.Darwinator || {};
   window.Darwinator.Player = Player;

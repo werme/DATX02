@@ -19,16 +19,14 @@
       this.background = this.add.sprite(0,0, 'background');
 
       var x = 680
-        , y = this.game.height / 2;
+         ,y = this.game.height / 2;
 
       this.map = this.game.add.tilemap('level1');
       this.map.addTilesetImage('tiles', 'tiles');
       //to be changed
       this.map.setCollisionByExclusion([7, 2]);
 
-
       this.layer = this.map.createLayer('Tile Layer 1');
-
       this.layer.resizeWorld();
 
       this.cursors = this.game.input.keyboard.createCursorKeys();

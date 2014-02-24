@@ -29,7 +29,7 @@
     }
   };
 
-  window.darwinator =  {};
-  window.darwinator.Boot = Boot;
+  window.Darwinator = window.Darwinator || {};
+  window.Darwinator.Boot = Boot;
 
 }());

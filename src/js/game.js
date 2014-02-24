@@ -2,8 +2,14 @@
   'use strict';
 
   function Game() {
-    this.player = null;
-    this.cursors = null;
+    this.player   = null;
+    this.enemy    = null;
+    this.cursors  = null;
+    this.map      = null;
+    this.tileset  = null;
+    this.layer    = null;
+    this.fps      = null;
+    this.stats    = null;
   }
 
   Game.prototype = {
@@ -12,17 +18,19 @@
       this.game.world.setBounds(0,0, 1280, 940);
       this.background = this.add.sprite(0,0, 'background');
 
-      var x = this.game.width / 2
+      var x = 680
         , y = this.game.height / 2;
 
-      this.player = this.add.sprite(x, y, 'player');
-      this.player.anchor.setTo(0.5, 0.5);
-      this.player.animations.add('walk-left', [8,9,10,11], 10, true);
-      this.player.animations.add('walk-right', [12,13,14,15], 10, true);
-      this.player.animations.add('walk-up', [0,1,2,3], 10, true);
-      this.player.animations.add('walk-down', [4,5,6,7], 10, true);
-      this.player.scale.setTo(3,3);
-      this.player.body.collideWorldBounds = true;
+
+      this.map = this.game.add.tilemap('level1');
+      this.map.addTilesetImage('tiles', 'tiles');
+      //to be changed
+      this.map.setCollisionByExclusion([7, 2]);
+
+
+      this.layer = this.map.createLayer('Tile Layer 1');
+
+      this.layer.resizeWorld();
 
       this.playerWeapon = this.add.sprite(x, y, 'enemy');
       this.playerWeapon.anchor.setTo(0.5, 0.5);
@@ -41,31 +49,26 @@
       this.nextFire = 0;
 
       this.cursors = this.game.input.keyboard.createCursorKeys();
+
+      this.player = new window.Darwinator.Player(this.game, x, y, 100, this.cursors);
+      this.player.scale.setTo(2,2);
+      this.enemy = new window.Darwinator.Enemy(this.game, 100, 100, 100);
+
+      this.game.add.existing(this.enemy);
+      this.game.add.existing(this.player);
       this.game.camera.follow(this.player);
+
+      // For development only
+      this.fps = this.game.add.text(16, 16, 'FPS: 0', { fontSize: '16px', fill: '#F08' });
+      this.fps.fixedToCamera = true;
+
+      this.stats = this.game.add.text(16, 40, '', { fontSize: '16px', fill: '#F08' });
+      this.stats.fixedToCamera = true;
     },
 
     update: function () {
-      this.player.body.velocity.setTo(0,0);
-
       this.playerWeapon.x = this.player.x;
       this.playerWeapon.y = this.player.y;
-
-      if (this.cursors.up.isDown) {
-        this.player.body.velocity.y = -100;
-        this.player.animations.play('walk-up');
-      } 
-      if (this.cursors.left.isDown) {
-        this.player.body.velocity.x = -100;
-        this.player.animations.play('walk-left');
-      }
-      if (this.cursors.right.isDown) {
-        this.player.body.velocity.x = 100;
-        this.player.animations.play('walk-right');
-      }
-      if (this.cursors.down.isDown) {
-        this.player.body.velocity.y = 100;
-        this.player.animations.play('walk-down');
-      }
 
       this.playerWeapon.rotation = this.game.physics.angleToPointer(this.playerWeapon);
       if (this.game.input.activePointer.isDown){
@@ -75,26 +78,18 @@
           bullet.reset(this.playerWeapon.x, this.playerWeapon.y);
           bullet.rotation = this.game.physics.moveToPointer(bullet, 1000);
         }
-        //fire();
       }
+      this.game.physics.collide(this.player, this.layer);
+      this.game.physics.moveToObject(this.enemy, this.player, 50);
+
+      // For development only
+      this.fps.content = 'FPS: ' + this.game.time.fps;
+      this.stats.content = 'Player stamina: ' + Math.round(this.player.currBreath) + '/' + this.player.stamina;
     }
 
   };
 
-  window.darwinator.Game = Game;
-  /*
-  function fire (bullets, playerWeapon) {
+  window.Darwinator = window.Darwinator || {};
+  window.Darwinator.Game = Game;
 
-   // if (game.time.now > nextFire && bullets.countDead() > 0)
-    //{
-       // nextFire = game.time.now + fireRate;
-
-        var bullet = bullets.getFirstDead();
-
-        bullet.reset(playerWeapon.x, playerWeapon.y);
-
-        bullet.rotation = this.game.physics.moveToPointer(bullet, 1000);
-  //  }
-
-  }*/
 }());

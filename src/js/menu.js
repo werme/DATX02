@@ -27,6 +27,7 @@
     }
   };
 
-  window.darwinator.Menu = Menu;
+  window.Darwinator = window.Darwinator || {};
+  window.Darwinator.Menu = Menu;
 
 }());

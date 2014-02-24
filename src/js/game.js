@@ -41,10 +41,11 @@
       this.bullets.setAll('scale.x', 0.1);
       this.bullets.setAll('scale.y', 0.1);
       this.bullets.setAll('outOfBoundsKill', true);
+      this.bullets.setAll('name', 'bullet');
 
       this.cursors = this.game.input.keyboard.createCursorKeys();
 
-      this.playerWeapon = new window.Darwinator.Weapon(this.game, x, y, 200, 'enemy', this.bullets);
+      this.playerWeapon = new window.Darwinator.Weapon(this.game, x, y, 200, 1000, 'enemy', this.bullets);
       this.player = new window.Darwinator.Player(this.game, x, y, 100, this.cursors);
       this.player.weapon = this.playerWeapon;
       this.player.scale.setTo(2,2);
@@ -65,10 +66,26 @@
     update: function () {
       this.game.physics.collide(this.player, this.layer);
       this.game.physics.moveToObject(this.enemy, this.player, 50);
+      this.game.physics.collide(this.enemy, this.bullets, this.bulletCollisionHandler, null, this);
+      this.game.physics.collide(this.layer, this.bullets, this.bulletCollisionHandler, null, this);
 
       // For development only
       this.fps.content = 'FPS: ' + this.game.time.fps;
       this.stats.content = 'Player stamina: ' + Math.round(this.player.currBreath) + '/' + this.player.stamina;
+    }
+
+    ,
+
+    bulletCollisionHandler: function(obj1, obj2){
+      var bullet;
+      if(obj1.name === 'bullet'){
+        bullet = obj1;
+      }else if(obj2.name === 'bullet'){
+        bullet = obj2;
+      }else{
+        return;
+      }
+      bullet.kill();
     }
 
   };

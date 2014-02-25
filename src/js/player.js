@@ -48,7 +48,8 @@ Darwinator.Player.prototype.update = function() {
   }
 
   if (this.health === 0){
-    this.kill();
+    //TODO Set to this.kill();
+    this.health = 100;
   }    
 };
 

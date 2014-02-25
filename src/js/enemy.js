@@ -39,7 +39,8 @@ Darwinator.Enemy.prototype.update = function() {
     }
   };
 
-  // Target (ie. player) takes damage while the target and enemy overlap
+  // Target (ie. player) takes damage while the target and enemy overlap.
+  // If they continuously overlap the target will take damage every 0.25 seconds
   this.overlap = this.game.physics.overlap(this, this.target);
   if (this.overlap && !this.attacking){
     this.target.takeDamage(this.damage)

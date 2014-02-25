@@ -25,18 +25,18 @@
      if (this.cursors.up.isDown) {
         this.body.velocity.y = -100;
         this.animations.play('walk-up');
-      }
-      if (this.cursors.left.isDown) {
+      } else if (this.cursors.left.isDown) {
         this.body.velocity.x = -100;
         this.animations.play('walk-left');
-      }
-      if (this.cursors.right.isDown) {
+      } else if (this.cursors.right.isDown) {
         this.body.velocity.x = 100;
         this.animations.play('walk-right');
-      }
-      if (this.cursors.down.isDown) {
+      } else if (this.cursors.down.isDown) {
         this.body.velocity.y = 100;
         this.animations.play('walk-down');
+      } else {
+        this.animations.stop();
+        this.body.frame = 4;
       }
 
       if(this.sprintKey.isDown && this.currBreath > 1) {

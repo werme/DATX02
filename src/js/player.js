@@ -3,7 +3,7 @@
 
   function Player(game, x, y, health, cursors) {
     Phaser.Sprite.call(this, game, x, y, 'player');
-    this.cursors = cursors;
+    this.cursors   = cursors;
     this.sprintKey = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
     this.scale.setTo(0.25,0.25);
     this.game   = game;
@@ -14,9 +14,9 @@
     this.animations.add('walk-up', [0,1,2,3], 10, true);
     this.animations.add('walk-down', [4,5,6,7], 10, true);
     this.body.collideWorldBounds = true;
-    this.stamina = 50;
+    this.stamina    = 50;
     this.currBreath = this.stamina;
-    this.weapon = null;
+    this.weapon     = null;
   }
 
   Player.prototype = Object.create(Phaser.Sprite.prototype);

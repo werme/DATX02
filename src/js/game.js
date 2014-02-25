@@ -73,14 +73,15 @@
     },
 
     bulletCollisionHandler: function(obj1, obj2){
-      var bullet = obj2;
+      console.log('Collision!');
+      var bullet;
       if(obj1.name === 'bullet'){
         console.log('obj1 was bullet!');
         bullet = obj1;
         if(obj2 === this.enemy){
           console.log('A bullet hit an enemy!');  
           console.log('Draining 10 health..');
-          this.enemy.health -= 10;  
+          this.enemy.health -= this.playerWeapon.damage;  
         }
       }else if(obj2.name === 'bullet'){
         console.log('obj2 was bullet!');
@@ -88,7 +89,7 @@
         if(obj1 === this.enemy){
           console.log('A bullet hit an enemy!');
           console.log('Draining 10 health..');
-          this.enemy.health -= 10;
+          this.enemy.health -= this.playerWeapon.damage;
         }
       }else{
         return;

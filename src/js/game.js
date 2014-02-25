@@ -7,7 +7,6 @@ Darwinator.GameState = function() {
   this.map      = null;
   this.tileset  = null;
   this.layer    = null;
-  this.layer2   = null;
   this.fps      = null;
   this.stats    = null;
   this.health   = null;
@@ -58,7 +57,7 @@ Darwinator.GameState.prototype = {
     Darwinator.GlobalValues.tileSize(this.map.tileWidth, this.map.tileHeight);
 
     this.map.setCollisionByExclusion([1337, 168]);
-        this.layer2 = this.map.createLayer('Tile Layer 2');
+    this.map.createLayer('Tile Layer 2');
     this.layer = this.map.createLayer('Tile Layer 1');
 
     this.map.collisionLayer = this.layer;

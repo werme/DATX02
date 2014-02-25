@@ -7,6 +7,7 @@ Darwinator.GameState = function() {
   this.map      = null;
   this.tileset  = null;
   this.layer    = null;
+  this.layer2   = null;
   this.fps      = null;
   this.stats    = null;
 }
@@ -14,8 +15,9 @@ Darwinator.GameState = function() {
 Darwinator.GameState.prototype = {
 
   create: function () {
-    this.game.world.setBounds(0,0, 1280, 940);
-    this.background = this.add.sprite(0,0, 'background');
+    this.loadLevel();
+    this.game.world.setBounds(0,0, this.map.widthInPixels, this.map.heightInPixels);
+    console.log(this.map);
 
     this.cursors = this.game.input.keyboard.createCursorKeys();
 
@@ -36,25 +38,28 @@ Darwinator.GameState.prototype = {
 
     Darwinator.Pathfinder = new EasyStar.js();
     Darwinator.Pathfinder.enableDiagonals();
-    this.loadLevel();
+    var indexes = Darwinator.Helpers.convertTileMap(this.map.layers[0].data);
+    Darwinator.Pathfinder.setGrid(indexes);
+    Darwinator.Pathfinder.setAcceptableTiles([1337, 168]);
+
   },
 
   loadLevel: function() {
     this.map = this.game.add.tilemap('level1');
     this.map.addTilesetImage('tiles', 'tiles');
-    //to be changed
 
     Darwinator.GlobalValues.tileSize(this.map.tileWidth, this.map.tileHeight);
 
-    this.map.setCollisionByExclusion([]);
-    var indexes = Darwinator.Helpers.convertTileMap(this.map.layers[0].data);
-    Darwinator.Pathfinder.setGrid(indexes);
-    Darwinator.Pathfinder.setAcceptableTiles([30]);
+    this.map.setCollisionByExclusion([1337, 168]);
+        this.layer2 = this.map.createLayer('Tile Layer 2');
     this.layer = this.map.createLayer('Tile Layer 1');
+
+    this.map.collisionLayer = this.layer;
     this.layer.resizeWorld();
   },
 
   update: function () {
+
     this.game.physics.collide(this.player, this.layer);
     this.game.physics.collide(this.enemy, this.layer);
 

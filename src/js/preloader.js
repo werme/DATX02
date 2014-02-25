@@ -17,7 +17,7 @@ Darwinator.Preloader.prototype = {
     this.load.bitmapFont('minecraftia', 'assets/minecraftia.png', 'assets/minecraftia.xml');
     this.load.image('background', 'assets/background-template.png');
 
-    this.load.tilemap('level1', 'assets/myMap.json', null, Phaser.Tilemap.TILED_JSON);
+    this.load.tilemap('level1', 'assets/map.json', null, Phaser.Tilemap.TILED_JSON);
     this.game.load.image('tiles', 'assets/palmtree.png');
     
     this.load.spritesheet('player', 'assets/gal.png', 16, 16, 16);

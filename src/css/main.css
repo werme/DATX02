@@ -11,7 +11,11 @@ html, body {
 }
 
 .game {
-  width: 640px;
-  height: 480px;
-  margin: 20px auto;
+  position: absolute;
+  max-width: 640px;
+  max-height: 480px;
+  margin: -240px auto;
+  top: 50%;
+  left: 0;
+  right: 0;
 }

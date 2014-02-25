@@ -1,14 +1,16 @@
+
+var Darwinator = Darwinator || {};
+
 window.onload = function () {
   'use strict';
 
-  var game
-    , ns = window.Darwinator;
+  var game;
 
   game = new Phaser.Game(640, 480, Phaser.AUTO, 'darwinator-container');
-  game.state.add('boot', ns.Boot);
-  game.state.add('preloader', ns.Preloader);
-  game.state.add('menu', ns.Menu);
-  game.state.add('game', ns.Game);
+  game.state.add('boot', Darwinator.Boot);
+  game.state.add('preloader', Darwinator.Preloader);
+  game.state.add('menu', Darwinator.Menu);
+  game.state.add('game', Darwinator.GameState);
 
   game.state.start('boot');
 };

@@ -18,22 +18,11 @@
       this.game.world.setBounds(0,0, 1280, 940);
       this.background = this.add.sprite(0,0, 'background');
 
-      var x = 680
-         ,y = this.game.height / 2;
-
-      this.map = this.game.add.tilemap('level1');
-      this.map.addTilesetImage('tiles', 'tiles');
-      //to be changed
-      this.map.setCollisionByExclusion([7, 2]);
-
-      this.layer = this.map.createLayer('Tile Layer 1');
-      this.layer.resizeWorld();
-
       this.cursors = this.game.input.keyboard.createCursorKeys();
 
-      this.player = new window.Darwinator.Player(this.game, x, y, 100, this.cursors);
+      this.player = new window.Darwinator.Player(this.game, 160, 620, 100, this.cursors);
       this.player.scale.setTo(2,2);
-      this.enemy = new window.Darwinator.Enemy(this.game, 100, 100, 100);
+      this.enemy = new window.Darwinator.Enemy(this.game, this.player, 160, 400, 100);
 
       this.game.add.existing(this.enemy);
       this.game.add.existing(this.player);
@@ -45,15 +34,44 @@
 
       this.stats = this.game.add.text(16, 40, '', { fontSize: '16px', fill: '#F08' });
       this.stats.fixedToCamera = true;
+
+      window.Darwinator.Pathfinder = new EasyStar.js();
+      window.Darwinator.Pathfinder.enableDiagonals();
+      this.loadLevel();
+    },
+
+    loadLevel: function() {
+      this.map = this.game.add.tilemap('level1');
+      this.map.addTilesetImage('tiles', 'tiles');
+      //to be changed
+
+      window.Darwinator.GlobalValues.tileSize(this.map.tileWidth, this.map.tileHeight);
+
+      this.map.setCollisionByExclusion([]);
+      var indexes = window.Darwinator.Helpers.convertTileMap(this.map.layers[0].data);
+      window.Darwinator.Pathfinder.setGrid(indexes);
+      window.Darwinator.Pathfinder.setAcceptableTiles([30]);
+      this.layer = this.map.createLayer('Tile Layer 1');
+      this.layer.resizeWorld();
     },
 
     update: function () {
       this.game.physics.collide(this.player, this.layer);
-      this.game.physics.moveToObject(this.enemy, this.player, 50);
+      this.game.physics.collide(this.enemy, this.layer);
 
       // For development only
       this.fps.content = 'FPS: ' + this.game.time.fps;
       this.stats.content = 'Player stamina: ' + Math.round(this.player.currBreath) + '/' + this.player.stamina;
+    },
+
+    getTileSize: function() {
+      var size = null;
+      if (this.map !== null) {
+        size = [];
+        size[0] = this.map.tileWidth;
+        size[1] = this.map.tileHeight;
+      }
+      return size;
     }
 
   };

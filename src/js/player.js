@@ -46,5 +46,12 @@ Darwinator.Player.prototype.update = function() {
   } else if (this.currBreath < this.stamina) {
     this.currBreath += 0.2;
   }
-    
+
+  if (this.health === 0){
+    this.kill();
+  }    
 };
+
+Darwinator.Player.prototype.takeDamage = function(amount) {
+  this.health = this.health - amount;
+}

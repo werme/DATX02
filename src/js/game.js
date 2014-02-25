@@ -10,6 +10,7 @@ Darwinator.GameState = function() {
   this.layer2   = null;
   this.fps      = null;
   this.stats    = null;
+  this.health   = null;
 }
 
 Darwinator.GameState.prototype = {
@@ -35,6 +36,12 @@ Darwinator.GameState.prototype = {
 
     this.stats = this.game.add.text(16, 40, '', { fontSize: '16px', fill: '#F08' });
     this.stats.fixedToCamera = true;
+
+    this.health = this.game.add.text(16, 64, '', {fontSize: '16px', fill: '#F08' });
+    this.health.fixedToCamera = true;
+
+    this.gameOver = this.game.add.text(this.game.width / 2, this.game.height / 2, '', {fontSize: '48px', fill:'#F08'});
+    this.gameOver.fixedToCamera = true;
 
     Darwinator.Pathfinder = new EasyStar.js();
     Darwinator.Pathfinder.enableDiagonals();
@@ -66,6 +73,7 @@ Darwinator.GameState.prototype = {
     // For development only
     this.fps.content = 'FPS: ' + this.game.time.fps;
     this.stats.content = 'Player stamina: ' + Math.round(this.player.currBreath) + '/' + this.player.stamina;
+    this.health.content = 'Health: ' + this.player.health;
   },
 
   getTileSize: function() {
@@ -76,6 +84,5 @@ Darwinator.GameState.prototype = {
       size[1] = this.map.tileHeight;
     }
     return size;
-  }
-
+  },
 };

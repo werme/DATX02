@@ -10,6 +10,11 @@ Darwinator.Enemy = function(game, target, x, y, health) {
   this.path = null;
   this.stamina = 50;
   this.currBreath = this.stamina;
+  this.speed = 75;
+  this.damage = 5;
+  this.attacking = false;
+  this.time = null;
+  this.overlap = null;
 }
 
 Darwinator.Enemy.prototype = Object.create(Phaser.Sprite.prototype);
@@ -25,7 +30,7 @@ Darwinator.Enemy.prototype.update = function() {
 
   if(this.path !== null) {
     var targetPos = Darwinator.Helpers.tileToPixels(this.path[1].x, this.path[1].y);
-    this.game.physics.moveToXY(this, targetPos[0], targetPos[1], 100);
+    this.game.physics.moveToXY(this, targetPos[0], targetPos[1], this.speed);
     if(this.path.length < 3 && this.currBreath > 1) {
       this.body.velocity.multiply(2,2);
       this.currBreath--;
@@ -34,4 +39,13 @@ Darwinator.Enemy.prototype.update = function() {
     }
   };
 
+  // Target (ie. player) takes damage while the target and enemy overlap
+  this.overlap = this.game.physics.overlap(this, this.target);
+  if (this.overlap && !this.attacking){
+    this.target.takeDamage(this.damage)
+    this.time = this.game.time.time;
+    this.attacking = true;
+  } else if (!this.overlap || ((this.game.time.time - this.time) > 250)) {
+    this.attacking = false;
+  }
 };

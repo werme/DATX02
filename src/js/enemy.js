@@ -14,11 +14,6 @@ Darwinator.Enemy = function(game, target, x, y, health) {
 
 Darwinator.Enemy.prototype = Object.create(Phaser.Sprite.prototype);
 
-Darwinator.Enemy.prototype.setPath = function(path) {
-  console.log(path);
-  this.path = path;
-};
-
 Darwinator.Enemy.prototype.update = function() {
   var currTile = Darwinator.Helpers.pixelsToTile(this.body.x, this.body.y);
   var targetTile = Darwinator.Helpers.pixelsToTile(this.target.body.x, this.target.body.y);

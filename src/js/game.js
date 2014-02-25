@@ -66,17 +66,30 @@
       this.game.physics.moveToObject(this.enemy, this.player, 50);
       this.game.physics.collide(this.bullets, this.enemy, this.bulletCollisionHandler, null, this);
       this.game.physics.collide(this.bullets, this.layer, this.bulletCollisionHandler, null, this);
-  
+
+      this.bullets.forEachAlive(this.checkBulletSpeed, this);
+
       // For development only
       this.fps.content   = 'FPS: ' + this.game.time.fps;
       this.stats.content = 'Player stamina: ' + Math.round(this.player.currBreath) + '/' + this.player.stamina;
     },
 
+    checkBulletSpeed: function(bullet){
+      var speed = Math.sqrt(  (bullet.body.velocity.x * bullet.body.velocity.x) 
+                            + (bullet.body.velocity.y * bullet.body.velocity.y));
+      var tolerance = 0.1;
+      if(bullet !== null && Math.abs(speed - this.playerWeapon.speed) > tolerance){
+        this.bulletCollisionHandler(bullet, this.layer); //call collision update explicitly
+      }else if(bullet === null){
+        console.log('checkBulletSpeed: bullet was null');
+      }
+    },
+
     bulletCollisionHandler: function(obj1, obj2){
-      console.log('Collision!');
+      //console.log('Collision!');
       var bullet;
       if(obj1.name === 'bullet'){
-        console.log('obj1 was bullet!');
+        //console.log('obj1 was bullet!');
         bullet = obj1;
         if(obj2 === this.enemy){
           console.log('A bullet hit an enemy!');  
@@ -84,7 +97,7 @@
           this.enemy.health -= this.playerWeapon.damage;  
         }
       }else if(obj2.name === 'bullet'){
-        console.log('obj2 was bullet!');
+        //console.log('obj2 was bullet!');
         bullet = obj2;
         if(obj1 === this.enemy){
           console.log('A bullet hit an enemy!');
@@ -94,6 +107,7 @@
       }else{
         return;
       }
+      //console.log(this.bullets.getIndex(bullet));
       bullet.kill();
     }
 

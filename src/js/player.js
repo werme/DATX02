@@ -22,6 +22,7 @@
 
   Player.prototype.update = function() {
     this.body.velocity.setTo(0,0);
+     var moving = true;
      if (this.cursors.up.isDown) {
         this.body.velocity.y = -100;
         this.animations.play('walk-up');
@@ -37,9 +38,10 @@
       } else {
         this.animations.stop();
         this.body.frame = 4;
+        moving = false;
       }
 
-      if(this.sprintKey.isDown && this.currBreath > 1) {
+      if(this.sprintKey.isDown && this.currBreath > 1 && moving) {
         this.body.velocity.multiply(2,2);
         this.currBreath--;
       } else if (this.currBreath < this.stamina) {

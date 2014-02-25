@@ -8,7 +8,7 @@
     this.body.collideWorldBounds = true;
     this.coolDown = coolDown;
     this.nextFire = 0;
-    this.bullets = bullets;
+    this.bullets  = bullets;
     this.velocity = velocity;
   }
 

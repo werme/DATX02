@@ -23,12 +23,10 @@
       var x = 680
         , y = this.game.height / 2;
 
-
       this.map = this.game.add.tilemap('level1');
       this.map.addTilesetImage('tiles', 'tiles');
       //to be changed
       this.map.setCollisionByExclusion([7, 2]);
-
 
       this.layer = this.map.createLayer('Tile Layer 1');
 
@@ -45,8 +43,8 @@
 
       this.cursors = this.game.input.keyboard.createCursorKeys();
 
-      this.playerWeapon = new window.Darwinator.Weapon(this.game, x, y, 200, 1000, 'enemy', this.bullets);
-      this.player = new window.Darwinator.Player(this.game, x, y, 100, this.cursors);
+      this.playerWeapon  = new window.Darwinator.Weapon(this.game, x, y, 200, 1000, 'enemy', this.bullets);
+      this.player        = new window.Darwinator.Player(this.game, x, y, 100, this.cursors);
       this.player.weapon = this.playerWeapon;
       this.player.scale.setTo(2,2);
       this.enemy = new window.Darwinator.Enemy(this.game, 100, 100, 100);
@@ -66,22 +64,32 @@
     update: function () {
       this.game.physics.collide(this.player, this.layer);
       this.game.physics.moveToObject(this.enemy, this.player, 50);
-      this.game.physics.collide(this.enemy, this.bullets, this.bulletCollisionHandler, null, this);
-      this.game.physics.collide(this.layer, this.bullets, this.bulletCollisionHandler, null, this);
-
+      this.game.physics.collide(this.bullets, this.enemy, this.bulletCollisionHandler, null, this);
+      this.game.physics.collide(this.bullets, this.layer, this.bulletCollisionHandler, null, this);
+  
       // For development only
-      this.fps.content = 'FPS: ' + this.game.time.fps;
+      this.fps.content   = 'FPS: ' + this.game.time.fps;
       this.stats.content = 'Player stamina: ' + Math.round(this.player.currBreath) + '/' + this.player.stamina;
-    }
-
-    ,
+    },
 
     bulletCollisionHandler: function(obj1, obj2){
-      var bullet;
+      var bullet = obj2;
       if(obj1.name === 'bullet'){
+        console.log('obj1 was bullet!');
         bullet = obj1;
+        if(obj2 === this.enemy){
+          console.log('A bullet hit an enemy!');  
+          console.log('Draining 10 health..');
+          this.enemy.health -= 10;  
+        }
       }else if(obj2.name === 'bullet'){
+        console.log('obj2 was bullet!');
         bullet = obj2;
+        if(obj1 === this.enemy){
+          console.log('A bullet hit an enemy!');
+          console.log('Draining 10 health..');
+          this.enemy.health -= 10;
+        }
       }else{
         return;
       }

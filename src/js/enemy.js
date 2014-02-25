@@ -11,7 +11,9 @@
   Enemy.prototype = Object.create(Phaser.Sprite.prototype);
 
   Enemy.prototype.update = function() {
-
+    if(this.health === 0){
+      this.kill();
+    }
   };
 
   window.Darwinator = window.Darwinator || {};

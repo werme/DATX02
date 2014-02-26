@@ -10,13 +10,13 @@ Darwinator.Entity = function(game, x, y, health, key, anims) {
   this.stamina                  = 50;
   this.currBreath               = this.stamina;
 
-  if(anims.length) {
-    for(var i = 0; i < anims.length; i++) {
+  if (anims.length) {
+    for (var i = 0; i < anims.length; i++) {
       var tmp = anims[i];
       this.animations.add.apply(this.animations, tmp);
     }
   }
-}
+};
 
 Darwinator.Entity.prototype = Object.create(Phaser.Sprite.prototype);
 
@@ -24,4 +24,4 @@ Darwinator.Entity.prototype.update = function() {};
 
 Darwinator.Entity.prototype.takeDamage = function(amount) {
   this.health = this.health - amount;
-}
+};

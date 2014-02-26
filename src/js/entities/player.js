@@ -40,7 +40,7 @@ Darwinator.Player.prototype.update = function() {
     this.currBreath += 0.2;
   }
 
-  if (this.health === 0){
+  if (this.health === 0) {
     //TODO Set to this.kill();
     this.health = 100;
   }

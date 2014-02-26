@@ -1,23 +1,16 @@
 'use strict';
 
 Darwinator.Player = function(game, x, y, health, cursors) {
-  Phaser.Sprite.call(this, game, x, y, 'player');
+  var anims = [['walk-left', [8,9,10,11], 10, true], ['walk-right', [12,13,14,15], 10, true],
+               ['walk-up', [0,1,2,3], 10, true], ['walk-down', [4,5,6,7], 10, true]];
+  Darwinator.Entity.call(this, game, x, y, health, 'player', anims);
   this.cursors = cursors;
   this.sprintKey = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
   this.scale.setTo(0.25,0.25);
-  this.game   = game;
-  this.health = health;
   this.anchor.setTo(0.5, 0.5);
-  this.animations.add('walk-left', [8,9,10,11], 10, true);
-  this.animations.add('walk-right', [12,13,14,15], 10, true);
-  this.animations.add('walk-up', [0,1,2,3], 10, true);
-  this.animations.add('walk-down', [4,5,6,7], 10, true);
-  this.body.collideWorldBounds = true;
-  this.stamina = 50;
-  this.currBreath = this.stamina;
 }
 
-Darwinator.Player.prototype = Object.create(Phaser.Sprite.prototype);
+Darwinator.Player.prototype = Object.create(Darwinator.Entity.prototype);
 
 Darwinator.Player.prototype.update = function() {
   this.body.velocity.setTo(0,0);
@@ -52,7 +45,3 @@ Darwinator.Player.prototype.update = function() {
     this.health = 100;
   }    
 };
-
-Darwinator.Player.prototype.takeDamage = function(amount) {
-  this.health = this.health - amount;
-}

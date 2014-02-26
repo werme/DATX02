@@ -1,15 +1,10 @@
 'use strict';
 
 Darwinator.Enemy = function(game, target, x, y, health) {
-  Phaser.Sprite.call(this, game, x, y, 'enemy');
+  Darwinator.Entity.call(this, game, x, y, health, 'enemy');
   this.scale.setTo(0.25,0.25);
-  this.game   = game;
-  this.health = health;
-  this.body.collideWorldBounds = true;
   this.target = target;
   this.path = null;
-  this.stamina = 50;
-  this.currBreath = this.stamina;
   this.speed = 75;
   this.damage = 5;
   this.attacking = false;
@@ -17,7 +12,7 @@ Darwinator.Enemy = function(game, target, x, y, health) {
   this.overlap = null;
 }
 
-Darwinator.Enemy.prototype = Object.create(Phaser.Sprite.prototype);
+Darwinator.Enemy.prototype = Object.create(Darwinator.Entity.prototype);
 
 Darwinator.Enemy.prototype.update = function() {
   var currTile = Darwinator.Helpers.pixelsToTile(this.body.x, this.body.y);

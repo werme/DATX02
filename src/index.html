@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html>
 <head>
@@ -29,8 +30,14 @@
   <script src="js/entities/enemy.js"></script>
   <script src="js/game.js"></script>
   <script src="js/helpers.js"></script>
-
   <!-- /build -->
+
+  <script>
+    window.onload = function () {
+      Darwinator.start( new Phaser.Game(640, 480, Phaser.AUTO, 'darwinator-container') );
+    };
+
+  </script>
 
 </body>
 </html>

@@ -1,6 +1,16 @@
 'use strict';
 
-window.Darwinator = window.Darwinator || {};
+window.Darwinator = window.Darwinator || {
+  
+  TILE_WIDTH: 0,
+  TILE_HEIGHT: 0,
+
+  setTileSize: function(w,h) {
+    this.TILE_WIDTH = w;
+    this.TILE_HEIGHT = h;
+  }
+
+};
 
 window.onload = function () {
 

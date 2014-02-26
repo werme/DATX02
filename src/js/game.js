@@ -54,7 +54,7 @@ Darwinator.GameState.prototype = {
     this.map = this.game.add.tilemap('level1');
     this.map.addTilesetImage('tiles', 'tiles');
 
-    Darwinator.GlobalValues.tileSize(this.map.tileWidth, this.map.tileHeight);
+    Darwinator.setTileSize(this.map.tileWidth, this.map.tileHeight);
 
     this.map.setCollisionByExclusion([1337, 168]);
     this.map.createLayer('Tile Layer 2');
@@ -73,15 +73,6 @@ Darwinator.GameState.prototype = {
     this.fps.content = 'FPS: ' + this.game.time.fps;
     this.stats.content = 'Player stamina: ' + Math.round(this.player.currBreath) + '/' + this.player.stamina;
     this.health.content = 'Health: ' + this.player.health;
-  },
+  }
 
-  getTileSize: function() {
-    var size = null;
-    if (this.map !== null) {
-      size = [];
-      size[0] = this.map.tileWidth;
-      size[1] = this.map.tileHeight;
-    }
-    return size;
-  },
 };

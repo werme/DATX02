@@ -22,15 +22,15 @@ Darwinator.Helpers = {
     if (y < 0) {
       y = 0;
     }
-    pos[0] = Math.floor(x / window.Darwinator.GlobalValues.tileWidth);
-    pos[1] = Math.floor(y / window.Darwinator.GlobalValues.tileHeight);
+    pos[0] = Math.floor(x / Darwinator.TILE_WIDTH);
+    pos[1] = Math.floor(y / Darwinator.TILE_HEIGHT);
     return pos;
   },
 
   tileToPixels: function(x, y) {
     var pos = [];
-    var tileWidth = window.Darwinator.GlobalValues.tileWidth;
-    var tileHeight = window.Darwinator.GlobalValues.tileHeight;
+    var tileWidth = Darwinator.TILE_WIDTH;
+    var tileHeight = Darwinator.TILE_HEIGHT;
     pos[0] = Math.floor(x * tileWidth + (tileWidth / 2));
     pos[1] = Math.floor(y * tileHeight + (tileHeight / 2));
     return pos;

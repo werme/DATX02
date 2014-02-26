@@ -43,7 +43,7 @@
 
       this.cursors = this.game.input.keyboard.createCursorKeys();
 
-      this.playerWeapon  = new window.Darwinator.Weapon(this.game, x, y, 200, 1000, 'enemy', this.bullets);
+      this.playerWeapon  = new window.Darwinator.Weapon(this.game, x, y, 200, 1000, 'enemy', this.bullets, 10);
       this.player        = new window.Darwinator.Player(this.game, x, y, 100, this.cursors);
       this.player.weapon = this.playerWeapon;
       this.player.scale.setTo(2,2);
@@ -66,8 +66,7 @@
       this.game.physics.moveToObject(this.enemy, this.player, 50);
       this.game.physics.collide(this.bullets, this.enemy, this.bulletCollisionHandler, null, this);
       this.game.physics.collide(this.bullets, this.layer, this.bulletCollisionHandler, null, this);
-
-      this.bullets.forEachAlive(this.checkBulletSpeed, this);
+      this.bullets.forEachAlive(this.checkBulletSpeed, this); //workaround for misbehaving bullets..
 
       // For development only
       this.fps.content   = 'FPS: ' + this.game.time.fps;
@@ -78,18 +77,20 @@
       var speed = Math.sqrt(  (bullet.body.velocity.x * bullet.body.velocity.x) 
                             + (bullet.body.velocity.y * bullet.body.velocity.y));
       var tolerance = 0.1;
-      if(bullet !== null && Math.abs(speed - this.playerWeapon.speed) > tolerance){
-        this.bulletCollisionHandler(bullet, this.layer); //call collision update explicitly
+      if(bullet !== null && Math.abs(speed - this.playerWeapon.speed) > tolerance){ //illegal speed
+        if(bullet.x === this.playerWeapon.x && bullet.y === this.playerWeapon.y){ // bullet didn't reset properly on revival
+          this.playerWeapon.resetBullet(bullet);
+        }else{ //bullet got stuck or bounced
+          bullet.kill();
+        }
       }else if(bullet === null){
         console.log('checkBulletSpeed: bullet was null');
       }
     },
 
     bulletCollisionHandler: function(obj1, obj2){
-      //console.log('Collision!');
       var bullet;
       if(obj1.name === 'bullet'){
-        //console.log('obj1 was bullet!');
         bullet = obj1;
         if(obj2 === this.enemy){
           console.log('A bullet hit an enemy!');  
@@ -97,7 +98,6 @@
           this.enemy.health -= this.playerWeapon.damage;  
         }
       }else if(obj2.name === 'bullet'){
-        //console.log('obj2 was bullet!');
         bullet = obj2;
         if(obj1 === this.enemy){
           console.log('A bullet hit an enemy!');
@@ -105,9 +105,9 @@
           this.enemy.health -= this.playerWeapon.damage;
         }
       }else{
+        console.log('A bullet collision without bullets occurred. That\'s odd.');
         return;
       }
-      //console.log(this.bullets.getIndex(bullet));
       bullet.kill();
     }
 

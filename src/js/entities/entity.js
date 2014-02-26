@@ -1,17 +1,19 @@
 'use strict';
 
 Darwinator.Entity = function(game, x, y, health, key, anims) {
-  anims = anims || [];  
+  anims = anims || [];
   Phaser.Sprite.call(this, game, x, y, key);
-  this.game = game;
-  this.health = health;
-  this.body.collideWorldBounds = true;
-  this.stamina = 50;
-  this.currBreath = this.stamina;
+
+  this.game                     = game;
+  this.health                   = health;
+  this.body.collideWorldBounds  = true;
+  this.stamina                  = 50;
+  this.currBreath               = this.stamina;
+
   if(anims.length) {
     for(var i = 0; i < anims.length; i++) {
       var tmp = anims[i];
-      this.animations.add(tmp[0], tmp[1], tmp[2], tmp[3]);
+      this.animations.add.apply(this.animations, tmp);
     }
   }
 }

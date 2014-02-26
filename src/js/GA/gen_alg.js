@@ -14,17 +14,16 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   ELITISM_DEGREE:           1,
 
   generatePopulation: function(goalFunction, population, singleGeneration) {
-    population = population || initPopulation(NUMBER_OF_GENES, POPULATION_SIZE);
+    population = population || initPopulation();
     var fitnessLevels = [];
 
-
-    for (var i = singleGeneration ? 1 : NUMBER_OF_GENERATIONS; i > 0; i--) {
+    for (var i = singleGeneration ? 1 : this.NUMBER_OF_GENERATIONS; i > 0; i--) {
 
       var maxFit = 0.0;
       var bestIndividual = population[0];
       for(var l = 0; l < population.length; l++) {
-        var decodedInd = decodeIndividual(population[l], NUMBER_OF_VARIABLES, VARIABLE_RANGE);
-        fitnessLevels[l] = goalFunction(decodeIndividual);
+        var decodedInd = decodeIndividual(population[l]);
+        fitnessLevels[l] = goalFunction(decodedInd);
         if(fitnessLevels[l] > maxFit) {
           maxFit = fitnessLevels[l];
           bestIndividual = population[l];
@@ -35,10 +34,10 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
       tmpPopulation = population;
 
       for(l = 0; l < population.length; l += 2) {
-        ind1 = selection(fitnessLevels, TOURNAMENT_PARAMETER, TOURNAMENT_SIZE);
-        ind2 = selection(fitnessLevels, TOURNAMENT_PARAMETER, TOURNAMENT_SIZE);
+        ind1 = selection(fitnessLevels, this.TOURNAMENT_PARAMETER, this.TOURNAMENT_SIZE);
+        ind2 = selection(fitnessLevels, this.TOURNAMENT_PARAMETER, this.TOURNAMENT_SIZE);
 
-        if (Math.random() < CROSSOVER_PROBABILITY) {
+        if (Math.random() < this.CROSSOVER_PROBABILITY) {
           var chromePair = cross(population[ind1], population[ind2]);
           tmpPopulation[l] = chromePair[0];
           tmpPopulation[l + 1] = chromePair[1];
@@ -49,10 +48,10 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
       }
 
       for(l = 0; l < population.length; l++) {
-        tmpPopulation[l] = mutate(tmpPopulation[l], MUTATION_PROBABILITY);
+        tmpPopulation[l] = mutate(tmpPopulation[l], this.MUTATION_PROBABILITY);
       }
 
-      for(l = 0; l < ELITISM_DEGREE; l++) {
+      for(l = 0; l < this.ELITISM_DEGREE; l++) {
         tmpPopulation[l] = bestIndividual;
       }
 
@@ -60,16 +59,33 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     }
   },
 
-  initPopulation: function(nrOfGenes, popSize) {
+  initPopulation: function() {
     var population = [];
-    for(var i = 0; i < popSize; i++) {
+    for(var i = 0; i < this.POPULATION_SIZE; i++) {
       population[i] = [];
-      for(var l = 0; l < nrOfGenes; l++) {
+      for(var l = 0; l < this.NUMBER_OF_GENES; l++) {
         population[i][l] = Math.round(Math.random());
       }
     } 
 
     return population;
+  },
+
+  decodeIndividual: function(individual) {
+    var bitsPerVar = this.NUMBER_OF_GENES / this.NUMBER_OF_VARIABLES;
+    var decoded = [];
+
+    for(var i = 0; i < this.NUMBER_OF_VARIABLES; i++) {
+      decoded[i] = 0;
+      for(var l = 0; l < bitsPerVar; l++) {
+
+        var startVar = (i - 1) * bitsPerVar;
+        decoded[i] = decoded[i] + individual[startVar + l] * Math.pow(2, -l);
+      }
+      decoded[i] = -this.VARIABLE_RANGE + 2*this.VARIABLE_RANGE * decoded[i]/(1 - Math.pow(2,-bitsPerVar));
+    }
+
+    return decoded;
   }
 
 };

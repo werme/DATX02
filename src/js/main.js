@@ -1,8 +1,8 @@
+'use strict';
 
-var Darwinator = Darwinator || {};
+window.Darwinator = window.Darwinator || {};
 
 window.onload = function () {
-  'use strict';
 
   var game;
 

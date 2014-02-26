@@ -35,7 +35,6 @@ module.exports = (grunt) ->
           expand: false
           flatten: true
           dest: '<%= DST_DIR %>/<%= INDEX_FILE %>'
-
         ]
 
     jshint:
@@ -50,7 +49,6 @@ module.exports = (grunt) ->
       dist:
         files:
           '<%= DST_FILE %>.min.js': ['<%= SRC_DIR %>/js/**/*.js']
-
       options:
         banner: '/*! <%= PKG.name %> v<%= PKG.version %> */\n'
 

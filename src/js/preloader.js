@@ -3,7 +3,7 @@
 Darwinator.Preloader = function() {
   this.asset = null;
   this.ready = false;
-}
+};
 
 Darwinator.Preloader.prototype = {
 

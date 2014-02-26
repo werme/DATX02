@@ -3,7 +3,7 @@
 Darwinator.Menu = function() {
   this.titleTxt = null;
   this.startTxt = null;
-}
+};
 
 Darwinator.Menu.prototype = {
 

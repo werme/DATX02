@@ -15,7 +15,7 @@ Darwinator.Player = function(game, x, y, health, cursors) {
   this.body.collideWorldBounds = true;
   this.stamina = 50;
   this.currBreath = this.stamina;
-}
+};
 
 Darwinator.Player.prototype = Object.create(Phaser.Sprite.prototype);
 
@@ -50,9 +50,9 @@ Darwinator.Player.prototype.update = function() {
   if (this.health === 0){
     //TODO Set to this.kill();
     this.health = 100;
-  }    
+  }
 };
 
 Darwinator.Player.prototype.takeDamage = function(amount) {
   this.health = this.health - amount;
-}
+};

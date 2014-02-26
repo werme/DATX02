@@ -15,7 +15,7 @@ Darwinator.Enemy = function(game, target, x, y, health) {
   this.attacking = false;
   this.time = null;
   this.overlap = null;
-}
+};
 
 Darwinator.Enemy.prototype = Object.create(Phaser.Sprite.prototype);
 
@@ -37,13 +37,13 @@ Darwinator.Enemy.prototype.update = function() {
     } else if (this.currBreath < this.stamina) {
       this.currBreath += 0.2;
     }
-  };
+  }
 
   // Target (ie. player) takes damage while the target and enemy overlap.
   // If they continuously overlap the target will take damage every 0.25 seconds
   this.overlap = this.game.physics.overlap(this, this.target);
   if (this.overlap && !this.attacking){
-    this.target.takeDamage(this.damage)
+    this.target.takeDamage(this.damage);
     this.time = this.game.time.time;
     this.attacking = true;
   } else if (!this.overlap || ((this.game.time.time - this.time) > 250)) {

@@ -10,7 +10,7 @@ Darwinator.GameState = function() {
   this.fps      = null;
   this.stats    = null;
   this.health   = null;
-}
+};
 
 Darwinator.GameState.prototype = {
 

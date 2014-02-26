@@ -1,6 +1,6 @@
 'use strict';
 
-Darwinator.Boot = function() {}
+Darwinator.Boot = function() {};
 
 Darwinator.Boot.prototype = {
   

@@ -10,6 +10,11 @@ Darwinator.Boot.prototype = {
 
   create: function () {
     this.game.input.maxPointers = 1;
+
+    // Toggle pause with space
+    var key = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    key.onDown.add(this.togglePause, this);
+
     // this.game.stage.disableVisibilityChange = true;
 
     if (this.game.device.desktop) {
@@ -25,5 +30,10 @@ Darwinator.Boot.prototype = {
       this.game.stage.scale.setScreenSize(true);
     }
     this.game.state.start('preloader');
+  },
+
+  togglePause: function() {
+    this.game.paused = !this.game.paused;
   }
+
 };

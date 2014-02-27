@@ -8,8 +8,15 @@ Darwinator.Player = function(game, x, y, health, cursors) {
   this.scale.setTo(0.25,0.25);
   this.anchor.setTo(0.5, 0.5);
   this.initKeys(game);
-};
 
+  /* 
+      Notes until later: 
+      each body can setCircle, Rectangle or Polygon. 
+      Check the phaser.js on line ~41837
+  */
+  this.body.setRectangle(12, 4, 0, 12);
+
+};
 Darwinator.Player.prototype = Object.create(Darwinator.Entity.prototype);
 
 Darwinator.Player.prototype.update = function() {

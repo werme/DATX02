@@ -1,15 +1,16 @@
 'use strict';
 
 Darwinator.GameState = function() {
-  this.player   = null;
-  this.enemy    = null;
-  this.cursors  = null;
-  this.map      = null;
-  this.tileset  = null;
-  this.layer    = null;
-  this.fps      = null;
-  this.stats    = null;
-  this.health   = null;
+  this.player    = null;
+  this.enemy     = null;
+  this.cursors   = null;
+  this.map       = null;
+  this.tileset   = null;
+  this.layer     = null;
+  this.fps       = null;
+  this.stats     = null;
+  this.health    = null;
+  this.pauseText = null;
 };
 
 Darwinator.GameState.prototype = {
@@ -17,12 +18,12 @@ Darwinator.GameState.prototype = {
   create: function () {
     this.loadLevel();
     this.game.world.setBounds(0,0, this.map.widthInPixels, this.map.heightInPixels);
-    console.log(this.map);
 
     this.cursors = this.game.input.keyboard.createCursorKeys();
 
     this.player = new Darwinator.Player(this.game, 160, 620, 100, this.cursors);
     this.player.scale.setTo(2,2);
+
     this.enemy = new Darwinator.Enemy(this.game, this.player, 160, 400, 100);
 
     this.game.add.existing(this.enemy);
@@ -48,6 +49,13 @@ Darwinator.GameState.prototype = {
     Darwinator.Pathfinder.setGrid(indexes);
     Darwinator.Pathfinder.setAcceptableTiles([1337, 168]);
 
+    var x = this.game.width / 2
+    , y = this.game.height / 2;
+    this.pauseText = this.game.add.text(x, y, 'Game paused', { fontSize: '16px', fill: '#fff', align: 'center' });
+    this.pauseText.anchor.setTo(0.5, 0.5);
+    this.pauseText.fixedToCamera = true;
+    this.pauseText.renderable = false;
+    this.pauseText.visible = false;
   },
 
   loadLevel: function() {
@@ -65,6 +73,8 @@ Darwinator.GameState.prototype = {
   },
 
   update: function () {
+    // TODO: Move this to the nonexistent resume callback 
+    if (this.pauseText.visible) this.pauseText.visible = false;
 
     this.game.physics.collide(this.player, this.layer);
     this.game.physics.collide(this.enemy, this.layer);
@@ -73,6 +83,10 @@ Darwinator.GameState.prototype = {
     this.fps.content = 'FPS: ' + this.game.time.fps;
     this.stats.content = 'Player stamina: ' + Math.round(this.player.currBreath) + '/' + this.player.stamina;
     this.health.content = 'Health: ' + this.player.health;
+  },
+
+  paused: function () {
+    this.pauseText.visible = true;
   }
 
 };

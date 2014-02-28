@@ -5,9 +5,9 @@ Darwinator.Player = function(game, x, y, health, cursors) {
                ['walk-up', [0,1,2,3], 10, true], ['walk-down', [4,5,6,7], 10, true]];
   Darwinator.Entity.call(this, game, x, y, health, 'player', anims);
   this.cursors = cursors;
-  this.sprintKey = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
   this.scale.setTo(0.25,0.25);
   this.anchor.setTo(0.5, 0.5);
+  this.initKeys(game);
 
   /* 
       Notes until later: 
@@ -23,16 +23,16 @@ Darwinator.Player.prototype = Object.create(Darwinator.Entity.prototype);
 Darwinator.Player.prototype.update = function() {
   this.body.velocity.setTo(0,0);
   var moving = true;
-  if (this.cursors.up.isDown) {
+  if (this.cursors.up.isDown || this.upKey.isDown) {
     this.body.velocity.y = -100;
     this.animations.play('walk-up');
-  } else if (this.cursors.left.isDown) {
+  } else if (this.cursors.left.isDown || this.leftKey.isDown) {
     this.body.velocity.x = -100;
     this.animations.play('walk-left');
-  } else if (this.cursors.right.isDown) {
+  } else if (this.cursors.right.isDown || this.rightKey.isDown) {
     this.body.velocity.x = 100;
     this.animations.play('walk-right');
-  } else if (this.cursors.down.isDown) {
+  } else if (this.cursors.down.isDown || this.downKey.isDown) {
     this.body.velocity.y = 100;
     this.animations.play('walk-down');
   } else {
@@ -53,3 +53,11 @@ Darwinator.Player.prototype.update = function() {
     this.health = 100;
   }
 };
+
+  Darwinator.Player.prototype.initKeys = function(game) {
+    this.upKey = game.input.keyboard.addKey(Phaser.Keyboard.W);
+    this.leftKey = game.input.keyboard.addKey(Phaser.Keyboard.A);
+    this.downKey = game.input.keyboard.addKey(Phaser.Keyboard.S);
+    this.rightKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
+    this.sprintKey = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
+  };

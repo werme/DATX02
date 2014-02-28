@@ -17,7 +17,6 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     population = population || this.initPopulation();
     var fitnessLevels = new Array(this.POPULATION_SIZE);
     var totalMaxFit = 0.0;
-    var n = 0;
 
     for (var i = 0; i < (singleGeneration ? 1 : this.NUMBER_OF_GENERATIONS); i++) {
 
@@ -59,7 +58,6 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
 
       for(l = 0; l < population.length; l++) {
         tmpPopulation[l] = this.mutate(tmpPopulation[l]);
-        n++;
       }
 
       for(l = 0; l < this.ELITISM_DEGREE; l++) {
@@ -70,7 +68,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
 
     console.log(1/maxFit);
     console.log(this.decodeIndividual(bestIndividual));
-    //return tmpPopulation;
+    return population;
   },
 
   initPopulation: function() {

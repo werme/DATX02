@@ -14,23 +14,40 @@ Darwinator.Player.prototype = Object.create(Darwinator.Entity.prototype);
 
 Darwinator.Player.prototype.update = function() {
   this.body.velocity.setTo(0,0);
-  var moving = true;
+  var dir = [0,0];
+  var moving = false;
   if (this.cursors.up.isDown || this.upKey.isDown) {
     this.body.velocity.y = -100;
-    this.animations.play('walk-up');
-  } else if (this.cursors.left.isDown || this.leftKey.isDown) {
-    this.body.velocity.x = -100;
-    this.animations.play('walk-left');
-  } else if (this.cursors.right.isDown || this.rightKey.isDown) {
-    this.body.velocity.x = 100;
-    this.animations.play('walk-right');
+    dir[1] = 1;
+    moving = true;
   } else if (this.cursors.down.isDown || this.downKey.isDown) {
     this.body.velocity.y = 100;
-    this.animations.play('walk-down');
-  } else {
+    dir[1] = -1;
+    moving = true;
+  }
+  if (this.cursors.left.isDown || this.leftKey.isDown) {
+    this.body.velocity.x = -100;
+    dir[0] = -1;
+    moving = true;
+  } else if (this.cursors.right.isDown || this.rightKey.isDown) {
+    this.body.velocity.x = 100;
+    dir[0] = 1;
+    moving = true;
+  }
+  if(!moving) {
     this.animations.stop();
     this.body.frame = 4;
-    moving = false;
+  } else {
+    // Moving up or down - higher priority than left/right for animations
+    if (dir[1] == -1) {
+      this.animations.play('walk-down');
+    } else if (dir[1] == 1) {
+      this.animations.play('walk-up');
+    } else if (dir[0] == -1) {
+      this.animations.play('walk-left');
+    } else {
+      this.animations.play('walk-right');
+    }
   }
 
   if(this.sprintKey.isDown && this.currBreath > 1 && moving) {

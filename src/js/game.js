@@ -1,17 +1,18 @@
 'use strict';
 
 Darwinator.GameState = function() {
-  this.player    = null;
-  this.enemy     = null;
-  this.cursors   = null;
-  this.map       = null;
-  this.tileset   = null;
-  this.layer     = null;
-  this.fps       = null;
-  this.stats     = null;
-  this.health    = null;
-  this.pauseText = null;
-};
+  this.player   = null;
+  this.enemies    = null;
+  this.cursors  = null;
+  this.map      = null;
+  this.tileset  = null;
+  this.layer    = null;
+  this.fps      = null;
+  this.stats    = null;
+  this.health   = null;
+  this.spawnPositions = [];
+  this.numberOfEnemies = 20;
+}
 
 Darwinator.GameState.prototype = {
 
@@ -20,13 +21,12 @@ Darwinator.GameState.prototype = {
     this.game.world.setBounds(0,0, this.map.widthInPixels, this.map.heightInPixels);
 
     this.cursors = this.game.input.keyboard.createCursorKeys();
-
-    this.player = new Darwinator.Player(this.game, 160, 620, 100, this.cursors);
+    this.player = new Darwinator.Player(this.game, 10, 10, 100, this.cursors);
     this.player.scale.setTo(2,2);
 
-    this.enemy = new Darwinator.Enemy(this.game, this.player, 160, 400, 100);
-
-    this.game.add.existing(this.enemy);
+    this.initSpawnPosition();
+    this.spawnEnemies();
+    
     this.game.add.existing(this.player);
     this.game.camera.follow(this.player);
 
@@ -47,7 +47,7 @@ Darwinator.GameState.prototype = {
     Darwinator.Pathfinder.enableDiagonals();
     var indexes = Darwinator.Helpers.convertTileMap(this.map.layers[0].data);
     Darwinator.Pathfinder.setGrid(indexes);
-    Darwinator.Pathfinder.setAcceptableTiles([1337, 168]);
+    Darwinator.Pathfinder.setAcceptableTiles([1337, 168, 156, 157, 158, 172, 173, 174, 188, 189, 190, 205]);
 
     var x = this.game.width / 2
     , y = this.game.height / 2;
@@ -64,7 +64,7 @@ Darwinator.GameState.prototype = {
 
     Darwinator.setTileSize(this.map.tileWidth, this.map.tileHeight);
 
-    this.map.setCollisionByExclusion([1337, 168]);
+    this.map.setCollisionByExclusion([1337, 168, 156, 157, 158, 172, 173, 174, 188, 189, 190, 205]);
     this.map.createLayer('Tile Layer 2');
     this.layer = this.map.createLayer('Tile Layer 1');
     this.layer.debug = true;
@@ -73,17 +73,57 @@ Darwinator.GameState.prototype = {
     this.layer.resizeWorld();
   },
 
+  spawnEnemies: function () {
+    var spawnIndexes = new Array(this.spawnPositions.length);
+
+    for (var i = 0; i < spawnIndexes.length; i++) {
+      spawnIndexes[i] = i;
+    }
+
+    this.enemies = this.game.add.group();
+    var rInd;
+    var pos;
+    while (this.numberOfEnemies-- && spawnIndexes.length) {
+      rInd = Math.round(Math.random() * spawnIndexes.length -1);
+      pos = spawnIndexes.splice(rInd,1);
+      this.enemies.add(new Darwinator.Enemy(this.game, this.player, 
+        this.spawnPositions[pos][0], 
+        this.spawnPositions[pos][1], 100));
+    }
+
+    console.log("duurp");
+  },
+
+  initSpawnPosition: function () {
+    var matrix = Darwinator.Helpers.convertTileMap(this.map.layers[0].data);
+    
+    for (var i = 0; i < matrix.length; i++) {
+      for(var j = 0; j < matrix[i].length; j++) {
+        if (matrix[i][j] === 168){
+          this.spawnPositions.push(Darwinator.Helpers.tileToPixels(j,i));
+        }
+      }
+    }
+  },
+
+
   update: function () {
     // TODO: Move this to the nonexistent resume callback 
     if (this.pauseText.visible) this.pauseText.visible = false;
 
     this.game.physics.collide(this.player, this.layer);
-    this.game.physics.collide(this.enemy, this.layer);
+    this.game.physics.collide(this.enemies, this.layer);
+    this.game.physics.collide(this.enemies, this.enemies);
 
     // For development only
     this.fps.content = 'FPS: ' + this.game.time.fps;
     this.stats.content = 'Player stamina: ' + Math.round(this.player.currBreath) + '/' + this.player.stamina;
     this.health.content = 'Health: ' + this.player.health;
+
+    if (this.numberOfEnemies){
+      this.spawnEnemies();
+    }
+
   },
 
   paused: function () {

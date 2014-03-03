@@ -27,7 +27,7 @@ Darwinator.Enemy.prototype.update = function() {
   if (this.path !== null) {
     var targetPos = Darwinator.Helpers.tileToPixels(this.path[1].x, this.path[1].y);
     this.game.physics.moveToXY(this, targetPos[0], targetPos[1], this.speed);
-    if (this.path.length < 3 && this.currBreath > 1) {
+    if (this.path.length < 5 && this.currBreath > 1) {
       this.body.velocity.multiply(2,2);
       this.currBreath--;
     } else if (this.currBreath < this.stamina) {

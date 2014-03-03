@@ -1,12 +1,12 @@
 'use strict';
 
-Darwinator.Enemy = function(game, target, x, y, health) {
-  Darwinator.Entity.call(this, game, x, y, health, 'enemy');
+Darwinator.Enemy = function(game, target, x, y, health, strength, sprint) {
+
+  Darwinator.Entity.call(this, game, x, y, 'enemy', [], health, strength, sprint);
   this.scale.setTo(0.25,0.25);
   this.target = target;
   this.path = [];
   this.speed = 75;
-  this.damage = 5;
   this.attacking = false;
   this.time = null;
   this.overlap = null;

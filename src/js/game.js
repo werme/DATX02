@@ -21,11 +21,11 @@ Darwinator.GameState.prototype = {
 
     this.cursors = this.game.input.keyboard.createCursorKeys();
 
-    this.player = new Darwinator.Player(this.game, 160, 620, 100, this.cursors);
+    this.player = new Darwinator.Player(this.game, 160, 620, this.cursors, 100, 5, 5);
     this.player.scale.setTo(2,2);
-
-    this.enemy = new Darwinator.Enemy(this.game, this.player, 160, 400, 100);
-
+    console.log(this.player);
+    this.enemy = new Darwinator.Enemy(this.game, this.player, 160, 400, 100, 3, 0);
+    console.log(this.enemy);
     this.game.add.existing(this.enemy);
     this.game.add.existing(this.player);
     this.game.camera.follow(this.player);

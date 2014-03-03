@@ -67,7 +67,8 @@ Darwinator.GameState.prototype = {
     this.map.setCollisionByExclusion([1337, 168]);
     this.map.createLayer('Tile Layer 2');
     this.layer = this.map.createLayer('Tile Layer 1');
-
+    this.layer.debug = true;
+    
     this.map.collisionLayer = this.layer;
     this.layer.resizeWorld();
   },

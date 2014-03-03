@@ -22,7 +22,7 @@ Darwinator.Enemy.prototype.update = function() {
   var pathLength = this.path.length;
   if(!(pathLength && this.path[pathLength - 1].x === targetTile[0] && this.path[pathLength - 1].y === targetTile[1])) {
     Darwinator.Pathfinder.findPath(currTile[0], currTile[1], targetTile[0], targetTile[1], function(path){
-      this.path = path;
+      this.path = !!path ? path : [];
     }.bind(this));
     Darwinator.Pathfinder.calculate();
   }
@@ -42,7 +42,7 @@ Darwinator.Enemy.prototype.update = function() {
       this.currBreath += 0.2;
     }
   } else {
-
+    this.game.physics.moveToXY(this, this.target.body.x, this.target.body.y, this.speed);
   }
 
   // Target (ie. player) takes damage while the target and enemy overlap.

@@ -21,6 +21,9 @@ Darwinator.GameState.prototype = {
 
     this.cursors = this.game.input.keyboard.createCursorKeys();
 
+    // Since states by default lack a callback for the resume event.
+    this.game.onResume.add(this.resumed, this);
+
     this.player = new Darwinator.Player(this.game, 160, 620, 100, this.cursors);
     this.player.scale.setTo(2,2);
 
@@ -48,14 +51,6 @@ Darwinator.GameState.prototype = {
     var indexes = Darwinator.Helpers.convertTileMap(this.map.layers[0].data);
     Darwinator.Pathfinder.setGrid(indexes);
     Darwinator.Pathfinder.setAcceptableTiles([1337, 168]);
-
-    var x = this.game.width / 2
-    , y = this.game.height / 2;
-    this.pauseText = this.game.add.text(x, y, 'Game paused', { fontSize: '16px', fill: '#fff', align: 'center' });
-    this.pauseText.anchor.setTo(0.5, 0.5);
-    this.pauseText.fixedToCamera = true;
-    this.pauseText.renderable = false;
-    this.pauseText.visible = false;
   },
 
   loadLevel: function() {
@@ -73,10 +68,17 @@ Darwinator.GameState.prototype = {
     this.layer.resizeWorld();
   },
 
-  update: function () {
-    // TODO: Move this to the nonexistent resume callback 
-    if (this.pauseText.visible) this.pauseText.visible = false;
+  initPauseOverlay: function() {
+    var x = this.game.width / 2
+    , y = this.game.height / 2;
+    this.pauseText = this.game.add.text(x, y, 'Game paused', { fontSize: '16px', fill: '#fff', align: 'center' });
+    this.pauseText.anchor.setTo(0.5, 0.5);
+    this.pauseText.fixedToCamera = true;
+    this.pauseText.renderable = false;
+    this.pauseText.visible = false;
+  },
 
+  update: function () {
     this.game.physics.collide(this.player, this.layer);
     this.game.physics.collide(this.enemy, this.layer);
 
@@ -88,6 +90,10 @@ Darwinator.GameState.prototype = {
 
   paused: function () {
     this.pauseText.visible = true;
+  },
+
+  resumed: function() {
+    this.pauseText.visible = false;
   }
 
 };

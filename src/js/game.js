@@ -28,7 +28,6 @@ Darwinator.GameState.prototype = {
 
     this.initSpawnPosition();
     this.spawnEnemies();
-    
     this.game.add.existing(this.player);
     this.game.camera.follow(this.player);
 

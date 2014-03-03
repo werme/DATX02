@@ -14,9 +14,7 @@ Darwinator.Player = function(game, x, y, health, cursors) {
       each body can setCircle, Rectangle or Polygon. 
       Check the phaser.js on line ~41837
   */
-  // Magic values.
-  this.body.setRectangle(12, 4, 0, 12);
-
+  this.body.setRectangle(12, 4, 2, 12);
 };
 Darwinator.Player.prototype = Object.create(Darwinator.Entity.prototype);
 

@@ -20,6 +20,7 @@ Darwinator.Enemy.prototype = Object.create(Darwinator.Entity.prototype);
 
 Darwinator.Enemy.prototype.update = function() {
   var currTile = Darwinator.Helpers.pixelsToTile(this.body.x, this.body.y);
+  var targetTile = Darwinator.Helpers.pixelsToTile(this.target.body.x, this.target.body.y);
 
   var pathLength = this.path.length;
   if(!(pathLength && this.path[pathLength - 1].x === targetTile[0]

@@ -24,14 +24,13 @@ Darwinator.GameState.prototype = {
     this.cursors = this.game.input.keyboard.createCursorKeys();
 
     this.player = new Darwinator.Player(this.game, 160, 620, this.cursors, 100, 5, 5);
-    this.player.scale.setTo(2,2);
+    this.player.scale.setTo(2,2);  
+    this.game.add.existing(this.player);
+    this.game.camera.follow(this.player);
 
     this.initSpawnPosition();
     this.spawnEnemies();
     
-    this.game.add.existing(this.player);
-    this.game.camera.follow(this.player);
-
     // For development only
     this.fps = this.game.add.text(16, 16, 'FPS: 0', { fontSize: '16px', fill: '#F08' });
     this.fps.fixedToCamera = true;

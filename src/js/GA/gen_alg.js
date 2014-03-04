@@ -215,6 +215,38 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
             Math.pow(x, 2) - 14 * y + 6 * x * y + 3 * Math.pow(y, 2))) * 
     (30 + Math.pow((2*x - 3*y), 2) * (18 - 32 * x + 12 * 
             Math.pow(x, 2) + 48 * y - 36 * x + 27 * Math.pow(y, 2)));
+  },
+
+  // tranlates the attributes of an enemy to a binary chromosome
+  enemyToChromosome: function (enemy){
+    // TODO add all attributes
+    var chrom = this.attrToGenes(enemy.speed);
+    chrom = chrom.concat(this.attrToGenes(enemy.damage));
+
+    if(chrom.length !== this.NUMBER_OF_GENES){ // just in case
+      console.log('Illegal length of chromosome: ' + chrom.length);
+    }else{
+      return chrom;
+    }
+  },
+
+  // translate an attribute to a binary string
+  attrToGenes: function(attr) {
+      var base = 2;
+      var binaryString = Number(attr).toString(base).split("").
+                map(function(str){return parseInt(str, base);});
+
+      var bitsPerVar = this.NUMBER_OF_GENES / this.NUMBER_OF_VARIABLES;
+      if (binaryString.length < bitsPerVar){
+        // add zeros in beginning to get correct length
+        var nbrInitialZeros = bitsPerVar - binaryString.length;
+        var zeros = new Array(nbrInitialZeros);
+        for(var i = 0; i < nbrInitialZeros; i++){
+          zeros[i] = 0;
+        }
+      }
+      binaryString = zeros.concat(binaryString);
+      return binaryString;
   }
 
 };

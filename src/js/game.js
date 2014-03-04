@@ -65,7 +65,7 @@ Darwinator.GameState.prototype = {
   },
 
   update: function () {
-
+    
     this.game.physics.collide(this.player, this.layer);
     this.game.physics.collide(this.enemy, this.layer);
 

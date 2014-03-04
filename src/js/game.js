@@ -3,6 +3,8 @@
 Darwinator.GameState = function() {
   this.player   = null;
   this.enemies  = null;
+  this.bullets  = null;
+  this.playerWeapon = null;
   this.cursors  = null;
   this.map      = null;
   this.tileset  = null;
@@ -27,6 +29,18 @@ Darwinator.GameState.prototype = {
     this.player.scale.setTo(2,2);  
     this.game.add.existing(this.player);
     this.game.camera.follow(this.player);
+
+    this.bullets = this.game.add.group();
+    this.bullets.createMultiple(30, 'enemy');
+    this.bullets.setAll('anchor.x', 0.5);
+    this.bullets.setAll('anchor.y', 0.5);
+    this.bullets.setAll('scale.x', 0.1);
+    this.bullets.setAll('scale.y', 0.1);
+    this.bullets.setAll('outOfBoundsKill', true);
+    this.bullets.setAll('name', 'bullet');
+
+    this.playerWeapon  = new window.Darwinator.Weapon(this.game, x, y, 200, 1000, this.bullets, 10);
+    this.player.weapon = this.playerWeapon;
 
     this.initSpawnPosition();
     this.spawnEnemies();
@@ -111,7 +125,6 @@ Darwinator.GameState.prototype = {
     }
   },
 
-
   update: function () {
     // TODO: Move this to the nonexistent resume callback 
     if (this.pauseText.visible) this.pauseText.visible = false;
@@ -119,12 +132,52 @@ Darwinator.GameState.prototype = {
     this.game.physics.collide(this.player, this.layer);
     this.game.physics.collide(this.enemies, this.layer);
     this.game.physics.collide(this.enemies, this.enemies);
-
+    this.game.physics.collide(this.bullets, this.enemies, this.bulletCollisionHandler, null, this);
+    this.game.physics.collide(this.bullets, this.layer, this.bulletCollisionHandler, null, this);
+    this.bullets.forEachAlive(this.checkBulletSpeed, this); //workaround for misbehaving bullets..
     // For development only
     this.fps.content = 'FPS: ' + this.game.time.fps;
     this.stats.content = 'Player stamina: ' + Math.round(this.player.currBreath) + '/' + this.player.stamina;
     this.health.content = 'Health: ' + Math.round(this.player.health);
 
+  },
+
+  checkBulletSpeed: function(bullet){
+    var speed = Math.sqrt(  (bullet.body.velocity.x * bullet.body.velocity.x) 
+                          + (bullet.body.velocity.y * bullet.body.velocity.y));
+    var tolerance = 0.1;
+    if(bullet !== null && Math.abs(speed - this.playerWeapon.bulletSpeed) > tolerance){ //illegal speed
+      if(bullet.x === this.playerWeapon.x && bullet.y === this.playerWeapon.y){ // bullet didn't reset properly on revival
+        this.playerWeapon.resetBullet(bullet);
+      }else{ //bullet got stuck or bounced
+        bullet.kill();
+      }
+    }else if(bullet === null){
+      console.log('checkBulletSpeed: bullet was null');
+    }
+  },
+
+  bulletCollisionHandler: function(obj1, obj2){
+    var bullet;
+    if(obj1.name === 'bullet'){
+      bullet = obj1;
+      /*if(obj2 === this.enemy){
+        console.log('A bullet hit an enemy!');  
+        console.log('Draining 10 health..');
+        this.enemy.health -= this.playerWeapon.damage;  
+      }*/
+    }else if(obj2.name === 'bullet'){
+      bullet = obj2;
+      /*if(obj1 === this.enemy){
+        console.log('A bullet hit an enemy!');
+        console.log('Draining 10 health..');
+        this.enemy.health -= this.playerWeapon.damage;
+      }*/
+    }else{
+      console.log('A bullet collision without bullets occurred. That\'s odd.');
+      return;
+    }
+    bullet.kill();
   },
 
   paused: function () {

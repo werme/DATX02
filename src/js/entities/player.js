@@ -8,6 +8,7 @@ Darwinator.Player = function(game, x, y, cursors, health, strength, agility, int
   this.scale.setTo(0.25,0.25);
   this.anchor.setTo(0.5, 0.5);
   this.initKeys(game);
+  this.weapon = null;
 
   /* 
       Notes until later: 
@@ -22,6 +23,10 @@ Darwinator.Player.prototype.update = function() {
   this.body.velocity.setTo(0,0);
   var dir = [0,0];
   var moving = false;    
+
+  if(this.weapon !== null){
+    this.weapon.updateManually(this.x, this.y);
+  }
 
   if (this.cursors.left.isDown || this.leftKey.isDown) {
     this.body.velocity.x = -this.speed;

@@ -31,6 +31,10 @@ Darwinator.GameState.prototype = {
     this.initSpawnPosition();
     this.spawnEnemies();
     
+    this.game.add.existing(this.player);
+    this.map.createLayer('Tile Layer 3');
+    this.game.camera.follow(this.player);
+
     // For development only
     this.fps = this.game.add.text(16, 16, 'FPS: 0', { fontSize: '16px', fill: '#F08' });
     this.fps.fixedToCamera = true;
@@ -68,6 +72,7 @@ Darwinator.GameState.prototype = {
     this.map.setCollisionByExclusion([1337, 168, 156, 157, 158, 172, 173, 174, 188, 189, 190, 205]);
     this.map.createLayer('Tile Layer 2');
     this.layer = this.map.createLayer('Tile Layer 1');
+
     this.layer.debug = true;
     
     this.map.collisionLayer = this.layer;
@@ -83,6 +88,7 @@ Darwinator.GameState.prototype = {
     
     var rInd;
     var pos;
+
     while (this.numberOfEnemies && spawnIndexes.length) {
       rInd = Math.round(Math.random() * spawnIndexes.length -1);
       pos = spawnIndexes.splice(rInd,1);

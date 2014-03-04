@@ -1,9 +1,9 @@
 'use strict';
 
-Darwinator.Player = function(game, x, y, cursors, health, strength, sprint) {
+Darwinator.Player = function(game, x, y, cursors, health, strength, agility) {
   var anims = [['walk-left', [8,9,10,11], 10, true], ['walk-right', [12,13,14,15], 10, true],
                ['walk-up', [0,1,2,3], 10, true], ['walk-down', [4,5,6,7], 10, true]];
-  Darwinator.Entity.call(this, game, x, y, 'player', anims, health, strength, sprint);
+  Darwinator.Entity.call(this, game, x, y, 'player', anims, health, strength, agility);
   this.cursors = cursors;
   this.scale.setTo(0.25,0.25);
   this.anchor.setTo(0.5, 0.5);
@@ -15,6 +15,8 @@ Darwinator.Player = function(game, x, y, cursors, health, strength, sprint) {
       Check the phaser.js on line ~41837
   */
   this.body.setRectangle(12, 4, 2, 12);
+  console.log("speed: " + this.speed);
+  console.log("strength: " + this.strength);
 };
 Darwinator.Player.prototype = Object.create(Darwinator.Entity.prototype);
 

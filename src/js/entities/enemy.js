@@ -1,8 +1,8 @@
 'use strict';
 
-Darwinator.Enemy = function(game, target, x, y, health, strength, sprint) {
+Darwinator.Enemy = function(game, target, x, y, health, strength, agility) {
 
-  Darwinator.Entity.call(this, game, x, y, 'enemy', [], health, strength, sprint);
+  Darwinator.Entity.call(this, game, x, y, 'enemy', [], health, strength, agility);
   this.scale.setTo(0.25,0.25);
   this.target = target;
   this.path = [];
@@ -13,6 +13,9 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, sprint) {
   //Allow enemy to overlap objects, i.e. reduce the hitbox
   this.body.setRectangle(20*4, 16*4, 0, 16*4);
   this.counter = 0;       // Frame-counter
+
+  console.log("speed: " + this.speed);
+  console.log("strength: " + this.strength);
 };
 
 Darwinator.Enemy.prototype = Object.create(Darwinator.Entity.prototype);

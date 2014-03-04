@@ -1,6 +1,6 @@
 'use strict';
 
-Darwinator.Entity = function(game, x, y, key, anims, health, strength, sprint) {
+Darwinator.Entity = function(game, x, y, key, anims, health, strength, agility) {
   anims = anims || [];
   Phaser.Sprite.call(this, game, x, y, key);
 
@@ -9,11 +9,10 @@ Darwinator.Entity = function(game, x, y, key, anims, health, strength, sprint) {
 
   this.health                   = health;
   this.strength                 = strength;
-  console.log(this.strength);
   this.damage                   = !!this.strength ? 5 + Math.round(this.strength/3) : 5;
-  this.sprint                   = sprint;
-  this.speed                    = !!this.sprint ? 75 + this.sprint : 75;
-  this.stamina                  = !!this.sprint ? 50 + this.sprint*3 : 50;
+  this.agility                  = agility;
+  this.speed                    = !!this.agility ? 75 + this.agility : 75;
+  this.stamina                  = !!this.agility ? 50 + this.agility*2 : 50;
   this.currBreath               = this.stamina;
 
   if (anims.length) {

@@ -31,9 +31,7 @@ Darwinator.GameState.prototype = {
     this.initSpawnPosition();
     this.spawnEnemies();
     
-    this.game.add.existing(this.player);
     this.map.createLayer('Tile Layer 3');
-    this.game.camera.follow(this.player);
 
     // For development only
     this.fps = this.game.add.text(16, 16, 'FPS: 0', { fontSize: '16px', fill: '#F08' });

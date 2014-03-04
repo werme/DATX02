@@ -88,7 +88,7 @@ Darwinator.GameState.prototype = {
       pos = spawnIndexes.splice(rInd,1);
       this.enemies.add(new Darwinator.Enemy(this.game, this.player, 
         this.spawnPositions[pos][0], 
-        this.spawnPositions[pos][1], 100));
+        this.spawnPositions[pos][1], 100, 0, 0));
       this.numberOfEnemies--;
     }
   },

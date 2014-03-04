@@ -15,8 +15,6 @@ Darwinator.Player = function(game, x, y, cursors, health, strength, agility, int
       Check the phaser.js on line ~41837
   */
   this.body.setRectangle(12, 4, 2, 12);
-  console.log("speed: " + this.speed);
-  console.log("damage: " + this.damage);
 };
 Darwinator.Player.prototype = Object.create(Darwinator.Entity.prototype);
 

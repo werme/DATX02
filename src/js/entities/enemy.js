@@ -11,11 +11,8 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
   this.overlap = null;
   this.debug = true;
   //Allow enemy to overlap objects, i.e. reduce the hitbox
-  this.body.setRectangle(20*4, 16*4, 0, 16*4);
+  //this.body.setRectangle(20*4, 16*4, 0, 16*4);
   this.counter = 0;       // Frame-counter
-
-  console.log("speed: " + this.speed);
-  console.log("damage: " + this.damage);
 };
 
 Darwinator.Enemy.prototype = Object.create(Darwinator.Entity.prototype);
@@ -59,6 +56,7 @@ Darwinator.Enemy.prototype.update = function() {
     var crit = Math.random() - this.criticalStrike;
     if (crit < 0){
       this.target.takeDamage(this.damage*2);
+      console.log("CRIT!");
     } else {
       this.target.takeDamage(this.damage);
     }

@@ -1,8 +1,8 @@
 'use strict';
 
-Darwinator.Enemy = function(game, target, x, y, health, strength, agility) {
+Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intellect) {
 
-  Darwinator.Entity.call(this, game, x, y, 'enemy', [], health, strength, agility);
+  Darwinator.Entity.call(this, game, x, y, 'enemy', [], health, strength, agility, intellect);
   this.scale.setTo(0.25,0.25);
   this.target = target;
   this.path = [];
@@ -15,7 +15,7 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility) {
   this.counter = 0;       // Frame-counter
 
   console.log("speed: " + this.speed);
-  console.log("strength: " + this.strength);
+  console.log("damage: " + this.damage);
 };
 
 Darwinator.Enemy.prototype = Object.create(Darwinator.Entity.prototype);
@@ -54,14 +54,19 @@ Darwinator.Enemy.prototype.update = function() {
   // Target (ie. player) takes damage while the target and enemy overlap.
   // If they continuously overlap the target will take damage every 0.25 seconds
   this.overlap = this.game.physics.overlap(this, this.target);
+
   if (this.overlap && !this.attacking){
-    this.target.takeDamage(this.damage);
+    var crit = Math.random() - this.criticalStrike;
+    if (crit < 0){
+      this.target.takeDamage(this.damage*2);
+    } else {
+      this.target.takeDamage(this.damage);
+    }
     this.time = this.game.time.time;
     this.attacking = true;
   } else if (!this.overlap || ((this.game.time.time - this.time) > 250)) {
     this.attacking = false;
   }
-
   this.counter++;
   if (this.counter > 100000) {
     this.counter = 0;

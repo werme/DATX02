@@ -23,7 +23,7 @@ Darwinator.GameState.prototype = {
 
     this.cursors = this.game.input.keyboard.createCursorKeys();
 
-    this.player = new Darwinator.Player(this.game, 160, 620, this.cursors, 100, 5, 5);
+    this.player = new Darwinator.Player(this.game, 160, 620, this.cursors, 100, 10, 15, 15);
     this.player.scale.setTo(2,2);  
     this.game.add.existing(this.player);
     this.game.camera.follow(this.player);
@@ -88,7 +88,7 @@ Darwinator.GameState.prototype = {
       pos = spawnIndexes.splice(rInd,1);
       this.enemies.add(new Darwinator.Enemy(this.game, this.player, 
         this.spawnPositions[pos][0], 
-        this.spawnPositions[pos][1], 100, 0, 0));
+        this.spawnPositions[pos][1], 100, 5, 5, 15));
       this.numberOfEnemies--;
     }
   },
@@ -119,7 +119,7 @@ Darwinator.GameState.prototype = {
     // For development only
     this.fps.content = 'FPS: ' + this.game.time.fps;
     this.stats.content = 'Player stamina: ' + Math.round(this.player.currBreath) + '/' + this.player.stamina;
-    this.health.content = 'Health: ' + this.player.health;
+    this.health.content = 'Health: ' + Math.round(this.player.health);
   },
 
   paused: function () {

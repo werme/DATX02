@@ -1,9 +1,9 @@
 'use strict';
 
-Darwinator.Player = function(game, x, y, cursors, health, strength, agility) {
+Darwinator.Player = function(game, x, y, cursors, health, strength, agility, intellect) {
   var anims = [['walk-left', [8,9,10,11], 10, true], ['walk-right', [12,13,14,15], 10, true],
                ['walk-up', [0,1,2,3], 10, true], ['walk-down', [4,5,6,7], 10, true]];
-  Darwinator.Entity.call(this, game, x, y, 'player', anims, health, strength, agility);
+  Darwinator.Entity.call(this, game, x, y, 'player', anims, health, strength, agility, intellect);
   this.cursors = cursors;
   this.scale.setTo(0.25,0.25);
   this.anchor.setTo(0.5, 0.5);
@@ -16,7 +16,7 @@ Darwinator.Player = function(game, x, y, cursors, health, strength, agility) {
   */
   this.body.setRectangle(12, 4, 2, 12);
   console.log("speed: " + this.speed);
-  console.log("strength: " + this.strength);
+  console.log("damage: " + this.damage);
 };
 Darwinator.Player.prototype = Object.create(Darwinator.Entity.prototype);
 

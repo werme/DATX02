@@ -8,6 +8,7 @@ Darwinator.Player = function(game, x, y, cursors, health, strength, agility, int
   this.scale.setTo(0.25,0.25);
   this.anchor.setTo(0.5, 0.5);
   this.initKeys(game);
+  this.maxSpeed = 100;
 
   /* 
       Notes until later: 
@@ -21,39 +22,27 @@ Darwinator.Player.prototype = Object.create(Darwinator.Entity.prototype);
 Darwinator.Player.prototype.update = function() {
   this.body.velocity.setTo(0,0);
   var dir = [0,0];
-  var moving = false;
-  if (this.cursors.up.isDown || this.upKey.isDown) {
-    this.body.velocity.y = -100;
-    dir[1] = 1;
-    moving = true;
-  } else if (this.cursors.down.isDown || this.downKey.isDown) {
-    this.body.velocity.y = 100;
-    dir[1] = -1;
-    moving = true;
-  }
+  var moving = false;    
+  this.animations.stop();
+  this.body.frame = 4;
+
   if (this.cursors.left.isDown || this.leftKey.isDown) {
-    this.body.velocity.x = -100;
-    dir[0] = -1;
+    this.body.velocity.x = -this.maxSpeed;
+    this.animations.play('walk-left');
     moving = true;
   } else if (this.cursors.right.isDown || this.rightKey.isDown) {
-    this.body.velocity.x = 100;
-    dir[0] = 1;
+    this.body.velocity.x = this.maxSpeed;
+    this.animations.play('walk-right');
     moving = true;
   }
-  if(!moving) {
-    this.animations.stop();
-    this.body.frame = 4;
-  } else {
-    // Moving up or down - higher priority than left/right for animations
-    if (dir[1] == -1) {
-      this.animations.play('walk-down');
-    } else if (dir[1] == 1) {
-      this.animations.play('walk-up');
-    } else if (dir[0] == -1) {
-      this.animations.play('walk-left');
-    } else {
-      this.animations.play('walk-right');
-    }
+  if (this.cursors.up.isDown || this.upKey.isDown) {
+    this.body.velocity.y = -this.maxSpeed;
+    this.animations.play('walk-up');
+    moving = true;
+  } else if (this.cursors.down.isDown || this.downKey.isDown) {
+    this.body.velocity.y = this.maxSpeed;
+    this.animations.play('walk-down');
+    moving = true;
   }
 
   if(this.sprintKey.isDown && this.currBreath > 1 && moving) {

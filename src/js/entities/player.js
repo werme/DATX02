@@ -36,7 +36,11 @@ Darwinator.Player.prototype.update = function() {
     moving = true;
   }
   if (this.cursors.up.isDown || this.upKey.isDown) {
-    this.body.velocity.y = -this.maxSpeed;
+    if (this.topLeft.y <= 0){
+      this.body.velocity.y = 0;
+    } else {
+      this.body.velocity.y = -this.maxSpeed;
+    }
     this.animations.play('walk-up');
     moving = true;
   } else if (this.cursors.down.isDown || this.downKey.isDown) {

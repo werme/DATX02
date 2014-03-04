@@ -6,7 +6,6 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, sprint) {
   this.scale.setTo(0.25,0.25);
   this.target = target;
   this.path = [];
-  this.speed = 75;
   this.attacking = false;
   this.time = null;
   this.overlap = null;

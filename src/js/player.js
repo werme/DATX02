@@ -24,8 +24,7 @@
   Player.prototype.update = function() {
 
     if(this.weapon !== null){
-      this.weapon.x = this.x;
-      this.weapon.y = this.y;
+      this.weapon.updateManually(this.x, this.y);
     }
 
     this.body.velocity.setTo(0,0);

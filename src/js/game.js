@@ -43,7 +43,7 @@
 
       this.cursors = this.game.input.keyboard.createCursorKeys();
 
-      this.playerWeapon  = new window.Darwinator.Weapon(this.game, x, y, 200, 1000, 'enemy', this.bullets, 10);
+      this.playerWeapon  = new window.Darwinator.Weapon(this.game, x, y, 200, 1000, this.bullets, 10);
       this.player        = new window.Darwinator.Player(this.game, x, y, 100, this.cursors);
       this.player.weapon = this.playerWeapon;
       this.player.scale.setTo(2,2);
@@ -51,7 +51,7 @@
 
       this.game.add.existing(this.enemy);
       this.game.add.existing(this.player);
-      this.game.add.existing(this.playerWeapon);
+      //this.game.add.existing(this.playerWeapon);
       this.game.camera.follow(this.player);
       // For development only
       this.fps = this.game.add.text(16, 16, 'FPS: 0', { fontSize: '16px', fill: '#F08' });
@@ -77,7 +77,7 @@
       var speed = Math.sqrt(  (bullet.body.velocity.x * bullet.body.velocity.x) 
                             + (bullet.body.velocity.y * bullet.body.velocity.y));
       var tolerance = 0.1;
-      if(bullet !== null && Math.abs(speed - this.playerWeapon.speed) > tolerance){ //illegal speed
+      if(bullet !== null && Math.abs(speed - this.playerWeapon.bulletSpeed) > tolerance){ //illegal speed
         if(bullet.x === this.playerWeapon.x && bullet.y === this.playerWeapon.y){ // bullet didn't reset properly on revival
           this.playerWeapon.resetBullet(bullet);
         }else{ //bullet got stuck or bounced

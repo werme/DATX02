@@ -7,7 +7,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   CROSSOVER_PROBABILITY:    0.8,
   MUTATION_PROBABILITY:     0.025,
   TOURNAMENT_PARAMETER:     0.75,
-  VARIABLE_RANGE:           5.0,       // Might not need later?
+  VARIABLE_RANGE:           5.0, // should be set to max attribute value
   NUMBER_OF_GENERATIONS:    100,
   NUMBER_OF_VARIABLES:      2,
   TOURNAMENT_SIZE:          4,
@@ -244,8 +244,11 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
         for(var i = 0; i < nbrInitialZeros; i++){
           zeros[i] = 0;
         }
-      }
       binaryString = zeros.concat(binaryString);
+      }else if(binaryString.length > bitsPerVar){
+        // keep last bitsPerVar bits
+        binaryString = binaryString.slice(-bitsPerVar);
+      }
       return binaryString;
   }
 

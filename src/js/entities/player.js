@@ -31,47 +31,45 @@ Darwinator.Player.prototype.update = function() {
   }
 
   if (this.cursors.left.isDown || this.leftKey.isDown) {
-//  console.log("this time :" + this.game.time.time + " dash time: " + this.dashTimer);
-    if ((this.lastKey === this.cursors.left || this.lastKey === this.leftKey) && (this.game.time.time - this.dashTimer) < 250) {
-      this.body.velocity.x = -2000;
+    if ((this.lastKey === this.cursors.left || this.lastKey === this.leftKey) 
+          && (this.game.time.time - this.dashTimer) < 250) {
+      this.body.velocity.x = -1250;
     } else {
       this.body.velocity.x = -this.speed;
     }
     dir[0] = -1;
     moving = true;
   } else if (this.cursors.right.isDown || this.rightKey.isDown) {
-    this.body.velocity.x = this.speed;
+    if ((this.lastKey === this.cursors.right || this.lastKey === this.rightKey) 
+          && (this.game.time.time - this.dashTimer) < 250) {
+      this.body.velocity.x = 1250;
+    } else {
+      this.body.velocity.x = this.speed;
+    }
     dir[0] = 1;
     moving = true;
   }
   if (this.cursors.up.isDown || this.upKey.isDown) {
-    if (this.topLeft.y <= 0){
+    if (this.topLeft.y <= 0 || this.topRight.y <= 0){
       this.body.velocity.y = 0;
+    } else if ((this.lastKey === this.cursors.up || this.lastKey === this.upKey) 
+                  && (this.game.time.time - this.dashTimer) < 250) {
+      this.body.velocity.y = -1250;
     } else {
       this.body.velocity.y = -this.speed;
-    }
+    } 
     dir[1] = 1;
     moving = true;
   } else if (this.cursors.down.isDown || this.downKey.isDown) {
-    this.body.velocity.y = this.speed;
+    if ((this.lastKey === this.cursors.down || this.lastKey === this.downKey) 
+           && (this.game.time.time - this.dashTimer) < 250) {
+      this.body.velocity.y = 1250;
+    } else {
+      this.body.velocity.y = this.speed;
+    } 
     dir[1] = -1;
     moving = true;
   }
-
-  /*if (this.cursors.left.onUp || this.leftKey.onUp) {
-    console.log(this.leftKey);
-    this.lastKey = "left";
-    this.dashTimer = this.game.time.time;
-  } else if (this.cursors.right.onUp || this.rightKey.onUp) {
-    this.lastKey = "right";
-    this.dashTimer = time.game.time.time;
-  } else if (this.cursors.down.onUp || this.downKey.onUp) {
-    this.lastKey = "down";
-    this.dashTimer = time.game.time.time;
-  } else if (this.cursors.up.onUp || this.upKey.onUp) {
-    this.lastKey = "right";
-    this.dashTimer = time.game.time.time;
-  }*/
 
   if(!moving) {
     this.animations.stop();
@@ -109,12 +107,13 @@ Darwinator.Player.prototype.initKeys = function(game) {
   this.rightKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
   this.sprintKey = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
 
-  this.upKey.onUp.add(this.lastPressed);
-  this.leftKey.onUp.add(this.lastPressed);
-  this.downKey.onUp.add(this.lastPressed);
-  this.rightKey.onUp.add(this.lastPressed);  
+  this.upKey.onUp.add(this.lastPressed, this);
+  this.leftKey.onUp.add(this.lastPressed, this);
+  this.downKey.onUp.add(this.lastPressed, this);
+  this.rightKey.onUp.add(this.lastPressed, this);  
 };
 
 Darwinator.Player.prototype.lastPressed = function(key) {
-  
+  this.lastKey = key;
+  this.dashTimer = this.game.time.time;
 };

@@ -161,18 +161,14 @@ Darwinator.GameState.prototype = {
     var bullet;
     if(obj1.name === 'bullet'){
       bullet = obj1;
-      /*if(obj2 === this.enemy){
+      if(obj2.name === 'enemy'){
         console.log('A bullet hit an enemy!');  
-        console.log('Draining 10 health..');
-        this.enemy.health -= this.playerWeapon.damage;  
-      }*/
+      }
     }else if(obj2.name === 'bullet'){
       bullet = obj2;
-      /*if(obj1 === this.enemy){
+      if(obj1.name === 'enemy'){
         console.log('A bullet hit an enemy!');
-        console.log('Draining 10 health..');
-        this.enemy.health -= this.playerWeapon.damage;
-      }*/
+      }
     }else{
       console.log('A bullet collision without bullets occurred. That\'s odd.');
       return;

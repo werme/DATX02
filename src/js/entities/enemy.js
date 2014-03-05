@@ -35,20 +35,10 @@ Darwinator.Enemy.prototype.update = function() {
     }
   }
 
+  /* If a path exists - follow it. Else, try to move in the general direction of the player, ignoring
+     obsticles*/
   if (this.path.length) {
-    var targetPos = Darwinator.Helpers.tileToPixels(this.path[1].x, this.path[1].y);
-    var distance = Darwinator.Helpers.calculateDistance(targetPos, [this.x, this.y]);
-    if (distance < 5 && this.path.length > 2) {      // Trial and error - modify if need be.
-      this.path.splice(0,1); // Remove first tile in path.
-      targetPos = Darwinator.Helpers.tileToPixels(this.path[1].x, this.path[1].y);
-    }
-    this.game.physics.moveToXY(this, targetPos[0], targetPos[1], this.speed);
-    if (this.path.length < 5 && this.currBreath > 1) {
-      this.body.velocity.multiply(2,2);
-      this.currBreath--;
-    } else if (this.currBreath < this.stamina) {
-      this.currBreath += 0.2;
-    }
+    this.followPath();
   } else {
     this.game.physics.moveToXY(this, this.target.body.x, this.target.body.y, this.speed);
   }
@@ -71,4 +61,20 @@ Darwinator.Enemy.prototype.update = function() {
     this.attacking = false;
   }
 
+};
+
+Darwinator.Enemy.prototype.followPath = function() {
+  var targetPos = Darwinator.Helpers.tileToPixels(this.path[1].x, this.path[1].y);
+  var distance = Darwinator.Helpers.calculateDistance(targetPos, [this.x, this.y]);
+  if (distance < 5 && this.path.length > 2) {      // Trial and error - modify if need be.
+    this.path.splice(0,1); // Remove first tile in path.
+    targetPos = Darwinator.Helpers.tileToPixels(this.path[1].x, this.path[1].y);
+  }
+  this.game.physics.moveToXY(this, targetPos[0], targetPos[1], this.speed);
+  if (this.path.length < 5 && this.currBreath > 1) {
+    this.body.velocity.multiply(2,2);
+    this.currBreath--;
+  } else if (this.currBreath < this.stamina) {
+    this.currBreath += 0.2;
+  }
 };

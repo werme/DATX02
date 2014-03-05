@@ -13,6 +13,10 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   TOURNAMENT_SIZE:          4,
   ELITISM_DEGREE:           1,
 
+  /* This function could have an optional fitness array parameter.
+      Enemy sprites chromosomes and fitness values can be calculated
+      at the same time; no extra loop is needed for that.
+  */
   /**
   * Generates a population of individuals from a given population or a randomly created one.
   * The new population is likely to be more better adepted to find a solution to the given
@@ -128,6 +132,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     return decoded;
   },
 
+  //NOTE crossover is easier with binary chromosomes than with real-valued ones
   /**
   * Cross two individuals to create two new ones. Will select a crossing point at random,
   * and swap the binary encoded values between the individuals from the selected point.
@@ -222,6 +227,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     Remember to restrict each score to a certain range
     If they are not set within a range, one score property may be too dominant e.g. survived ms.
     */
+    //TODO implement
   },
 
   /* Example function for testing and debugging. */
@@ -245,6 +251,33 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     }else{
       return chrom;
     }
+  },
+
+  /* returns a 2d array of the enemy chromosomes array and the fitness array
+      with the fitness of chromosome i in fitness[i]
+
+      returns [population, fitness]
+  */
+  translateEnemyWave: function(enemyGroup){
+    var currentSize = enemyGroup.length;
+    var population = new Array(currentSize);
+    var fitness = new Array(currentSize);
+    for(var i = 0; i < enemyGroup.length - 1; i++){
+      var enemy = enemyGroup.getAt(i);
+      population[i] = enemyToChromosome(enemy);
+      fitness[i] = 1 - 1 / this.enemyScore(enemy); //TODO move to evaluate
+    }
+    return [population, fitness];
+  },
+
+  /*
+    Translates the population back to a sprite group
+  */
+  translatePopulation: function(population){
+    //TODO implement
+    /*
+    Use decode to get the new attribute values and pass them to the Enemy constructor.
+    */
   },
 
   // translate an attribute to a binary string

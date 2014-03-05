@@ -12,6 +12,7 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
   this.debug = true;
   //Allow enemy to overlap objects, i.e. reduce the hitbox
   //this.body.setRectangle(20*4, 16*4, 0, 16*4);
+  this.lastPathUpdate = 0;
 };
 
 Darwinator.Enemy.prototype = Object.create(Darwinator.Entity.prototype);
@@ -23,10 +24,15 @@ Darwinator.Enemy.prototype.update = function() {
   var pathLength = this.path.length;
   if(!(pathLength && this.path[pathLength - 1].x === targetTile[0]
                   && this.path[pathLength - 1].y === targetTile[1])) {
-    Darwinator.Pathfinder.findPath(currTile[0], currTile[1], targetTile[0], targetTile[1], function(path){
-      this.path = !!path ? path : [];
-    }.bind(this));
-    Darwinator.Pathfinder.calculate();
+    if (Darwinator.Helpers.calculateDistance(targetTile, currTile) < this.lastPathUpdate) {
+      Darwinator.Pathfinder.findPath(currTile[0], currTile[1], targetTile[0], targetTile[1], function(path){
+        this.path = !!path ? path : [];
+      }.bind(this));
+      Darwinator.Pathfinder.calculate();
+      this.lastPathUpdate = 0;
+    } else {
+      this.lastPathUpdate++;
+    }
   }
 
   if (this.path.length) {

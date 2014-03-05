@@ -9,6 +9,8 @@ Darwinator.Player = function(game, x, y, cursors, health, strength, agility, int
   this.anchor.setTo(0.5, 0.5);
   this.initKeys(game);
   this.weapon = null;
+  this.lastKey = null;
+  this.dashTimer = null;
 
   /* 
       Notes until later: 
@@ -29,7 +31,12 @@ Darwinator.Player.prototype.update = function() {
   }
 
   if (this.cursors.left.isDown || this.leftKey.isDown) {
-    this.body.velocity.x = -this.speed;
+//  console.log("this time :" + this.game.time.time + " dash time: " + this.dashTimer);
+    if ((this.lastKey === this.cursors.left || this.lastKey === this.leftKey) && (this.game.time.time - this.dashTimer) < 250) {
+      this.body.velocity.x = -2000;
+    } else {
+      this.body.velocity.x = -this.speed;
+    }
     dir[0] = -1;
     moving = true;
   } else if (this.cursors.right.isDown || this.rightKey.isDown) {
@@ -50,6 +57,21 @@ Darwinator.Player.prototype.update = function() {
     dir[1] = -1;
     moving = true;
   }
+
+  /*if (this.cursors.left.onUp || this.leftKey.onUp) {
+    console.log(this.leftKey);
+    this.lastKey = "left";
+    this.dashTimer = this.game.time.time;
+  } else if (this.cursors.right.onUp || this.rightKey.onUp) {
+    this.lastKey = "right";
+    this.dashTimer = time.game.time.time;
+  } else if (this.cursors.down.onUp || this.downKey.onUp) {
+    this.lastKey = "down";
+    this.dashTimer = time.game.time.time;
+  } else if (this.cursors.up.onUp || this.upKey.onUp) {
+    this.lastKey = "right";
+    this.dashTimer = time.game.time.time;
+  }*/
 
   if(!moving) {
     this.animations.stop();
@@ -80,10 +102,19 @@ Darwinator.Player.prototype.update = function() {
   }
 };
 
-  Darwinator.Player.prototype.initKeys = function(game) {
-    this.upKey = game.input.keyboard.addKey(Phaser.Keyboard.W);
-    this.leftKey = game.input.keyboard.addKey(Phaser.Keyboard.A);
-    this.downKey = game.input.keyboard.addKey(Phaser.Keyboard.S);
-    this.rightKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
-    this.sprintKey = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
-  };
+Darwinator.Player.prototype.initKeys = function(game) {
+  this.upKey = game.input.keyboard.addKey(Phaser.Keyboard.W);
+  this.leftKey = game.input.keyboard.addKey(Phaser.Keyboard.A);
+  this.downKey = game.input.keyboard.addKey(Phaser.Keyboard.S);
+  this.rightKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
+  this.sprintKey = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
+
+  this.upKey.onUp.add(this.lastPressed);
+  this.leftKey.onUp.add(this.lastPressed);
+  this.downKey.onUp.add(this.lastPressed);
+  this.rightKey.onUp.add(this.lastPressed);  
+};
+
+Darwinator.Player.prototype.lastPressed = function(key) {
+  
+};

@@ -12,7 +12,6 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
   this.debug = true;
   //Allow enemy to overlap objects, i.e. reduce the hitbox
   //this.body.setRectangle(20*4, 16*4, 0, 16*4);
-  this.counter = 0;       // Frame-counter
 };
 
 Darwinator.Enemy.prototype = Object.create(Darwinator.Entity.prototype);
@@ -65,8 +64,5 @@ Darwinator.Enemy.prototype.update = function() {
   } else if (!this.overlap || ((this.game.time.time - this.time) > 250)) {
     this.attacking = false;
   }
-  this.counter++;
-  if (this.counter > 100000) {
-    this.counter = 0;
-  }
+
 };

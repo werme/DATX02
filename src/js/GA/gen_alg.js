@@ -3,13 +3,13 @@
 window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
 
   POPULATION_SIZE:          100,
-  NUMBER_OF_GENES:          60, //NOTE with real-valued genes (number of genes)  = (number of variables)
+  NUMBER_OF_GENES:          60, // NOTE with real-valued genes (number of genes)  = (number of variables)
   CROSSOVER_PROBABILITY:    0.8,
   MUTATION_PROBABILITY:     0.025,
   TOURNAMENT_PARAMETER:     0.75,
-  VARIABLE_RANGE:           5.0, // should be set to max attribute value
+  VARIABLE_RANGE:           100, // should be set to max attribute value (or 5 for exampleFunction)
   NUMBER_OF_GENERATIONS:    100,
-  NUMBER_OF_VARIABLES:      2, // set to number of attributes (except score-related ones)
+  NUMBER_OF_VARIABLES:      4, // set to number of attributes (or 2 for example function)
   TOURNAMENT_SIZE:          4,
   ELITISM_DEGREE:           1, // should probably be really high
 
@@ -19,7 +19,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   */
   /**
   * Generates a population of individuals from a given population or a randomly created one.
-  * The new population is likely to be more better adepted to find a solution to the given
+  * The new population is likely to be more better adapted to find a solution to the given
   * goal function.
   * @method Darwinator.GeneticAlgorithm#generatePopulation
   * @param {function} [goalFunction] - The function with wich to evaluate a given population.
@@ -27,11 +27,18 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @param {Boolean} [singleGeneration] - If true, only one iteration will be run, else, this.NUMBER_OF_GENERATIONS is used.
   * @return {Array} The last population generated.
   */
-  generatePopulation: function(goalFunction, population, singleGeneration) {
-    population = population || this.initPopulation();
-    var fitnessLevels = new Array(this.POPULATION_SIZE);
+  generatePopulation: function(game, target, goalFunction, enemyGroup, singleGeneration) { //TODO update javadoc
+    if(!enemyGroup){
+      // generate the initial population and return it
+      enemyGroup = this.initPopulation(game.add.group(), game, target);
+      return enemyGroup;
+    }
+    var translatedEnemies = this.translatedWave(population);
+    var population = translatedEnemies[0];
+    var fitnessLevels = translatedEnemies[1];
     var totalMaxFit = 0.0;
 
+    // algorithm main loop
     for (var i = 0; i < (singleGeneration ? 1 : this.NUMBER_OF_GENERATIONS); i++) {
 
       var maxFit = 0.0;
@@ -41,6 +48,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
       Fitness can be assign when translating sprites to chromosomes and decoding is
       only needed when translating chromosomes to sprites.
       */
+      /*
       for(var l = 0; l < population.length; l++) {
         var decodedInd = this.decodeIndividual(population[l]);
         fitnessLevels[l] = this.evaluateInd(decodedInd);
@@ -52,7 +60,9 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
           }
         }
       }
+      */
 
+      // clone population
       var tmpPopulation = new Array(population.length);
       for (l = 0; l < tmpPopulation.length; l++) {
         tmpPopulation[l] = new Array(population[l].length);
@@ -61,9 +71,11 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
         }
       }
 
+      // selection
       for(l = 0; l < population.length; l += 2) {
         var ind1 = this.selection(fitnessLevels);
         var ind2 = this.selection(fitnessLevels);
+        // crossover
         if (Math.random() < this.CROSSOVER_PROBABILITY) {
           var chromePair = this.cross(population[ind1], population[ind2]);
           tmpPopulation[l] = chromePair[0];
@@ -74,19 +86,24 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
         }
       }
 
+      // mutation
       for(l = 0; l < population.length; l++) {
         tmpPopulation[l] = this.mutate(tmpPopulation[l]);
       }
 
+      // elitism
       for(l = 0; l < this.ELITISM_DEGREE; l++) {
         tmpPopulation[l] = bestIndividual;
       }
+
+      // replace old population
       population = tmpPopulation;
-    }
+    } //endof algorithm main loop
 
     console.log(1/maxFit);
     console.log(this.decodeIndividual(bestIndividual));
-    return population;
+    nextGeneration = this.translatePopulation(population, enemyGroup);
+    return nextGeneration;//population;
   },
 
   /**
@@ -94,7 +111,8 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @method Darwinator.GeneticAlgorithm#initPopulation
   * @return {Array} The randomly created population, binary encoded (Array of 0s and 1s).
   */
-  initPopulation: function() {
+  initPopulation: function(enemyGroup, game, target) { //TODO update javadoc
+    /*
     var population = new Array(this.POPULATION_SIZE);
     for(var i = 0; i < population.length; i++) {
       population[i] = new Array(this.NUMBER_OF_GENES);
@@ -104,9 +122,29 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     } 
 
     return population;
+    */
+
+    // 4 different enemy initial set of attributes - just an example, not permanent!
+    var enemiesPerType = this.POPULATION_SIZE / 4;
+    for(var i = 0; i < this.POPULATION_SIZE; i++){
+      if(i < enemiesPerType){
+        // hybrid
+        enemyGroup.add(new Darwinator.Enemy(game, target, 0, 0, 100, 100, 100, 100));
+      }else if(i < enemiesPerType*2){
+        // strong and durable but slow and stupid
+        enemyGroup.add(new Darwinator.Enemy(game, target, 0, 0, 190, 190, 10, 10));
+      }else if(i < enemiesPerType*3){
+        // strong and quick but fragile and stupid
+        enemyGroup.add(new Darwinator.Enemy(game, target, 0, 0, 10, 190, 190, 10));
+      }else{
+        // smart and quick but weak and fragile
+        enemyGroup.add(new Darwinator.Enemy(game, target, 0, 0, 10, 10, 190, 190));
+      }
+    }
+    return enemyGroup;
   },
 
-  /* NOTE We probably don't think we need this before evaluation. 
+  /* NOTE We probably don't need this before evaluation. 
    * Fitness is based on progress made, not the actual attributes.
    * There is no need to encode damage done etc. to evaluate it.
    * We do however need to decode the attributes after the GA run to
@@ -120,6 +158,9 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @return {Array} The decoded individual. Will have a length of this.NUMBER_OF_VARIABLES
   */
   decodeIndividual: function(individual) {
+    // to balance the attributes
+    var pointsToSpend = this.NUMBER_OF_VARIABLES * this.VARIABLE_RANGE;
+
     var bitsPerVar = this.NUMBER_OF_GENES / this.NUMBER_OF_VARIABLES;
     var decoded = [];
 
@@ -130,7 +171,11 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
         var startVar = (i-1) * bitsPerVar;
         decoded[i-1] = decoded[i-1] + individual[startVar + l - 1] * Math.pow(2, -l);
       }
-      decoded[i-1] = -this.VARIABLE_RANGE + 2 * this.VARIABLE_RANGE * decoded[i-1]/(1 - Math.pow(2,-bitsPerVar));
+      //decoded[i-1] = -this.VARIABLE_RANGE + 2 * this.VARIABLE_RANGE * decoded[i-1]/(1 - Math.pow(2,-bitsPerVar));
+      decoded[i-1] = -pointsToSpend + 2 * pointsToSpend * decoded[i-1]/(1 - Math.pow(2,-bitsPerVar));
+      if(pointsToSpend > 0){
+        pointsToSpend -= decoded[i-1];
+      }
     }
 
     return decoded;
@@ -211,17 +256,14 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     return individual;
   },
 
-  // pass an array of enemy attributes here
   /**
   * Evaluates a individual accoarding to the goal and the goal function.
   * @method Darwinator.GeneticAlgorithm#cross
   * @param {Array} - The individual to be evaluated
   * @return {Number} - The fitness level of the individual
   */
-  evaluateInd: function(ind) {
-    /* For now, the example function from labs in FFR105 is used */
-    //TODO change to maximization i.e. 1 - 1 / enemyScore
-    return (1 / this.exampleFunction(ind));
+  evaluateInd: function(ind) {  // NOTE param is an enemy sprite rather than decoded variables!
+    return 1 - (1 / this.enemyScore(ind)); // maximize fitness based on enemy score
   },
 
   // goal function - calculates the score of an enemy based on collected data
@@ -233,6 +275,10 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     If they are not set within a range, one score property may be too dominant e.g. survived ms.
     */
     //TODO implement
+    /*
+    perhaps time the play time of the level and check difference between 
+        playTime and enemy.timeSurvivedMs as well as restricting the difference
+    */
   },
 
   /* Example function for testing and debugging. */
@@ -247,9 +293,11 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
 
   // tranlates the attributes of an enemy to a binary chromosome
   enemyToChromosome: function (enemy){
-    // TODO add all attributes
-    var chrom = this.attrToGenes(enemy.speed);
-    chrom = chrom.concat(this.attrToGenes(enemy.damage));
+    // concatenate the translation of all attributes
+    var chrom = this.attrToGenes(enemy.health)
+                  .concat(this.attrToGenes(enemy.strength))
+                  .concat(this.attrToGenes(enemy.agility))
+                  .concat(this.attrToGenes(enemy.intellect));
 
     if(chrom.length !== this.NUMBER_OF_GENES){ // just in case
       console.log('Illegal length of chromosome: ' + chrom.length);
@@ -258,38 +306,49 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     }
   },
 
-  /* returns a 2d array of the enemy chromosomes array and the fitness array
-      with the fitness of chromosome i in fitness[i]
-
-      returns [population, fitness]
+  /*
+      returns [population, fitness, bestIndividual]
   */
   translateEnemyWave: function(enemyGroup){
     var currentSize = enemyGroup.length;
-    var population = new Array(currentSize);
-    var fitness = new Array(currentSize);
+    var population  = new Array(currentSize);
+    var fitness     = new Array(currentSize);
     for(var i = 0; i < enemyGroup.length - 1; i++){
-      var enemy = enemyGroup.getAt(i);
-      population[i] = enemyToChromosome(enemy);
-      fitness[i] = 1 - 1 / this.enemyScore(enemy); //TODO move to evaluate
+      var enemy     = enemyGroup.getAt(i);
+      population[i] = this.enemyToChromosome(enemy);
+      fitness[i]    = this.evaluateInd(enemy); //eval score rather than strength etc.
     }
     return [population, fitness];
   },
 
   /*
-    Translates the population back to a sprite group
+    Translates the chromosomes to a new sprite group.
   */
-  translatePopulation: function(population){
-    //TODO implement
-    /*
-    Use decode to get the new attribute values and pass them to the Enemy constructor.
-    */
+  translatePopulation: function(population, enemyGroup){
+    // arguments needed for constructor
+    var game = enemyGroup.getAt(0).game;
+    var target = enemyGroup.getAt(0).target;
+    var x = 0;
+    var y = 0;
+
+    enemyGroup.destroy(true); // clear all since the length of the new population may differ
+    for(var i = 0; i < population.length; i++){
+      var attributes  = this.decodeIndividual(population[i]);
+      var health      = attrbutes[0];
+      var strength    = attrbutes[1];
+      var agility     = attrbutes[2];
+      var intellect   = attrbutes[3];
+      var enemy       = new Darwinator.Enemy(game, target, x, y, health, strength, agility, intellect);
+      enemyGroup.add(enemy);
+    }
+    return enemyGroup;
   },
 
   // translate an attribute to a binary string
   // TODO real number encoding would simplify (and perhaps improve) this quite a bit..
   attrToGenes: function(attr) {
       var base = 2;
-      var binaryString = Number(attr).toString(base).split("").
+      var binaryString = Number(attr).toString(base).split('').
                 map(function(str){return parseInt(str, base);});
 
       var bitsPerVar = this.NUMBER_OF_GENES / this.NUMBER_OF_VARIABLES;

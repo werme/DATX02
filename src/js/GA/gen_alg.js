@@ -219,6 +219,8 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   enemyScore: function(enemy) {
     /*
     (good stuff) -  (bad -stuff)
+    Remember to restrict each score to a certain range
+    If they are not set within a range, one score property may be too dominant e.g. survived ms.
     */
   },
 

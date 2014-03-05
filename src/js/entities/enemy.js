@@ -14,6 +14,10 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
   //this.body.setRectangle(20*4, 16*4, 0, 16*4);
   this.lastPathUpdate = 0;
   this.name = 'enemy'; //for collision callback
+  // score properties to measure success
+  this.dateOfBirthMs = Date.now();
+  this.timeSurvivedMs = undefined; //set this to dateOfBirthMs - Date.now() on death OR end of game round
+  this.damageDone = 0;
 };
 
 Darwinator.Enemy.prototype = Object.create(Darwinator.Entity.prototype);
@@ -51,9 +55,11 @@ Darwinator.Enemy.prototype.update = function() {
   if (this.overlap && !this.attacking){
     var crit = Math.random() - this.criticalStrike;
     if (crit < 0){
+      this.damageDone += this.damage*2;
       this.target.takeDamage(this.damage*2);
       console.log("CRIT!");
     } else {
+      this.damageDone += this.damage;
       this.target.takeDamage(this.damage);
     }
     this.time = this.game.time.time;

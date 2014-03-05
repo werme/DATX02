@@ -3,15 +3,15 @@
 window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
 
   POPULATION_SIZE:          100,
-  NUMBER_OF_GENES:          60,
+  NUMBER_OF_GENES:          60, //NOTE with real-valued genes (number of genes)  = (number of variables)
   CROSSOVER_PROBABILITY:    0.8,
   MUTATION_PROBABILITY:     0.025,
   TOURNAMENT_PARAMETER:     0.75,
   VARIABLE_RANGE:           5.0, // should be set to max attribute value
   NUMBER_OF_GENERATIONS:    100,
-  NUMBER_OF_VARIABLES:      2,
+  NUMBER_OF_VARIABLES:      2, // set to number of attributes (except score-related ones)
   TOURNAMENT_SIZE:          4,
-  ELITISM_DEGREE:           1,
+  ELITISM_DEGREE:           1, // should probably be really high
 
   /* This function could have an optional fitness array parameter.
       Enemy sprites chromosomes and fitness values can be calculated
@@ -37,6 +37,10 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
       var maxFit = 0.0;
       var bestIndividual = population[0];
 
+      /*
+      Fitness can be assign when translating sprites to chromosomes and decoding is
+      only needed when translating chromosomes to sprites.
+      */
       for(var l = 0; l < population.length; l++) {
         var decodedInd = this.decodeIndividual(population[l]);
         fitnessLevels[l] = this.evaluateInd(decodedInd);
@@ -207,6 +211,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     return individual;
   },
 
+  // pass an array of enemy attributes here
   /**
   * Evaluates a individual accoarding to the goal and the goal function.
   * @method Darwinator.GeneticAlgorithm#cross

@@ -13,7 +13,6 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
   //Allow enemy to overlap objects, i.e. reduce the hitbox
   //this.body.setRectangle(20*4, 16*4, 0, 16*4);
   this.lastPathUpdate = 0;
-  this.name = 'enemy'; //for collision callback
 };
 
 Darwinator.Enemy.prototype = Object.create(Darwinator.Entity.prototype);

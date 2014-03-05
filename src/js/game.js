@@ -30,6 +30,7 @@ Darwinator.GameState.prototype = {
     this.game.add.existing(this.player);
     this.game.camera.follow(this.player);
 
+    // TODO move bullets to separate class
     this.bullets = this.game.add.group();
     this.bullets.createMultiple(30, 'enemy');
     this.bullets.setAll('anchor.x', 0.5);
@@ -161,12 +162,12 @@ Darwinator.GameState.prototype = {
     var bullet;
     if(obj1.name === 'bullet'){
       bullet = obj1;
-      if(obj2.name === 'enemy'){
+      if(obj2 instanceof Darwinator.Enemy){
         console.log('A bullet hit an enemy!');  
       }
     }else if(obj2.name === 'bullet'){
       bullet = obj2;
-      if(obj1.name === 'enemy'){
+      if(obj1 instanceof Darwinator.Enemy){
         console.log('A bullet hit an enemy!');
       }
     }else{

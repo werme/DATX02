@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
 
@@ -98,6 +98,12 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     return population;
   },
 
+  /* NOTE We probably don't think we need this before evaluation. 
+   * Fitness is based on progress made, not the actual attributes.
+   * There is no need to encode damage done etc. to evaluate it.
+   * We do however need to decode the attributes after the GA run to
+   * translate the chromosomes back to enemies.
+  */ 
   /**
   * Decodes a individual from binary encoding to real numbers. The values of each
   * variable will lie in the range -this.VARIABLE_RANGE - this.VARIABLE_RANGE.
@@ -207,6 +213,11 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     return (1 / this.exampleFunction(ind));
   },
 
+  // goal function - calculates the score of an enemy based on collected data
+  enemyScore: function(enemy) {
+    //TODO implement
+  },
+
   /* Example function for testing and debugging. */
   exampleFunction: function(ind) {
     var x = ind[0];
@@ -238,13 +249,13 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
 
       var bitsPerVar = this.NUMBER_OF_GENES / this.NUMBER_OF_VARIABLES;
       if (binaryString.length < bitsPerVar){
-        // add zeros in beginning to get correct length
         var nbrInitialZeros = bitsPerVar - binaryString.length;
         var zeros = new Array(nbrInitialZeros);
         for(var i = 0; i < nbrInitialZeros; i++){
           zeros[i] = 0;
         }
-      binaryString = zeros.concat(binaryString);
+        // add zeros in beginning to get correct length
+        binaryString = zeros.concat(binaryString);
       }else if(binaryString.length > bitsPerVar){
         // keep last bitsPerVar bits
         binaryString = binaryString.slice(-bitsPerVar);

@@ -1,6 +1,18 @@
 'use strict';
 
+/**
+* @namespace Darwinator
+*/
 window.Darwinator = window.Darwinator || {
+
+  start: function(game) {
+    game.state.add('boot', this.Boot);
+    game.state.add('preloader', this.Preloader);
+    game.state.add('menu', this.Menu);
+    game.state.add('game', this.GameState);
+
+    game.state.start('boot');
+  },
   
   TILE_WIDTH: 0,
   TILE_HEIGHT: 0,
@@ -10,17 +22,4 @@ window.Darwinator = window.Darwinator || {
     this.TILE_HEIGHT = h;
   }
 
-};
-
-window.onload = function () {
-
-  var game;
-
-  game = new Phaser.Game(640, 480, Phaser.AUTO, 'darwinator-container');
-  game.state.add('boot', Darwinator.Boot);
-  game.state.add('preloader', Darwinator.Preloader);
-  game.state.add('menu', Darwinator.Menu);
-  game.state.add('game', Darwinator.GameState);
-
-  game.state.start('boot');
 };

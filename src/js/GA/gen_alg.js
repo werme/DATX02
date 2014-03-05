@@ -210,12 +210,16 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   */
   evaluateInd: function(ind) {
     /* For now, the example function from labs in FFR105 is used */
+    //TODO change to maximization i.e. 1 - 1 / enemyScore
     return (1 / this.exampleFunction(ind));
   },
 
   // goal function - calculates the score of an enemy based on collected data
+  // perhaps move this to the actual enemy prototype?
   enemyScore: function(enemy) {
-    //TODO implement
+    /*
+    (good stuff) -  (bad -stuff)
+    */
   },
 
   /* Example function for testing and debugging. */
@@ -242,6 +246,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   },
 
   // translate an attribute to a binary string
+  // TODO real number encoding would simplify (and perhaps improve) this quite a bit..
   attrToGenes: function(attr) {
       var base = 2;
       var binaryString = Number(attr).toString(base).split("").

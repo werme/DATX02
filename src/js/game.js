@@ -100,7 +100,7 @@ Darwinator.GameState.prototype = {
     
     var rInd;
     var pos;
-
+/*
     while (this.numberOfEnemies && spawnIndexes.length) {
       rInd = Math.round(Math.random() * spawnIndexes.length -1);
       pos = spawnIndexes.splice(rInd,1);
@@ -109,6 +109,10 @@ Darwinator.GameState.prototype = {
         this.spawnPositions[pos][1], 100, 5, 5, 15));
       this.numberOfEnemies--;
     }
+*/
+    // testing calls: call once for init, call twice to actually run GA..
+    this.enemies = Darwinator.GeneticAlgorithm.generatePopulation(this.game, this.player, undefined, this.enemies, true);//initPopulation(this.enemies, this.game, this.player);
+    this.enemies = Darwinator.GeneticAlgorithm.generatePopulation(this.game, this.player, undefined, this.enemies, true);
   },
 
   initSpawnPosition: function () {

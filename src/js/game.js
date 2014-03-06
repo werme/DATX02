@@ -26,7 +26,7 @@ Darwinator.GameState.prototype = {
     this.cursors = this.game.input.keyboard.createCursorKeys();
 
     this.player = new Darwinator.Player(this.game, 160, 620, this.cursors, 100, 10, 15, 15);
-    this.player.scale.setTo(2,2);  
+    this.player.scale.setTo(2,2);
     this.game.add.existing(this.player);
     this.game.camera.follow(this.player);
 
@@ -45,7 +45,7 @@ Darwinator.GameState.prototype = {
 
     this.initSpawnPosition();
     this.spawnEnemies();
-    
+
     //Maiking sure top layer is rendered on top of player
     this.map.createLayer('Tile Layer 3');
 
@@ -63,7 +63,7 @@ Darwinator.GameState.prototype = {
     this.gameOver.fixedToCamera = true;
 
     Darwinator.Pathfinder = new EasyStar.js();
-    //Darwinator.Pathfinder.enableDiagonals();
+    Darwinator.Pathfinder.enableDiagonals();
     var indexes = Darwinator.Helpers.convertTileMap(this.map.layers[0].data);
     Darwinator.Pathfinder.setGrid(indexes);
     Darwinator.Pathfinder.setAcceptableTiles([1337, 168, 156, 157, 158, 172, 173, 174, 188, 189, 190, 205]);
@@ -88,7 +88,7 @@ Darwinator.GameState.prototype = {
     this.layer = this.map.createLayer('Tile Layer 1');
 
     this.layer.debug = true;
-    
+
     this.map.collisionLayer = this.layer;
     this.layer.resizeWorld();
   },
@@ -99,15 +99,15 @@ Darwinator.GameState.prototype = {
     for (var i = 0; i < spawnIndexes.length; i++) {
       spawnIndexes[i] = i;
     }
-    
+
     var rInd;
     var pos;
 
     while (this.numberOfEnemies && spawnIndexes.length) {
       rInd = Math.round(Math.random() * spawnIndexes.length -1);
       pos = spawnIndexes.splice(rInd,1);
-      this.enemies.add(new Darwinator.Enemy(this.game, this.player, 
-        this.spawnPositions[pos][0], 
+      this.enemies.add(new Darwinator.Enemy(this.game, this.player,
+        this.spawnPositions[pos][0],
         this.spawnPositions[pos][1], 100, 5, 5, 15));
       this.numberOfEnemies--;
     }
@@ -115,7 +115,7 @@ Darwinator.GameState.prototype = {
 
   initSpawnPosition: function () {
     var matrix = Darwinator.Helpers.convertTileMap(this.map.layers[0].data);
-    
+
     this.enemies = this.game.add.group();
 
     for (var i = 0; i < matrix.length; i++) {
@@ -128,7 +128,7 @@ Darwinator.GameState.prototype = {
   },
 
   update: function () {
-    // TODO: Move this to the nonexistent resume callback 
+    // TODO: Move this to the nonexistent resume callback
     if (this.pauseText.visible) this.pauseText.visible = false;
 
     this.game.physics.collide(this.player, this.layer);
@@ -145,7 +145,7 @@ Darwinator.GameState.prototype = {
   },
 
   checkBulletSpeed: function(bullet){
-    var speed = Math.sqrt(  (bullet.body.velocity.x * bullet.body.velocity.x) 
+    var speed = Math.sqrt(  (bullet.body.velocity.x * bullet.body.velocity.x)
                           + (bullet.body.velocity.y * bullet.body.velocity.y));
     var tolerance = 0.1;
     if(bullet !== null && Math.abs(speed - this.playerWeapon.bulletSpeed) > tolerance){ //illegal speed
@@ -164,7 +164,7 @@ Darwinator.GameState.prototype = {
     if(obj1.name === 'bullet'){
       bullet = obj1;
       if(obj2 instanceof Darwinator.Enemy){
-        console.log('A bullet hit an enemy!');  
+        console.log('A bullet hit an enemy!');
       }
     }else if(obj2.name === 'bullet'){
       bullet = obj2;

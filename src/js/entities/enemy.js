@@ -65,10 +65,15 @@ Darwinator.Enemy.prototype.update = function() {
 
 Darwinator.Enemy.prototype.followPath = function() {
   var targetPos = Darwinator.Helpers.tileToPixels(this.path[1].x, this.path[1].y);
-  var distance = Darwinator.Helpers.calculateDistance(targetPos, [this.x, this.y]);
-  if (distance < 5 && this.path.length > 2) {      // Trial and error - modify if need be.
+  targetPos[0] = Math.round(targetPos[0] - this.body.width / 2);
+  targetPos[1] = Math.round(targetPos[1] - this.body.height / 2);
+  var distance = Darwinator.Helpers.calculateDistance(targetPos, [this.body.x, this.body.y]);
+  if (distance < 2 && this.path.length > 2) {      // Trial and error - modify if need be.
+    this.reset(targetPos[0], targetPos[1]);
     this.path.splice(0,1); // Remove first tile in path.
     targetPos = Darwinator.Helpers.tileToPixels(this.path[1].x, this.path[1].y);
+    targetPos[0] = Math.round(targetPos[0] - this.body.width / 2);
+    targetPos[1] = Math.round(targetPos[1] - this.body.height / 2);
   }
   this.game.physics.moveToXY(this, targetPos[0], targetPos[1], this.speed);
   if (this.path.length < 5 && this.currBreath > 1) {

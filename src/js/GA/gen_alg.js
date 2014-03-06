@@ -141,14 +141,14 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @return {Array} The decoded individual. Will have a length of this.NUMBER_OF_VARIABLES
   */
   decodeIndividual: function(individual) {
-    // to distribute the attributes properly
-    var pointsToSpend = this.NUMBER_OF_VARIABLES * this.VARIABLE_RANGE;
+    // make sure each attribute is in the range [1, this.VARIABLE_RANGE]
+    var pointsToSpend = (this.NUMBER_OF_VARIABLES * this.VARIABLE_RANGE) - this.NUMBER_OF_VARIABLES;
 
     var bitsPerVar = this.NUMBER_OF_GENES / this.NUMBER_OF_VARIABLES;
     var decoded = [];
 
     for(var i = 1; i <= this.NUMBER_OF_VARIABLES; i++) {
-      decoded[i - 1] = 0;
+      decoded[i - 1] = 1;
       for(var l = 1; l <= bitsPerVar; l++) {
 
         var startVar = (i-1) * bitsPerVar;

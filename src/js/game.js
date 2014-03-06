@@ -46,6 +46,7 @@ Darwinator.GameState.prototype = {
     this.initSpawnPosition();
     this.spawnEnemies();
     
+    //Maiking sure top layer is rendered on top of player
     this.map.createLayer('Tile Layer 3');
 
     // For development only
@@ -132,7 +133,7 @@ Darwinator.GameState.prototype = {
 
     this.game.physics.collide(this.player, this.layer);
     this.game.physics.collide(this.enemies, this.layer);
-    this.game.physics.collide(this.enemies, this.enemies);
+    this.game.physics.collide(this.enemies);
     this.game.physics.collide(this.bullets, this.enemies, this.bulletCollisionHandler, null, this);
     this.game.physics.collide(this.bullets, this.layer, this.bulletCollisionHandler, null, this);
     this.bullets.forEachAlive(this.checkBulletSpeed, this); //workaround for misbehaving bullets..

@@ -7,10 +7,12 @@ Darwinator.Player = function(game, x, y, cursors, health, strength, agility, int
   this.cursors = cursors;
   this.scale.setTo(0.25,0.25);
   this.anchor.setTo(0.5, 0.5);
+  this.body.maxVelocity.setTo(50, 50);
   this.initKeys(game);
   this.weapon = null;
   this.lastKey = null;
   this.dashTimer = null;
+  this.direction = 0;
 
   /* 
       Notes until later: 
@@ -24,7 +26,8 @@ Darwinator.Player.prototype = Object.create(Darwinator.Entity.prototype);
 Darwinator.Player.prototype.update = function() {
   this.body.velocity.setTo(0,0);
   var dir = [0,0];
-  var moving = false;    
+  var moving = false;
+  this.direction = 0;  
 
   if(this.weapon !== null){
     this.weapon.updateManually(this.x, this.y);
@@ -34,8 +37,6 @@ Darwinator.Player.prototype.update = function() {
     if ((this.lastKey === this.cursors.left || this.lastKey === this.leftKey) 
           && (this.game.time.time - this.dashTimer) < 250) {
       this.body.velocity.x = -1250;
-    } else {
-      this.body.velocity.x = -this.speed;
     }
     dir[0] = -1;
     moving = true;
@@ -43,8 +44,6 @@ Darwinator.Player.prototype.update = function() {
     if ((this.lastKey === this.cursors.right || this.lastKey === this.rightKey) 
           && (this.game.time.time - this.dashTimer) < 250) {
       this.body.velocity.x = 1250;
-    } else {
-      this.body.velocity.x = this.speed;
     }
     dir[0] = 1;
     moving = true;
@@ -55,17 +54,13 @@ Darwinator.Player.prototype.update = function() {
     } else if ((this.lastKey === this.cursors.up || this.lastKey === this.upKey) 
                   && (this.game.time.time - this.dashTimer) < 250) {
       this.body.velocity.y = -1250;
-    } else {
-      this.body.velocity.y = -this.speed;
-    } 
+    }
     dir[1] = 1;
     moving = true;
   } else if (this.cursors.down.isDown || this.downKey.isDown) {
     if ((this.lastKey === this.cursors.down || this.lastKey === this.downKey) 
            && (this.game.time.time - this.dashTimer) < 250) {
       this.body.velocity.y = 1250;
-    } else {
-      this.body.velocity.y = this.speed;
     } 
     dir[1] = -1;
     moving = true;
@@ -75,16 +70,37 @@ Darwinator.Player.prototype.update = function() {
     this.animations.stop();
     this.body.frame = 4;
   } else {
-    // Moving up or down - higher priority than left/right for animations
-    if (dir[1] == -1) {
-      this.animations.play('walk-down');
-    } else if (dir[1] == 1) {
+    //Going upwards
+    if (dir[1] == 1){
+      this.direction = 270;
       this.animations.play('walk-up');
-    } else if (dir[0] == -1) {
-      this.animations.play('walk-left');
-    } else {
+      //Also going right or left
+      if(dir[0] == 1){
+        this.direction = 315;
+      }else if (dir[0] == -1){
+        this.direction = 225;
+      }
+    //Going downwards
+    } else if (dir[1] == -1){
+      this.direction = 90;
+      this.animations.play('walk-down');
+      //Also going right or left
+      if(dir[0] == 1){
+        this.direction = 45;
+      }else if (dir[0] == -1){
+        this.direction = 135;
+      }
+      //Going right
+    } else if (dir[0] == 1){
+      this.direction = 0;
       this.animations.play('walk-right');
+      //Going left
+    } else if (dir[0] == -1){
+      this.direction = 180;
+      this.animations.play('walk-left');
     }
+    //Set speed and angle
+    this.game.physics.velocityFromAngle(this.direction, this.speed, this.body.velocity);
   }
 
   if(this.sprintKey.isDown && this.currBreath > 1 && moving) {

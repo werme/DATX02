@@ -14,9 +14,9 @@ Darwinator.Player = function(game, x, y, cursors, health, strength, agility, int
   this.dashTimer = null;
   this.direction = 0;
 
-  /* 
-      Notes until later: 
-      each body can setCircle, Rectangle or Polygon. 
+  /*
+      Notes until later:
+      each body can setCircle, Rectangle or Polygon.
       Check the phaser.js on line ~41837
   */
   this.body.setRectangle(12, 4, 2, 12);
@@ -27,22 +27,22 @@ Darwinator.Player.prototype.update = function() {
   this.body.velocity.setTo(0,0);
   var dir = [0,0];
   var moving = false;
-  this.direction = 0;  
+  this.direction = 0;
 
   if(this.weapon !== null){
     this.weapon.updateManually(this.x, this.y);
   }
 
   if (this.cursors.left.isDown || this.leftKey.isDown) {
-    if ((this.lastKey === this.cursors.left || this.lastKey === this.leftKey) 
-          && (this.game.time.time - this.dashTimer) < 250) {
+    if ((this.lastKey === this.cursors.left || this.lastKey === this.leftKey )&&
+    (this.game.time.time - this.dashTimer) < 250) {
       this.body.velocity.x = -1250;
     }
     dir[0] = -1;
     moving = true;
   } else if (this.cursors.right.isDown || this.rightKey.isDown) {
-    if ((this.lastKey === this.cursors.right || this.lastKey === this.rightKey) 
-          && (this.game.time.time - this.dashTimer) < 250) {
+    if ((this.lastKey === this.cursors.right || this.lastKey === this.rightKey) &&
+    (this.game.time.time - this.dashTimer) < 250) {
       this.body.velocity.x = 1250;
     }
     dir[0] = 1;
@@ -51,17 +51,17 @@ Darwinator.Player.prototype.update = function() {
   if (this.cursors.up.isDown || this.upKey.isDown) {
     if (this.topLeft.y <= 0 || this.topRight.y <= 0){
       this.body.velocity.y = 0;
-    } else if ((this.lastKey === this.cursors.up || this.lastKey === this.upKey) 
-                  && (this.game.time.time - this.dashTimer) < 250) {
+    } else if ((this.lastKey === this.cursors.up || this.lastKey === this.upKey) &&
+    (this.game.time.time - this.dashTimer) < 250) {
       this.body.velocity.y = -1250;
     }
     dir[1] = 1;
     moving = true;
   } else if (this.cursors.down.isDown || this.downKey.isDown) {
-    if ((this.lastKey === this.cursors.down || this.lastKey === this.downKey) 
-           && (this.game.time.time - this.dashTimer) < 250) {
+    if ((this.lastKey === this.cursors.down || this.lastKey === this.downKey) &&
+    (this.game.time.time - this.dashTimer) < 250) {
       this.body.velocity.y = 1250;
-    } 
+    }
     dir[1] = -1;
     moving = true;
   }
@@ -71,31 +71,31 @@ Darwinator.Player.prototype.update = function() {
     this.body.frame = 4;
   } else {
     //Going upwards
-    if (dir[1] == 1){
+    if (dir[1] === 1){
       this.direction = 270;
       this.animations.play('walk-up');
       //Also going right or left
-      if(dir[0] == 1){
+      if(dir[0] === 1){
         this.direction = 315;
-      }else if (dir[0] == -1){
+      }else if (dir[0] === -1){
         this.direction = 225;
       }
     //Going downwards
-    } else if (dir[1] == -1){
+  } else if (dir[1] === -1){
       this.direction = 90;
       this.animations.play('walk-down');
       //Also going right or left
-      if(dir[0] == 1){
+      if(dir[0] === 1){
         this.direction = 45;
-      }else if (dir[0] == -1){
+      }else if (dir[0] === -1){
         this.direction = 135;
       }
       //Going right
-    } else if (dir[0] == 1){
+    } else if (dir[0] === 1){
       this.direction = 0;
       this.animations.play('walk-right');
       //Going left
-    } else if (dir[0] == -1){
+    } else if (dir[0] === -1){
       this.direction = 180;
       this.animations.play('walk-left');
     }
@@ -126,7 +126,7 @@ Darwinator.Player.prototype.initKeys = function(game) {
   this.upKey.onUp.add(this.lastPressed, this);
   this.leftKey.onUp.add(this.lastPressed, this);
   this.downKey.onUp.add(this.lastPressed, this);
-  this.rightKey.onUp.add(this.lastPressed, this);  
+  this.rightKey.onUp.add(this.lastPressed, this);
 };
 
 Darwinator.Player.prototype.lastPressed = function(key) {

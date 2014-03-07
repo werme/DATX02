@@ -22,8 +22,8 @@ Darwinator.Enemy.prototype.update = function() {
   var targetTile = Darwinator.Helpers.pixelsToTile(this.target.body.x, this.target.body.y);
 
   var pathLength = this.path.length;
-  if(!(pathLength && this.path[pathLength - 1].x === targetTile[0]
-                  && this.path[pathLength - 1].y === targetTile[1])) {
+  if(!(pathLength &&  this.path[pathLength - 1].x === targetTile[0] &&
+                      this.path[pathLength - 1].y === targetTile[1])) {
     if (Darwinator.Helpers.calculateDistance(targetTile, currTile) < this.lastPathUpdate) {
       Darwinator.Pathfinder.findPath(currTile[0], currTile[1], targetTile[0], targetTile[1], function(path){
         this.path = !!path ? path : [];
@@ -51,7 +51,7 @@ Darwinator.Enemy.prototype.update = function() {
     var crit = Math.random() - this.criticalStrike;
     if (crit < 0){
       this.target.takeDamage(this.damage*2);
-      console.log("CRIT!");
+      console.log('CRIT!');
     } else {
       this.target.takeDamage(this.damage);
     }

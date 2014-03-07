@@ -129,7 +129,9 @@ Darwinator.GameState.prototype = {
 
   update: function () {
     // TODO: Move this to the nonexistent resume callback
-    if (this.pauseText.visible) this.pauseText.visible = false;
+    if (this.pauseText.visible) {
+      this.pauseText.visible = false;
+    }
 
     this.game.physics.collide(this.player, this.layer);
     this.game.physics.collide(this.enemies, this.layer);
@@ -145,8 +147,8 @@ Darwinator.GameState.prototype = {
   },
 
   checkBulletSpeed: function(bullet){
-    var speed = Math.sqrt(  (bullet.body.velocity.x * bullet.body.velocity.x)
-                          + (bullet.body.velocity.y * bullet.body.velocity.y));
+    var speed = Math.sqrt(  (bullet.body.velocity.x * bullet.body.velocity.x) +
+        (bullet.body.velocity.y * bullet.body.velocity.y));
     var tolerance = 0.1;
     if(bullet !== null && Math.abs(speed - this.playerWeapon.bulletSpeed) > tolerance){ //illegal speed
       if(bullet.x === this.playerWeapon.x && bullet.y === this.playerWeapon.y){ // bullet didn't reset properly on revival

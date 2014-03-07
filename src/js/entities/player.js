@@ -10,7 +10,6 @@ Darwinator.Player = function(game, x, y, cursors, health, strength, agility, int
   this.body.maxVelocity.setTo(50, 50);
   this.initKeys(game);
   this.weapon = null;
-  this.lastKey = null;
   this.dashTimer = null;
   this.direction = 0;
 
@@ -123,13 +122,30 @@ Darwinator.Player.prototype.initKeys = function(game) {
   this.rightKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
   this.sprintKey = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
 
-  this.upKey.onUp.add(this.lastPressed, this);
-  this.leftKey.onUp.add(this.lastPressed, this);
-  this.downKey.onUp.add(this.lastPressed, this);
-  this.rightKey.onUp.add(this.lastPressed, this);
-};
+  var checkTimer = function(key) {
+    if (!!key.lastReleased && this.game.time.time - key.lastReleased > 200) {
+      console.log(this.speed);
+      this.speed *= 2;
+    }
+  };
+  var addTimer = function(key) {key.lastReleased = this.game.time.time;};
 
-Darwinator.Player.prototype.lastPressed = function(key) {
-  this.lastKey = key;
-  this.dashTimer = this.game.time.time;
+  this.upKey.onUp.add(addTimer, this);
+  this.leftKey.onUp.add(addTimer, this);
+  this.downKey.onUp.add(addTimer, this);
+  this.rightKey.onUp.add(addTimer, this);
+  this.cursors.up.onUp.add(addTimer, this);
+  this.cursors.down.onUp.add(addTimer, this);
+  this.cursors.right.onUp.add(addTimer, this);
+  this.cursors.left.onUp.add(addTimer, this);
+
+  this.upKey.onDown.add(checkTimer, this);
+  this.leftKey.onDown.add(checkTimer, this);
+  this.downKey.onDown.add(checkTimer, this);
+  this.rightKey.onDown.add(checkTimer, this);
+  this.cursors.up.onDown.add(checkTimer, this);
+  this.cursors.down.onDown.add(checkTimer, this);
+  this.cursors.right.onDown.add(checkTimer, this);
+  this.cursors.left.onDown.add(checkTimer, this);
+
 };

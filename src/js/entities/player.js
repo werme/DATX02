@@ -33,34 +33,19 @@ Darwinator.Player.prototype.update = function() {
   }
 
   if (this.cursors.left.isDown || this.leftKey.isDown) {
-    if ((this.lastKey === this.cursors.left || this.lastKey === this.leftKey )&&
-    (this.game.time.time - this.dashTimer) < 250) {
-      this.body.velocity.x = -1250;
-    }
     dir[0] = -1;
     moving = true;
   } else if (this.cursors.right.isDown || this.rightKey.isDown) {
-    if ((this.lastKey === this.cursors.right || this.lastKey === this.rightKey) &&
-    (this.game.time.time - this.dashTimer) < 250) {
-      this.body.velocity.x = 1250;
-    }
     dir[0] = 1;
     moving = true;
   }
   if (this.cursors.up.isDown || this.upKey.isDown) {
     if (this.topLeft.y <= 0 || this.topRight.y <= 0){
       this.body.velocity.y = 0;
-    } else if ((this.lastKey === this.cursors.up || this.lastKey === this.upKey) &&
-    (this.game.time.time - this.dashTimer) < 250) {
-      this.body.velocity.y = -1250;
     }
     dir[1] = 1;
     moving = true;
   } else if (this.cursors.down.isDown || this.downKey.isDown) {
-    if ((this.lastKey === this.cursors.down || this.lastKey === this.downKey) &&
-    (this.game.time.time - this.dashTimer) < 250) {
-      this.body.velocity.y = 1250;
-    }
     dir[1] = -1;
     moving = true;
   }
@@ -124,8 +109,7 @@ Darwinator.Player.prototype.initKeys = function(game) {
 
   var checkTimer = function(key) {
     if (!!key.lastReleased && this.game.time.time - key.lastReleased > 200) {
-      console.log(this.speed);
-      this.speed *= 2;
+
     }
   };
   var addTimer = function(key) {key.lastReleased = this.game.time.time;};

@@ -18,6 +18,9 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
 Darwinator.Enemy.prototype = Object.create(Darwinator.Entity.prototype);
 
 Darwinator.Enemy.prototype.update = function() {
+  /*if (this.health === 1) {
+    console.log("Nu blev det jävligt fel någonstans...");
+  }*/
   var currTile = Darwinator.Helpers.pixelsToTile(this.body.x, this.body.y);
   var targetTile = Darwinator.Helpers.pixelsToTile(this.target.body.x, this.target.body.y);
 
@@ -61,6 +64,11 @@ Darwinator.Enemy.prototype.update = function() {
     this.attacking = false;
   }
 
+  if (this.health <= 0){
+    console.log('died');
+    this.kill();
+  }
+
 };
 
 Darwinator.Enemy.prototype.followPath = function() {
@@ -69,7 +77,8 @@ Darwinator.Enemy.prototype.followPath = function() {
   targetPos[1] = Math.round(targetPos[1] - this.body.height / 2);
   var distance = Darwinator.Helpers.calculateDistance(targetPos, [this.body.x, this.body.y]);
   if (distance < 2 && this.path.length > 2) {      // Trial and error - modify if need be.
-    this.reset(targetPos[0], targetPos[1]);
+    // Remember, include (x,y,health) in reset, otherwise health will = 1.
+    this.reset(targetPos[0], targetPos[1], this.health);
     this.path.splice(0,1); // Remove first tile in path.
     targetPos = Darwinator.Helpers.tileToPixels(this.path[1].x, this.path[1].y);
     targetPos[0] = Math.round(targetPos[0] - this.body.width / 2);

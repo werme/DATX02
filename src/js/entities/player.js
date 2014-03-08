@@ -13,7 +13,7 @@ Darwinator.Player = function(game, x, y, cursors, health, strength, agility, int
   this.dashTimer     = null;
   this.direction     = 0;
   this.orgSpeed      = this.speed;
-  this.sprintCounter = 0;
+  this.dashCounter = 0;
 
   /*
       Notes until later:
@@ -29,8 +29,13 @@ Darwinator.Player.prototype.update = function() {
     this.weapon.updateManually(this.x, this.y);
   }
 
-  if (!!this.sprintCounter) {
-    this.sprintCounter--;
+  /*
+      If dashing, override manual controls and
+      just keep the values assigned in dash. Once
+      dash is completed, return to normal controls.
+  */
+  if (!!this.dashCounter) {
+    this.dashCounter--;
     this.game.physics.velocityFromAngle(this.direction, this.speed, this.body.velocity);
   } else {
       this.speed = this.orgSpeed;
@@ -116,7 +121,7 @@ Darwinator.Player.prototype.initKeys = function(game) {
 
   var checkTimer = function(key) {
     if (!!key.lastReleased && this.game.time.time - key.lastReleased < 200 && this.currBreath > 30) {
-      this.sprintCounter = 10;
+      this.dashCounter = 10;
       this.speed = 1000;
       this.currBreath -= 30;
       if (key === this.cursors.left || key === this.leftKey) {

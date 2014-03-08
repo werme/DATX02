@@ -63,7 +63,7 @@ Darwinator.Enemy.prototype.update = function() {
 
   if (this.health <= 0){
     console.log('died');
-    this.kill();
+    this.destroy();
   }
 
 };

@@ -166,12 +166,12 @@ Darwinator.GameState.prototype = {
     if(obj1.name === 'bullet'){
       bullet = obj1;
       if(obj2 instanceof Darwinator.Enemy){
-        console.log('A bullet hit an enemy!');
+        obj2.takeDamage(this.player.damage);
       }
     }else if(obj2.name === 'bullet'){
       bullet = obj2;
       if(obj1 instanceof Darwinator.Enemy){
-        console.log('A bullet hit an enemy!');
+        obj1.takeDamage(this.player.damage);
       }
     }else{
       console.log('A bullet collision without bullets occurred. That\'s odd.');

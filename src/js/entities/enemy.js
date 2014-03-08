@@ -18,9 +18,6 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
 Darwinator.Enemy.prototype = Object.create(Darwinator.Entity.prototype);
 
 Darwinator.Enemy.prototype.update = function() {
-  /*if (this.health === 1) {
-    console.log("Nu blev det jävligt fel någonstans...");
-  }*/
   var currTile = Darwinator.Helpers.pixelsToTile(this.body.x, this.body.y);
   var targetTile = Darwinator.Helpers.pixelsToTile(this.target.body.x, this.target.body.y);
 

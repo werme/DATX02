@@ -49,6 +49,8 @@ Darwinator.GameState.prototype = {
     var indexes = Darwinator.Helpers.convertTileMap(this.map.layers[0].data);
     Darwinator.Pathfinder.setGrid(indexes);
     Darwinator.Pathfinder.setAcceptableTiles([1337, 168]);
+
+    this.input.onDown.add(this.endRound, this);
   },
 
   loadLevel: function() {
@@ -108,6 +110,9 @@ Darwinator.GameState.prototype = {
     this.health.content = 'Health: ' + this.game.player.health;
   },
 
+  endRound: function() {
+    this.game.state.states['resultScreen'].player = this.game.player;
+    this.game.state.start('resultScreen', false);
   },
 
   paused: function () {

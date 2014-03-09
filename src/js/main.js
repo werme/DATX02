@@ -10,6 +10,7 @@ window.Darwinator = window.Darwinator || {
     game.state.add('preloader', this.Preloader);
     game.state.add('menu', this.Menu);
     game.state.add('game', this.GameState);
+    game.state.add('resultScreen', this.ResultScreen);
 
     game.state.start('boot');
   },

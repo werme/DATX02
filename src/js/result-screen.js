@@ -24,10 +24,8 @@ Darwinator.ResultScreen.prototype = {
         this.initAttributes(this.player.attributes);
         this.initButtons();
 
-        // this.input.onDown.add(this.onDown, this);
-
-        var key = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-        key.onDown.add(this.startGame, this);
+        // Setup done button
+        this.game.add.button(10, 10, 'player', this.continueGame, this, 2, 1, 0);
     },
 
     initAttributes: function (attributes) {
@@ -75,8 +73,9 @@ Darwinator.ResultScreen.prototype = {
         this.attributes[attribute].setText(text);
     },
 
-    startGame: function () {
-        console.log("onDown in resultScreen state");
+    update: function () {},
+
+    continueGame: function () {
         this.game.state.start('game', false);
     }
 

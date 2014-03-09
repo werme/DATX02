@@ -21,6 +21,8 @@ Darwinator.GameState.prototype = {
 
     this.cursors = this.game.input.keyboard.createCursorKeys();
 
+    this.initPauseOverlay();
+
     // Since states by default lack a callback for the resume event.
     this.game.onResume.add(this.resumed, this);
 
@@ -69,12 +71,16 @@ Darwinator.GameState.prototype = {
   },
 
   initPauseOverlay: function() {
-    var x = this.game.width / 2
-    , y = this.game.height / 2;
-    this.pauseText = this.game.add.text(x, y, 'Game paused', { fontSize: '16px', fill: '#fff', align: 'center' });
+    var styling = { fontSize: '16px', fill: '#fff', align: 'center' },
+        x       = this.game.width  / 2,
+        y       = this.game.height / 2;
+
+    // Render text centered and fixed to camera.
+    this.pauseText = this.game.add.text(x, y, 'Game paused', styling);
     this.pauseText.anchor.setTo(0.5, 0.5);
     this.pauseText.fixedToCamera = true;
-    this.pauseText.renderable = false;
+
+    // Should be hidden by default.
     this.pauseText.visible = false;
   },
 

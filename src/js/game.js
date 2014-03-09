@@ -56,13 +56,14 @@ Darwinator.GameState.prototype = {
     this.map.createLayer('Tile Layer 3');
 
     // For development only
-    this.fps = this.game.add.text(16, 16, 'FPS: 0', { fontSize: '16px', fill: '#F08' });
+    var style = { font: "16px monospace", fill: '#fff' };
+    this.fps = this.game.add.text(16, 16, 'FPS: 0', style);
     this.fps.fixedToCamera = true;
 
-    this.stats = this.game.add.text(16, 40, '', { fontSize: '16px', fill: '#F08' });
+    this.stats = this.game.add.text(16, 36, '', style);
     this.stats.fixedToCamera = true;
 
-    this.health = this.game.add.text(16, 64, '', {fontSize: '16px', fill: '#F08' });
+    this.health = this.game.add.text(16, 56, '', style);
     this.health.fixedToCamera = true;
 
     this.gameOver = this.game.add.text(this.game.width / 2, this.game.height / 2, '', {fontSize: '48px', fill:'#F08'});

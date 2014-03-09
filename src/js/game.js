@@ -26,6 +26,9 @@ Darwinator.GameState.prototype = {
 
     this.cursors = this.game.input.keyboard.createCursorKeys();
 
+    var cheatKey = this.game.input.keyboard.addKey(Phaser.Keyboard.E);
+    cheatKey.onDown.add(this.endRound, this);
+
     this.initPauseOverlay();
 
     // Since states by default lack a callback for the resume event.
@@ -70,9 +73,6 @@ Darwinator.GameState.prototype = {
     var indexes = Darwinator.Helpers.convertTileMap(this.map.layers[0].data);
     Darwinator.Pathfinder.setGrid(indexes);
     Darwinator.Pathfinder.setAcceptableTiles([1337, 168, 156, 157, 158, 172, 173, 174, 188, 189, 190, 205]);
-
-    // For debugging purposes
-    this.input.onDown.add(this.endRound, this);
   },
 
   reset: function () {

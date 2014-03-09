@@ -1,13 +1,18 @@
 'use strict';
 
 Darwinator.ResultScreen = function() {
-    this.attributes = {};
-    this.buttons    = [];
+    this.attributes         = {};
+    this.buttons            = [];
+    this.unspentPoints      = 0;
+    this.unspentPointsText  = null;
+    this.continueGameButton = null;
 };
 
 Darwinator.ResultScreen.prototype = {
 
     create: function () {
+
+        this.unspentPoints = 3;
 
         // Unfollow player and position camera in top left corner of world.
         this.game.camera.target = null;
@@ -24,8 +29,14 @@ Darwinator.ResultScreen.prototype = {
         this.initAttributes(this.game.player.attributes);
         this.initButtons();
 
+        var styling = { font: '16px minecraftia', align: 'center' },
+            text    = "Points left to spend: " + this.unspentPoints;
+        this.unspentPointsText = this.add.bitmapText(this.game.width/2, 30, text, styling);
+        this.unspentPointsText.anchor.setTo(0.5, 0.5);
+
         // Setup done button
-        this.game.add.button(10, 10, 'player', this.continueGame, this, 2, 1, 0);
+        this.continueGameButton = this.game.add.button(30, 30, 'player', this.continueGame, this, 2, 1, 0);
+        this.continueGameButton.scale.setTo(2, 2);
     },
 
     initAttributes: function (attributes) {
@@ -50,11 +61,12 @@ Darwinator.ResultScreen.prototype = {
             y = this.game.height / 2 - 20;
 
         // Buttons shall be rendered by hand, it's a craft.
-        this.buttons.push(this.game.add.button(x, y, 'player', function() {
+        this.buttons.push(this.add.button(x, y, 'player', function() {
             this.incrementAttribute('stamina');
         }, this, 2, 1, 0));
 
-        this.buttons.push(this.game.add.button(x, y + 26, 'player', function() {
+        this.buttons.push(this.add.button(x, y + 26, 'player', function() {
+            if (this.unused)
             this.incrementAttribute('speed');
         }, this, 2, 1, 0));
 
@@ -64,6 +76,8 @@ Darwinator.ResultScreen.prototype = {
     },
 
     incrementAttribute: function (attribute) {
+        if (this.unspentPoints <= 0) return;
+
         // Increment attribute.
         this.game.player.attributes[attribute] += 1;
         console.log("Incremented player " + attribute + " to " + this.game.player.attributes[attribute] + ".");
@@ -71,6 +85,10 @@ Darwinator.ResultScreen.prototype = {
         // Update bitmap text.
         var text = attribute + ": " + this.game.player.attributes[attribute];
         this.attributes[attribute].setText(text);
+
+        // Update unspent points
+        this.unspentPoints -= 1;
+        this.unspentPointsText.setText("Points left to spend: " + this.unspentPoints);
     },
 
     update: function () {},

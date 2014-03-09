@@ -12,7 +12,7 @@ Darwinator.ResultScreen.prototype = {
 
     create: function () {
 
-        this.unspentPoints = 3;
+        this.unspentPoints = 100;
 
         // Unfollow player and position camera in top left corner of world.
         this.game.camera.target = null;
@@ -56,18 +56,21 @@ Darwinator.ResultScreen.prototype = {
         }
     },
 
-    initButtons: function () {
+    initButtons: function (attributes) {
         var x = this.game.width  / 2 - 24,
             y = this.game.height / 2 - 20;
 
         // Buttons shall be rendered by hand, it's a craft.
         this.buttons.push(this.add.button(x, y, 'player', function() {
-            this.incrementAttribute('stamina');
+            this.incrementAttribute('strength');
         }, this, 2, 1, 0));
 
         this.buttons.push(this.add.button(x, y + 26, 'player', function() {
-            if (this.unused)
-            this.incrementAttribute('speed');
+            this.incrementAttribute('agility');
+        }, this, 2, 1, 0));
+
+         this.buttons.push(this.add.button(x, y + 52, 'player', function() {
+            this.incrementAttribute('intellect');
         }, this, 2, 1, 0));
 
         this.buttons.forEach(function(button) {

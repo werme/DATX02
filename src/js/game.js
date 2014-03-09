@@ -117,10 +117,12 @@ Darwinator.GameState.prototype = {
 
   paused: function () {
     this.pauseText.visible = true;
+    console.log("Paused game.");
   },
 
   resumed: function() {
     this.pauseText.visible = false;
+    console.log("Resumed game.");
   }
 
 };

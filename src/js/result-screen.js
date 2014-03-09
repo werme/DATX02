@@ -21,7 +21,7 @@ Darwinator.ResultScreen.prototype = {
         g.endFill();
 
         // Render content
-        this.initAttributes(this.player.attributes);
+        this.initAttributes(this.game.player.attributes);
         this.initButtons();
 
         // Setup done button

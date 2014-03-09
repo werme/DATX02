@@ -86,7 +86,7 @@ Darwinator.ResultScreen.prototype = {
         var text = attribute + ": " + this.game.player.attributes[attribute];
         this.attributes[attribute].setText(text);
 
-        // Update unspent points
+        // Update unspent points.
         this.unspentPoints -= 1;
         this.unspentPointsText.setText("Points left to spend: " + this.unspentPoints);
     },

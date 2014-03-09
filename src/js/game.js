@@ -103,6 +103,7 @@ Darwinator.GameState.prototype = {
     } else {
       this.game.player.reset(x, y, Darwinator.PLAYER_START_HEALTH);
       this.game.player.bringToTop();
+      this.game.player.updateAttributes();
 
       // TODO: Find out why this is neccessary.
       this.game.player.cursors = this.cursors;

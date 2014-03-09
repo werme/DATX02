@@ -19,6 +19,8 @@ Darwinator.GameState = function() {
 Darwinator.GameState.prototype = {
 
   create: function () {
+    this.reset();
+
     this.loadLevel();
     this.game.world.setBounds(0,0, this.map.widthInPixels, this.map.heightInPixels);
 
@@ -73,7 +75,10 @@ Darwinator.GameState.prototype = {
     this.input.onDown.add(this.endRound, this);
   },
 
-  loadLevel: function() {
+  reset: function () {
+    this.numberOfEnemies = 10;
+  },
+
     this.map = this.game.add.tilemap('level1');
     this.map.addTilesetImage('tiles', 'tiles');
 

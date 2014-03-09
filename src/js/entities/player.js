@@ -1,13 +1,12 @@
 'use strict';
 
 Darwinator.Player = function(game, x, y, health, cursors) {
-  var anims = [['walk-left', [8,9,10,11], 10, true], ['walk-right', [12,13,14,15], 10, true],
-               ['walk-up', [0,1,2,3], 10, true], ['walk-down', [4,5,6,7], 10, true]];
-  Darwinator.Entity.call(this, game, x, y, health, 'player', anims);
+  Darwinator.Entity.call(this, game, x, y, health, 'player');
   this.cursors = cursors;
-  this.scale.setTo(0.25,0.25);
+  this.scale.setTo(2,2);
   this.anchor.setTo(0.5, 0.5);
   this.initKeys(game);
+  this.initAnimations();
 
   /* 
       Notes until later: 
@@ -69,10 +68,17 @@ Darwinator.Player.prototype.update = function() {
   }
 };
 
-  Darwinator.Player.prototype.initKeys = function(game) {
-    this.upKey = game.input.keyboard.addKey(Phaser.Keyboard.W);
-    this.leftKey = game.input.keyboard.addKey(Phaser.Keyboard.A);
-    this.downKey = game.input.keyboard.addKey(Phaser.Keyboard.S);
-    this.rightKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
-    this.sprintKey = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
-  };
+Darwinator.Player.prototype.initKeys = function(game) {
+  this.upKey = game.input.keyboard.addKey(Phaser.Keyboard.W);
+  this.leftKey = game.input.keyboard.addKey(Phaser.Keyboard.A);
+  this.downKey = game.input.keyboard.addKey(Phaser.Keyboard.S);
+  this.rightKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
+  this.sprintKey = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
+};
+
+Darwinator.Player.prototype.initAnimations = function() {
+  var anims = [['walk-left', [8,9,10,11], 10, true], ['walk-right', [12,13,14,15], 10, true],
+               ['walk-up', [0,1,2,3], 10, true], ['walk-down', [4,5,6,7], 10, true]];
+
+  this.setAnimations(anims);
+};

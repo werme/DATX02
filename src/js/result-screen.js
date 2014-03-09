@@ -16,7 +16,7 @@ Darwinator.ResultScreen.prototype = {
         // Draw background color
         var g = this.game.add.graphics(0, 0);
         g.fixedToCamera = true;
-        g.beginFill(0x222d42, 1);
+        g.beginFill(Darwinator.MENU_BACKGROUND_COLOR, 1);
         g.drawRect(0, 0, this.game.width, this.game.height);
         g.endFill();
 

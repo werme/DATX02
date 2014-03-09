@@ -79,6 +79,7 @@ Darwinator.GameState.prototype = {
     this.numberOfEnemies = 10;
   },
 
+  loadLevel: function () {
     this.map = this.game.add.tilemap('level1');
     this.map.addTilesetImage('tiles', 'tiles');
 
@@ -112,7 +113,7 @@ Darwinator.GameState.prototype = {
     this.game.camera.follow(this.game.player);
   },
 
-  initPauseOverlay: function() {
+  initPauseOverlay: function () {
     var styling = { fontSize: '16px', fill: '#fff', align: 'center' },
         x       = this.game.width  / 2,
         y       = this.game.height / 2;
@@ -175,34 +176,37 @@ Darwinator.GameState.prototype = {
 
   },
 
-  checkBulletSpeed: function(bullet){
-    var speed = Math.sqrt(  (bullet.body.velocity.x * bullet.body.velocity.x) +
-        (bullet.body.velocity.y * bullet.body.velocity.y));
-    var tolerance = 0.1;
-    if(bullet !== null && Math.abs(speed - this.playerWeapon.bulletSpeed) > tolerance){ //illegal speed
-      if(bullet.x === this.playerWeapon.x && bullet.y === this.playerWeapon.y){ // bullet didn't reset properly on revival
+  checkBulletSpeed: function (bullet) {
+
+    var speed = Math.sqrt( (bullet.body.velocity.x * bullet.body.velocity.x) +
+        (bullet.body.velocity.y * bullet.body.velocity.y)),
+        tolerance = 0.1;
+
+    if (bullet !== null && Math.abs(speed - this.playerWeapon.bulletSpeed) > tolerance) { //illegal speed
+      if (bullet.x === this.playerWeapon.x && bullet.y === this.playerWeapon.y) { // bullet didn't reset properly on revival
         this.playerWeapon.resetBullet(bullet);
-      }else{ //bullet got stuck or bounced
+      } else { //bullet got stuck or bounced
         bullet.kill();
       }
-    }else if(bullet === null){
+    } else if (bullet === null) {
       console.log('checkBulletSpeed: bullet was null');
     }
   },
 
   bulletCollisionHandler: function(obj1, obj2){
     var bullet;
-    if(obj1.name === 'bullet'){
+
+    if (obj1.name === 'bullet') {
       bullet = obj1;
-      if(obj2 instanceof Darwinator.Enemy){
+      if (obj2 instanceof Darwinator.Enemy) {
         obj2.takeDamage(this.game.player.damage);
       }
-    }else if(obj2.name === 'bullet'){
+    } else if (obj2.name === 'bullet') {
       bullet = obj2;
-      if(obj1 instanceof Darwinator.Enemy){
+      if (obj1 instanceof Darwinator.Enemy) {
         obj1.takeDamage(this.game.player.damage);
       }
-    }else{
+    } else {
       console.log('A bullet collision without bullets occurred. That\'s odd.');
       return;
     }

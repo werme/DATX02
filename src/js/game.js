@@ -26,15 +26,11 @@ Darwinator.GameState.prototype = {
     // Since states by default lack a callback for the resume event.
     this.game.onResume.add(this.resumed, this);
 
-    this.player = new Darwinator.Player(this.game, 160, 620, 100, this.cursors);
-    this.player.scale.setTo(2,2);
+    this.spawnPlayer(160, 620);
 
-    this.enemy = new Darwinator.Enemy(this.game, this.player, 160, 400, 100);
-
+    this.enemy = new Darwinator.Enemy(this.game, this.game.player, 160, 400, 100);
     this.game.add.existing(this.enemy);
-    this.game.add.existing(this.player);
-    this.game.camera.follow(this.player);
-
+    
     // For development only
     this.fps = this.game.add.text(16, 16, 'FPS: 0', { fontSize: '16px', fill: '#F08' });
     this.fps.fixedToCamera = true;
@@ -70,6 +66,24 @@ Darwinator.GameState.prototype = {
     this.layer.resizeWorld();
   },
 
+  spawnPlayer: function (x, y) {
+
+    // Instanciate new player or reset existing.
+    if (!this.game.player) {
+      this.game.player = new Darwinator.Player(this.game, x, y, Darwinator.PLAYER_START_HEALTH, this.cursors); 
+    } else {
+      this.game.player.reset(x, y, Darwinator.PLAYER_START_HEALTH);
+      this.game.player.bringToTop();
+
+      // TODO: Find out why this is neccessary.
+      this.game.player.cursors = this.cursors;
+    } 
+
+    // Add player sprite to stage and focus camera.
+    this.game.add.existing(this.game.player);
+    this.game.camera.follow(this.game.player);
+  },
+
   initPauseOverlay: function() {
     var styling = { fontSize: '16px', fill: '#fff', align: 'center' },
         x       = this.game.width  / 2,
@@ -85,13 +99,15 @@ Darwinator.GameState.prototype = {
   },
 
   update: function () {
-    this.game.physics.collide(this.player, this.layer);
+    this.game.physics.collide(this.game.player, this.layer);
     this.game.physics.collide(this.enemy, this.layer);
 
     // For development only
     this.fps.content = 'FPS: ' + this.game.time.fps;
-    this.stats.content = 'Player stamina: ' + Math.round(this.player.currBreath) + '/' + this.player.stamina;
-    this.health.content = 'Health: ' + this.player.health;
+    this.stats.content = 'Player stamina: ' + Math.round(this.game.player.currBreath) + '/' + this.game.player.stamina;
+    this.health.content = 'Health: ' + this.game.player.health;
+  },
+
   },
 
   paused: function () {

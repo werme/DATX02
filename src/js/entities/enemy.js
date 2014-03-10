@@ -22,10 +22,10 @@ Darwinator.Enemy.prototype.update = function() {
   var targetTile = Darwinator.Helpers.pixelsToTile(this.target.body.x, this.target.body.y);
 
   var pathLength = this.path.length;
-  if(!(pathLength &&  this.path[pathLength - 1].x === targetTile[0] &&
-                      this.path[pathLength - 1].y === targetTile[1])) {
-    if (Darwinator.Helpers.calculateDistance(targetTile, currTile) < this.lastPathUpdate) {
-      Darwinator.Pathfinder.findPath(currTile[0], currTile[1], targetTile[0], targetTile[1], function(path){
+  if(!(pathLength &&  this.path[pathLength - 1].x === targetTile.x &&
+                      this.path[pathLength - 1].y === targetTile.y)) {
+    if (Darwinator.Helpers.calculateDistance(targetTile, currTile) * 5 < this.lastPathUpdate) {
+      Darwinator.Pathfinder.findPath(currTile.x, currTile.y, targetTile.x, targetTile.y, function(path){
         this.path = !!path ? path : [];
       }.bind(this));
       Darwinator.Pathfinder.calculate();
@@ -70,18 +70,18 @@ Darwinator.Enemy.prototype.update = function() {
 
 Darwinator.Enemy.prototype.followPath = function() {
   var targetPos = Darwinator.Helpers.tileToPixels(this.path[1].x, this.path[1].y);
-  targetPos[0] = Math.round(targetPos[0] - this.body.width / 2);
-  targetPos[1] = Math.round(targetPos[1] - this.body.height / 2);
+  targetPos.x = Math.round(targetPos.x - this.body.width / 2);
+  targetPos.y = Math.round(targetPos.y - this.body.height / 2);
   var distance = Darwinator.Helpers.calculateDistance(targetPos, [this.body.x, this.body.y]);
   if (distance < 2 && this.path.length > 2) {      // Trial and error - modify if need be.
     // Remember, include (x,y,health) in reset, otherwise health will = 1.
-    this.reset(targetPos[0], targetPos[1], this.health);
+    this.reset(targetPos.x, targetPos.y, this.health);
     this.path.splice(0,1); // Remove first tile in path.
     targetPos = Darwinator.Helpers.tileToPixels(this.path[1].x, this.path[1].y);
-    targetPos[0] = Math.round(targetPos[0] - this.body.width / 2);
-    targetPos[1] = Math.round(targetPos[1] - this.body.height / 2);
+    targetPos.x = Math.round(targetPos.x - this.body.width / 2);
+    targetPos.y = Math.round(targetPos.y - this.body.height / 2);
   }
-  this.game.physics.moveToXY(this, targetPos[0], targetPos[1], this.speed);
+  this.game.physics.moveToXY(this, targetPos.x, targetPos.y, this.speed);
   if (this.path.length < 5 && this.currBreath > 1) {
     this.body.velocity.multiply(2,2);
     this.currBreath--;

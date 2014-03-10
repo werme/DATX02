@@ -109,7 +109,7 @@ Darwinator.GameState.prototype = {
       // TODO: Find out why this is neccessary.
       this.game.player.cursors = this.cursors;
       this.game.player.initKeys(this.game);
-    } 
+    }
 
     // Add player sprite to stage and focus camera.
     this.game.add.existing(this.game.player);
@@ -144,8 +144,8 @@ Darwinator.GameState.prototype = {
       rInd = Math.round(Math.random() * spawnIndexes.length -1);
       pos = spawnIndexes.splice(rInd,1);
       this.enemies.add(new Darwinator.Enemy(this.game, this.game.player,
-        this.spawnPositions[pos][0],
-        this.spawnPositions[pos][1], 100, 5, 5, 15));
+        this.spawnPositions[pos].x,
+        this.spawnPositions[pos].y, 100, 5, 5, 15));
       this.numberOfEnemies--;
     }
   },
@@ -171,7 +171,7 @@ Darwinator.GameState.prototype = {
     this.game.physics.collide(this.bullets, this.enemies, this.bulletCollisionHandler, null, this);
     this.game.physics.collide(this.bullets, this.layer, this.bulletCollisionHandler, null, this);
     this.bullets.forEachAlive(this.checkBulletSpeed, this); //workaround for misbehaving bullets..
-    
+
     // For development only
     this.fps.content = 'FPS: ' + this.game.time.fps;
     this.stats.content = 'Player stamina: ' + Math.round(this.game.player.currBreath) + '/' + this.game.player.stamina;

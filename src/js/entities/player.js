@@ -1,14 +1,15 @@
 'use strict';
 
 Darwinator.Player = function(game, x, y, cursors, health, strength, agility, intellect) {
-  var anims = [['walk-left', [8,9,10,11], 10, true], ['walk-right', [12,13,14,15], 10, true],
-               ['walk-up', [0,1,2,3], 10, true], ['walk-down', [4,5,6,7], 10, true]];
-  Darwinator.Entity.call(this, game, x, y, 'player', anims, health, strength, agility, intellect);
+  Darwinator.Entity.call(this, game, x, y, 'player', health, strength, agility, intellect);
+
   this.cursors = cursors;
-  this.scale.setTo(0.25,0.25);
+  this.scale.setTo(2,2);
   this.anchor.setTo(0.5, 0.5);
   this.body.maxVelocity.setTo(50, 50);
   this.initKeys(game);
+  this.initAnimations();
+
   this.weapon        = null;
   this.dashTimer     = null;
   this.direction     = 90;
@@ -197,4 +198,11 @@ Darwinator.Player.prototype.initKeys = function(game) {
   this.cursors.right.onDown.add(checkTimer, this);
   this.cursors.left.onDown.add(checkTimer, this);
 
+};
+
+Darwinator.Player.prototype.initAnimations = function() {
+  var anims = [['walk-left', [8,9,10,11], 10, true], ['walk-right', [12,13,14,15], 10, true],
+               ['walk-up', [0,1,2,3], 10, true], ['walk-down', [4,5,6,7], 10, true]];
+
+  this.setAnimations(anims);
 };

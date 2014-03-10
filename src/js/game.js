@@ -111,14 +111,12 @@ Darwinator.GameState.prototype = {
     }
 */
     // testing calls: call once for init, call twice to actually run GA..
-    this.enemies = Darwinator.GeneticAlgorithm.generatePopulation(this.game, this.player, undefined, this.enemies, true);//initPopulation(this.enemies, this.game, this.player);
-    this.enemies = Darwinator.GeneticAlgorithm.generatePopulation(this.game, this.player, undefined, this.enemies, true);
+    this.enemies = Darwinator.GeneticAlgorithm.generatePopulation(this.game, this.player, this.enemies, true);//initPopulation(this.enemies, this.game, this.player);
+    this.enemies = Darwinator.GeneticAlgorithm.generatePopulation(this.game, this.player, this.enemies, true);
   },
 
   initSpawnPosition: function () {
     var matrix = Darwinator.Helpers.convertTileMap(this.map.layers[0].data);
-    
-    this.enemies = this.game.add.group();
 
     for (var i = 0; i < matrix.length; i++) {
       for(var j = 0; j < matrix[i].length; j++) {

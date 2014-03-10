@@ -12,10 +12,10 @@ Darwinator.Player = function(game, x, y, cursors, health, strength, agility, int
 
   this.weapon        = null;
   this.dashTimer     = null;
-  this.direction     = 0;
+  this.direction     = 90;
   this.orgSpeed      = this.speed;
-  this.dashCounter = 0;
-
+  this.dashCounter   = 0;
+  this.sword         = null;
   /*
       Notes until later:
       each body can setCircle, Rectangle or Polygon.
@@ -30,6 +30,14 @@ Darwinator.Player.prototype.update = function() {
     this.weapon.updateManually(this.x, this.y);
   }
 
+  if (this.sword === null) {
+    this.sword = new Phaser.Sprite(this.game, this.x+12, this.y+26, 'sword');
+    this.sword.scale.setTo(2,2);
+    this.sword.angle = 180;
+    this.sword.anchor.setTo(0.5, 0.15);
+    this.game.add.existing(this.sword);
+  }
+
   /*
       If dashing, override manual controls and
       just keep the values assigned in dash. Once
@@ -37,13 +45,14 @@ Darwinator.Player.prototype.update = function() {
   */
   if (!!this.dashCounter) {
     this.dashCounter--;
+    this.sword.x = -50;
+    this.sword.y = -50;
     this.game.physics.velocityFromAngle(this.direction, this.speed, this.body.velocity);
   } else {
       this.speed = this.orgSpeed;
       this.body.velocity.setTo(0,0);
       var dir = [0,0];
       var moving = false;
-      this.direction = 0;
 
     if (this.cursors.left.isDown || this.leftKey.isDown) {
       dir[0] = -1;
@@ -66,11 +75,31 @@ Darwinator.Player.prototype.update = function() {
     if(!moving) {
       this.animations.stop();
       this.body.frame = 4;
+      if (this.direction === 0) {
+        //Right
+        this.sword.x = this.x+22;
+        this.sword.y = this.y-2;
+      } else if (this.direction === 90 || this.direction === 45 || this.direction === 135) {
+        //Down
+        this.sword.x = this.x+12;
+        this.sword.y = this.y+26;
+      } else if (this.direction === 180) {
+        //Left
+        this.sword.x = this.x-22;
+        this.sword.y = this.y-2;
+      } else if (this.direction === 270 || this.direction === 225 || this.direction === 315) {
+        this.sword.x = this.x-12;
+        this.sword.y = this.y-12;
+      }
     } else {
       //Going upwards
       if (dir[1] === 1){
         this.direction = 270;
         this.animations.play('walk-up');
+        this.bringToTop();
+        this.sword.x = this.x-12;
+        this.sword.y = this.y-12;
+        this.sword.angle = 0;
         //Also going right or left
         if(dir[0] === 1){
           this.direction = 315;
@@ -81,6 +110,10 @@ Darwinator.Player.prototype.update = function() {
       } else if (dir[1] === -1){
         this.direction = 90;
         this.animations.play('walk-down');
+        this.sword.bringToTop();
+        this.sword.x = this.x+12;
+        this.sword.y = this.y+26;
+        this.sword.angle = 180;
         //Also going right or left
         if(dir[0] === 1){
           this.direction = 45;
@@ -91,10 +124,18 @@ Darwinator.Player.prototype.update = function() {
       } else if (dir[0] === 1){
         this.direction = 0;
         this.animations.play('walk-right');
+        this.bringToTop();
+        this.sword.x = this.x+22;
+        this.sword.y = this.y-2;
+        this.sword.angle = 60;
         //Going left
       } else if (dir[0] === -1){
         this.direction = 180;
         this.animations.play('walk-left');
+        this.sword.bringToTop();
+        this.sword.x = this.x-22;
+        this.sword.y = this.y-2;
+        this.sword.angle = -60;
       }
       //Set speed and angle
       this.game.physics.velocityFromAngle(this.direction, this.speed, this.body.velocity);

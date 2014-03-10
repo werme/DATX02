@@ -13,7 +13,8 @@ Darwinator.GameState = function() {
   this.health   = null;
   this.pauseText = null;
   this.spawnPositions = [];
-  this.numberOfEnemies = 10;
+  this.numberOfEnemies = 1;
+  this.sword = null;
 }
 
 Darwinator.GameState.prototype = {

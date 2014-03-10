@@ -108,6 +108,7 @@ Darwinator.GameState.prototype = {
 
       // TODO: Find out why this is neccessary.
       this.game.player.cursors = this.cursors;
+      this.game.player.initKeys(this.game);
     } 
 
     // Add player sprite to stage and focus camera.

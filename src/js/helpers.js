@@ -38,7 +38,7 @@ Darwinator.Helpers = {
     var pos = {
       x: Math.floor(x / Darwinator.TILE_WIDTH),
       y: Math.floor(y / Darwinator.TILE_HEIGHT)
-    }
+    };
 
     return pos;
   },
@@ -48,14 +48,16 @@ Darwinator.Helpers = {
   * @method Darwinator.Helpers#tileToPixels
   * @param {Number} - [x] The x-index of the tile
   * @param {Number} - [y] The y-index of the tile
-  * @return {Array} - The pixel in the center of the tile, returned as [X,Y]
+  * @return {Tuple} - The pixel in the center of the tile, returned as an object with properties x,y
   */
-  tileToPixels: function(x, y) {
-    var pos;
+  tileToPixels: function(xCor, yCor) {
     var tileWidth = Darwinator.TILE_WIDTH;
     var tileHeight = Darwinator.TILE_HEIGHT;
-    pos.x = Math.floor(x * tileWidth + (tileWidth / 2));
-    pos.y = Math.floor(y * tileHeight + (tileHeight / 2));
+    var pos = {
+      x: Math.floor(xCor * tileWidth + (tileWidth / 2)),
+      y: Math.floor(yCor * tileHeight + (tileHeight / 2))
+    };
+
     return pos;
   },
 

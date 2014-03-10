@@ -24,7 +24,7 @@ Darwinator.Enemy.prototype.update = function() {
   var pathLength = this.path.length;
   if(!(pathLength &&  this.path[pathLength - 1].x === targetTile.x &&
                       this.path[pathLength - 1].y === targetTile.y)) {
-    if (Darwinator.Helpers.calculateDistance(targetTile, currTile) < this.lastPathUpdate) {
+    if (Darwinator.Helpers.calculateDistance(targetTile, currTile) * 5 < this.lastPathUpdate) {
       Darwinator.Pathfinder.findPath(currTile.x, currTile.y, targetTile.x, targetTile.y, function(path){
         this.path = !!path ? path : [];
       }.bind(this));

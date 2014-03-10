@@ -85,7 +85,7 @@ Darwinator.Player.prototype.update = function() {
         this.sword.y = this.y+26;
       } else if (this.direction === 180) {
         //Left
-        this.sword.x = this.x+22;
+        this.sword.x = this.x-22;
         this.sword.y = this.y-2;
       } else if (this.direction === 270 || this.direction === 225 || this.direction === 315) {
         this.sword.x = this.x-12;

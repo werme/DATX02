@@ -46,6 +46,8 @@ Darwinator.Player.prototype.update = function() {
   */
   if (!!this.dashCounter) {
     this.dashCounter--;
+    this.sword.x = -50;
+    this.sword.y = -50;
     this.game.physics.velocityFromAngle(this.direction, this.speed, this.body.velocity);
   } else {
       this.speed = this.orgSpeed;
@@ -75,6 +77,22 @@ Darwinator.Player.prototype.update = function() {
     if(!moving) {
       this.animations.stop();
       this.body.frame = 4;
+      if (this.direction === 0) {
+        //Right
+        this.sword.x = this.x+22;
+        this.sword.y = this.y-2;
+      } else if (this.direction === 90 || this.direction === 45 || this.direction === 135) {
+        //Down
+        this.sword.x = this.x+12;
+        this.sword.y = this.y+26;
+      } else if (this.direction === 180) {
+        //Left
+        this.sword.x = this.x+22;
+        this.sword.y = this.y-2;
+      } else if (this.direction === 270 || this.direction === 225 || this.direction === 315) {
+        this.sword.x = this.x-12;
+        this.sword.y = this.y-12;
+      }
     } else {
       //Going upwards
       if (dir[1] === 1){

@@ -15,7 +15,6 @@ Darwinator.Player = function(game, x, y, cursors, health, strength, agility, int
   this.orgSpeed      = this.speed;
   this.dashCounter   = 0;
   this.sword         = null;
-  console.log(this);
   /*
       Notes until later:
       each body can setCircle, Rectangle or Polygon.
@@ -36,7 +35,6 @@ Darwinator.Player.prototype.update = function() {
     this.sword.angle = 180;
     this.sword.anchor.setTo(0.5, 0.15);
     this.game.add.existing(this.sword);
-    console.log(this.sword);
   }
 
   /*
@@ -54,7 +52,6 @@ Darwinator.Player.prototype.update = function() {
       this.body.velocity.setTo(0,0);
       var dir = [0,0];
       var moving = false;
-      //this.direction = 0;
 
     if (this.cursors.left.isDown || this.leftKey.isDown) {
       dir[0] = -1;

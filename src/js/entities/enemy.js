@@ -5,6 +5,8 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
   Darwinator.Entity.call(this, game, x, y, 'enemy', [], health, strength, agility, intellect);
   this.scale.setTo(0.25,0.25);
   this.target = target;
+  if(!target)
+    console.log('Enemy: target is falsey');
   this.path = [];
   this.attacking = false;
   this.time = null;
@@ -13,7 +15,6 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
   //Allow enemy to overlap objects, i.e. reduce the hitbox
   //this.body.setRectangle(20*4, 16*4, 0, 16*4);
   this.lastPathUpdate = 0;
-  this.name = 'enemy'; //for collision callback
   // score properties to measure success
   this.dateOfBirthMs = Date.now();
   this.timeSurvivedMs = undefined; //set this to dateOfBirthMs - Date.now() on death OR end of game round
@@ -27,10 +28,10 @@ Darwinator.Enemy.prototype.update = function() {
   var targetTile = Darwinator.Helpers.pixelsToTile(this.target.body.x, this.target.body.y);
 
   var pathLength = this.path.length;
-  if(!(pathLength && this.path[pathLength - 1].x === targetTile[0]
-                  && this.path[pathLength - 1].y === targetTile[1])) {
+  if(!(pathLength &&  this.path[pathLength - 1].x === targetTile.x &&
+                      this.path[pathLength - 1].y === targetTile.y)) {
     if (Darwinator.Helpers.calculateDistance(targetTile, currTile) < this.lastPathUpdate) {
-      Darwinator.Pathfinder.findPath(currTile[0], currTile[1], targetTile[0], targetTile[1], function(path){
+      Darwinator.Pathfinder.findPath(currTile.x, currTile.y, targetTile.x, targetTile.y, function(path){
         this.path = !!path ? path : [];
       }.bind(this));
       Darwinator.Pathfinder.calculate();
@@ -57,7 +58,7 @@ Darwinator.Enemy.prototype.update = function() {
     if (crit < 0){
       this.damageDone += this.damage*2;
       this.target.takeDamage(this.damage*2);
-      console.log("CRIT!");
+      console.log('CRIT!');
     } else {
       this.damageDone += this.damage;
       this.target.takeDamage(this.damage);
@@ -68,16 +69,27 @@ Darwinator.Enemy.prototype.update = function() {
     this.attacking = false;
   }
 
+  if (this.health <= 0){
+    console.log('died');
+    this.destroy();
+  }
+
 };
 
 Darwinator.Enemy.prototype.followPath = function() {
   var targetPos = Darwinator.Helpers.tileToPixels(this.path[1].x, this.path[1].y);
-  var distance = Darwinator.Helpers.calculateDistance(targetPos, [this.x, this.y]);
-  if (distance < 5 && this.path.length > 2) {      // Trial and error - modify if need be.
+  targetPos.x = Math.round(targetPos.x - this.body.width / 2);
+  targetPos.y = Math.round(targetPos.y - this.body.height / 2);
+  var distance = Darwinator.Helpers.calculateDistance(targetPos, [this.body.x, this.body.y]);
+  if (distance < 2 && this.path.length > 2) {      // Trial and error - modify if need be.
+    // Remember, include (x,y,health) in reset, otherwise health will = 1.
+    this.reset(targetPos.x, targetPos.y, this.health);
     this.path.splice(0,1); // Remove first tile in path.
     targetPos = Darwinator.Helpers.tileToPixels(this.path[1].x, this.path[1].y);
+    targetPos.x = Math.round(targetPos.x - this.body.width / 2);
+    targetPos.y = Math.round(targetPos.y - this.body.height / 2);
   }
-  this.game.physics.moveToXY(this, targetPos[0], targetPos[1], this.speed);
+  this.game.physics.moveToXY(this, targetPos.x, targetPos.y, this.speed);
   if (this.path.length < 5 && this.currBreath > 1) {
     this.body.velocity.multiply(2,2);
     this.currBreath--;

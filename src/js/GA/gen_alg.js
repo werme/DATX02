@@ -25,6 +25,8 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @return {Array} The last population generated.
   */
   generatePopulation: function(game, target, enemyGroup, singleGeneration) {
+    if(!target)
+      console.log('GA generatePopulation: target is falsey');
     if(!enemyGroup){
       enemyGroup = game.add.group();
       console.log('GA: Enemy group not provided. Initializing with default values.');
@@ -114,6 +116,8 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @return {Array} An enemy population with default attribute values.
   */
   initPopulation: function(enemyGroup, game, target) {
+    if(!target)
+      console.log('GA initPopulation: target is falsey');
     // 4 different enemy initial set of attributes - just an example, not permanent!
     var enemiesPerType = this.POPULATION_SIZE / 4;
     for(var i = 0; i < this.POPULATION_SIZE; i++){
@@ -138,7 +142,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * Decodes a individual from binary encoding to real numbers. The values of each
   * variable will lie in the range [1, this.VARIABLE_RANGE].
   * @method Darwinator.GeneticAlgorithm#decodeIndividual
-  * @param {Array} [individual] - The binary encoded individual to be decoded 
+  * @param {Array} [individual] - The binary encoded individual to be decoded
   * @return {Array} The decoded individual. Will have a length of this.NUMBER_OF_VARIABLES
   */
   decodeIndividual: function(individual) {
@@ -153,11 +157,11 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
       for(var l = 1; l <= bitsPerVar; l++) {
 
         var startVar = (i-1) * bitsPerVar;
-        decoded[i-1] = decoded[i-1] + individual[startVar + l - 1] * Math.pow(2, -l);
+        decoded[i-1] += individual[startVar + l - 1] * Math.pow(2, -l);
       }
-      //decoded[i-1] = -pointsToSpend + 2 * pointsToSpend * decoded[i-1]/(1 - Math.pow(2,-bitsPerVar));
+      decoded[i-1] = -pointsToSpend + 2 * pointsToSpend * decoded[i-1]/(1 - Math.pow(2,-bitsPerVar));
       // reserved point + [0, range]
-      decoded[i-1] = 1 + pointsToSpend * decoded[i-1]/(1 - Math.pow(2,-bitsPerVar));
+      decoded[i-1] = Math.abs(decoded[i-1]) + 1;
       if(pointsToSpend > 0){
         pointsToSpend -= decoded[i-1];
       }
@@ -203,7 +207,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   selection: function(fitnessLevels) {
     var tournamentParticipants = new Array(this.TOURNAMENT_SIZE);
 
-    /* Select individuals at random, and represent them as a touple containing their indexes and their 
+    /* Select individuals at random, and represent them as a touple containing their indexes and their
     * fitness levels. */
     for (var i = 0; i < this.TOURNAMENT_SIZE; i++) {
       tournamentParticipants[i] = new Array(2);
@@ -212,7 +216,9 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     }
 
     /* Sort by fitness levels */
-    tournamentParticipants.sort(function(a,b){return b[1]-a[1]});
+    tournamentParticipants.sort(
+      function(a,b) {return b[1]-a[1];}
+    );
 
     for(i = 0; i < this.TOURNAMENT_SIZE; i++) {
       if (Math.random() < this.TOURNAMENT_PARAMETER) {
@@ -261,9 +267,9 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   exampleFunction: function(ind) {
     var x = ind[0];
     var y = ind[1];
-    return (1 + Math.pow((x + y + 1), 2) * (19 - 14 * x + 3 * 
-            Math.pow(x, 2) - 14 * y + 6 * x * y + 3 * Math.pow(y, 2))) * 
-    (30 + Math.pow((2*x - 3*y), 2) * (18 - 32 * x + 12 * 
+    return (1 + Math.pow((x + y + 1), 2) * (19 - 14 * x + 3 *
+            Math.pow(x, 2) - 14 * y + 6 * x * y + 3 * Math.pow(y, 2))) *
+    (30 + Math.pow((2*x - 3*y), 2) * (18 - 32 * x + 12 *
             Math.pow(x, 2) + 48 * y - 36 * x + 27 * Math.pow(y, 2)));
   },
 
@@ -305,17 +311,14 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   */
   translatePopulation: function(population, enemyGroup, game, target){
     // arguments needed for constructor
-    var x = 0;
-    var y = 0;
 
     enemyGroup.removeAll(); // clear all since the length of the new population may differ
     for(var i = 0; i < population.length; i++){
       var attributes  = this.decodeIndividual(population[i]);
-      var health      = attributes[0];
-      var strength    = attributes[1];
-      var agility     = attributes[2];
-      var intellect   = attributes[3];
-      var enemy       = new Darwinator.Enemy(game, target, x, y, health, strength, agility, intellect);
+      var strength    = attributes[0];
+      var agility     = attributes[1];
+      var intellect   = attributes[2];
+      var enemy       = new Darwinator.Enemy(game, target, 0, 0, 100, strength, agility, intellect);
       enemyGroup.add(enemy);
     }
     return enemyGroup;

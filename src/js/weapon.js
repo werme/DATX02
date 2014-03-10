@@ -40,7 +40,7 @@
       bullet.reset(this.x, this.y); // resets sprite and body
       bullet.rotation = this.game.physics.moveToPointer(bullet, this.bulletSpeed);
     }
-  }
+  };
 
   window.Darwinator = window.Darwinator || {};
   window.Darwinator.Weapon = Weapon;

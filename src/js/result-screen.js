@@ -97,7 +97,7 @@ Darwinator.ResultScreen.prototype = {
     update: function () {},
 
     continueGame: function () {
-        this.game.state.start('game', false);
+        this.game.state.start('game', true);
     }
 
 };

@@ -46,7 +46,7 @@ Darwinator.GameState.prototype = {
     this.bullets.setAll('outOfBoundsKill', true);
     this.bullets.setAll('name', 'bullet');
 
-    this.playerWeapon  = new window.Darwinator.Weapon(this.game, 0, 0, 200, 1000, this.bullets, 10);
+    this.playerWeapon = new window.Darwinator.Weapon(this.game, 0, 0, 200, 1000, this.bullets, 10);
     this.game.player.weapon = this.playerWeapon;
 
     this.initSpawnPosition();
@@ -217,7 +217,7 @@ Darwinator.GameState.prototype = {
   },
 
   endRound: function() {
-    this.game.state.start('resultScreen', false);
+    this.game.state.start('resultScreen', true);
   },
 
   paused: function () {

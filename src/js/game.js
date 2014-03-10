@@ -26,12 +26,6 @@ Darwinator.GameState.prototype = {
 
     this.cursors = this.game.input.keyboard.createCursorKeys();
 
-    this.sword = new Phaser.Sprite(this.game, 0, 0, 'sword');
-    this.sword.scale.setTo(2,2);
-    this.sword.anchor.setTo(0.5, 0.15);
-    this.sword.angle = 40;
-    this.game.add.existing(this.sword);
-
     this.player = new Darwinator.Player(this.game, 160, 620, this.cursors, 100, 10, 15, 15);
     this.player.scale.setTo(2,2);
     this.game.add.existing(this.player);
@@ -49,6 +43,8 @@ Darwinator.GameState.prototype = {
 
     this.playerWeapon  = new window.Darwinator.Weapon(this.game, x, y, 200, 1000, this.bullets, 10);
     this.player.weapon = this.playerWeapon;
+
+    //this.player.sword = this.sword;
 
     this.initSpawnPosition();
     this.spawnEnemies();
@@ -136,40 +132,12 @@ Darwinator.GameState.prototype = {
 
   update: function () {
 
-    //Draw sword depending how the player moves.
-    var dir = this.player.direction;
-    if (dir === 0) {
-      //Moving right
-      this.player.bringToTop();
-      this.sword.x = this.player.x+22;
-      this.sword.y = this.player.y-2;
-      this.sword.angle = 60;
-    } else if (dir === 180) {
-      //Moving left
-      this.sword.bringToTop();
-      this.sword.x = this.player.x-22;
-      this.sword.y = this.player.y-2;
-      this.sword.angle = -60;
-    } else if (dir === 225 || dir === 270 || dir === 315) {
-      //Moving up
-      this.player.bringToTop();
-      this.sword.x = this.player.x-12;
-      this.sword.y = this.player.y-12;
-      this.sword.angle = 0;
-    } else {
-      //Moving down
-      this.sword.bringToTop();
-      this.sword.x = this.player.x+12;
-      this.sword.y = this.player.y+26;
-      this.sword.angle = 180;
-    }
-
     // TODO: Move this to the nonexistent resume callback
     if (this.pauseText.visible) {
       this.pauseText.visible = false;
     }
 
-    this.game.physics.collide(this.sword, this.enemies);
+    //this.game.physics.collide(this.sword, this.enemies);
     this.game.physics.collide(this.player, this.layer);
     this.game.physics.collide(this.enemies, this.layer);
     this.game.physics.collide(this.enemies);

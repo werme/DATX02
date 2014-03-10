@@ -13,8 +13,9 @@ Darwinator.Player = function(game, x, y, cursors, health, strength, agility, int
   this.dashTimer     = null;
   this.direction     = 90;
   this.orgSpeed      = this.speed;
-  this.dashCounter = 0;
-
+  this.dashCounter   = 0;
+  this.sword         = null;
+  console.log(this);
   /*
       Notes until later:
       each body can setCircle, Rectangle or Polygon.
@@ -27,6 +28,15 @@ Darwinator.Player.prototype = Object.create(Darwinator.Entity.prototype);
 Darwinator.Player.prototype.update = function() {
   if(this.weapon !== null){
     this.weapon.updateManually(this.x, this.y);
+  }
+
+  if (this.sword === null) {
+    this.sword = new Phaser.Sprite(this.game, this.x+12, this.y+26, 'sword');
+    this.sword.scale.setTo(2,2);
+    this.sword.angle = 180;
+    this.sword.anchor.setTo(0.5, 0.15);
+    this.game.add.existing(this.sword);
+    console.log(this.sword);
   }
 
   /*
@@ -70,6 +80,10 @@ Darwinator.Player.prototype.update = function() {
       if (dir[1] === 1){
         this.direction = 270;
         this.animations.play('walk-up');
+        this.bringToTop();
+        this.sword.x = this.x-12;
+        this.sword.y = this.y-12;
+        this.sword.angle = 0;
         //Also going right or left
         if(dir[0] === 1){
           this.direction = 315;
@@ -80,6 +94,10 @@ Darwinator.Player.prototype.update = function() {
       } else if (dir[1] === -1){
         this.direction = 90;
         this.animations.play('walk-down');
+        this.sword.bringToTop();
+        this.sword.x = this.x+12;
+        this.sword.y = this.y+26;
+        this.sword.angle = 180;
         //Also going right or left
         if(dir[0] === 1){
           this.direction = 45;
@@ -90,10 +108,18 @@ Darwinator.Player.prototype.update = function() {
       } else if (dir[0] === 1){
         this.direction = 0;
         this.animations.play('walk-right');
+        this.bringToTop();
+        this.sword.x = this.x+22;
+        this.sword.y = this.y-2;
+        this.sword.angle = 60;
         //Going left
       } else if (dir[0] === -1){
         this.direction = 180;
         this.animations.play('walk-left');
+        this.sword.bringToTop();
+        this.sword.x = this.x-22;
+        this.sword.y = this.y-2;
+        this.sword.angle = -60;
       }
       //Set speed and angle
       this.game.physics.velocityFromAngle(this.direction, this.speed, this.body.velocity);

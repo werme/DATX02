@@ -308,31 +308,20 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     var x = 0;
     var y = 0;
 
-    /*
-    if(!enemyGroup){
-      console.log('falsey enemyGroup argument');
-    }*/
-
-    //console.log('clearing old enemy wave');
     enemyGroup.removeAll(); // clear all since the length of the new population may differ
     for(var i = 0; i < population.length; i++){
-      //console.log('decoding individual ' + i);
       var attributes  = this.decodeIndividual(population[i]);
       var health      = attributes[0];
       var strength    = attributes[1];
       var agility     = attributes[2];
       var intellect   = attributes[3];
-      //console.log('creating a new enemy sprite');
       var enemy       = new Darwinator.Enemy(game, target, x, y, health, strength, agility, intellect);
-      //console.log('adding new sprite to enemy group');
       enemyGroup.add(enemy);
     }
-    //console.log('returning new enemy group');
     return enemyGroup;
   },
 
   // translate an attribute to a binary string
-  // TODO real number encoding would simplify (and perhaps improve) this quite a bit..
   attrToGenes: function(attr) {
       var base = 2;
       var binaryString = Number(attr).toString(base).split('').

@@ -4,7 +4,7 @@ Darwinator.Player = function(game, x, y, cursors, health, strength, agility, int
   Darwinator.Entity.call(this, game, x, y, 'player', health, strength, agility, intellect);
 
   this.cursors = cursors;
-  this.scale.setTo(2,2);
+  // this.scale.setTo(2,2);
   this.anchor.setTo(0.5, 0.5);
   this.body.maxVelocity.setTo(50, 50);
   this.initKeys(game);

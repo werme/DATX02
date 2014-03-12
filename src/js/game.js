@@ -13,7 +13,8 @@ Darwinator.GameState = function() {
   this.health   = null;
   this.pauseText = null;
   this.spawnPositions = [];
-  this.numberOfEnemies = 1;
+  this.numberOfEnemies = null;
+  this.sword    = null;
 }
 
 Darwinator.GameState.prototype = {
@@ -48,8 +49,6 @@ Darwinator.GameState.prototype = {
 
     this.playerWeapon = new window.Darwinator.Weapon(this.game, 0, 0, 200, 1000, this.bullets, 10);
     this.game.player.weapon = this.playerWeapon;
-
-    this.sword = this.game.player.sword;
 
     this.initSpawnPosition();
     this.spawnEnemies();
@@ -167,7 +166,10 @@ Darwinator.GameState.prototype = {
   },
 
   update: function () {
-    this.game.physics.collide(this.enemies, this.sword);
+    if (this.sword === null) {
+      this.sword = this.game.player.sword;
+    }
+    this.game.physics.collide(this.enemies, this.sword, this.meleeAttack, null, this);
     this.game.physics.collide(this.game.player, this.layer);
     this.game.physics.collide(this.enemies, this.layer);
     this.game.physics.collide(this.enemies);
@@ -180,6 +182,21 @@ Darwinator.GameState.prototype = {
     this.stats.content = 'Player stamina: ' + Math.round(this.game.player.currBreath) + '/' + this.game.player.stamina;
     this.health.content = 'Health: ' + Math.round(this.game.player.health);
 
+  },
+
+  meleeAttack: function (obj1, obj2) {
+    var enemy;
+    if (this.game.player.attacking) {
+      if (obj1 instanceof Darwinator.Enemy) {
+        enemy = obj1;
+        enemy.takeDamage(this.game.player.damage);
+      } else if (obj2 instanceof Darwinator.Enemy) {
+        enemy = obj2;
+        enemy.takeDamage(this.game.player.damage);
+      } else {
+        console.log("no damage was dealt");
+      }
+    } 
   },
 
   checkBulletSpeed: function (bullet) {

@@ -31,18 +31,18 @@ Darwinator.ResultScreen.prototype = {
 
         var styling = { font: '16px minecraftia', align: 'center' },
             text    = "Points left to spend: " + this.unspentPoints;
-        this.unspentPointsText = this.add.bitmapText(this.game.width/2, 30, text, styling);
+        this.unspentPointsText = this.add.bitmapText(this.game.width/2, 90, text, styling);
         this.unspentPointsText.anchor.setTo(0.5, 0.5);
 
         // Setup done button
-        this.continueGameButton = this.game.add.button(30, 30, 'player', this.continueGame, this, 2, 1, 0);
-        this.continueGameButton.scale.setTo(2, 2);
+        this.continueGameButton = this.game.add.button(this.game.width/2, this.game.height - 100, 'continue-game-button', this.continueGame, this, 1, 0, 1);
+        this.continueGameButton.anchor.setTo(0.5, 0.5);
     },
 
     initAttributes: function (attributes) {
-        var x       = this.game.width  / 2,
-            y       = this.game.height / 2 - 26,
-            styling = { font: '16px minecraftia', align: 'center' },
+        var x       = this.game.width  / 2 - 70,
+            y       = 170,
+            styling = { font: '20px minecraftia', align: 'center' },
             text;
 
         // TODO: Doesn't ensure order.
@@ -51,25 +51,25 @@ Darwinator.ResultScreen.prototype = {
                 text = attribute + ": " + attributes[attribute];
                 this.attributes[attribute] = this.add.bitmapText(x, y, text, styling);
                 this.attributes[attribute].fixedToCamera = true;
-                y += 26; // Render the next attribute on a new line.
+                y += 42; // Render the next attribute on a new line.
             }
         }
     },
 
     initButtons: function (attributes) {
-        var x = this.game.width  / 2 - 24,
-            y = this.game.height / 2 - 20;
+        var x = this.game.width  / 2 - 100,
+            y = 180;
 
         // Buttons shall be rendered by hand, it's a craft.
-        this.buttons.push(this.add.button(x, y, 'player', function() {
+        this.buttons.push(this.add.button(x, y, 'plus-button', function() {
             this.incrementAttribute('strength');
         }, this, 2, 1, 0));
 
-        this.buttons.push(this.add.button(x, y + 26, 'player', function() {
+        this.buttons.push(this.add.button(x, y + 42, 'plus-button', function() {
             this.incrementAttribute('agility');
         }, this, 2, 1, 0));
 
-         this.buttons.push(this.add.button(x, y + 52, 'player', function() {
+         this.buttons.push(this.add.button(x, y + 84, 'plus-button', function() {
             this.incrementAttribute('intellect');
         }, this, 2, 1, 0));
 

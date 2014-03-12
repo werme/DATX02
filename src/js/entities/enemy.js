@@ -2,7 +2,7 @@
 
 Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intellect) {
 
-  Darwinator.Entity.call(this, game, x, y, 'enemy', [], health, strength, agility, intellect);
+  Darwinator.Entity.call(this, game, x, y, 'enemy', health, strength, agility, intellect);
   this.scale.setTo(0.25,0.25);
   this.target = target;
   this.path = [];

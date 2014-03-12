@@ -14,7 +14,6 @@ Darwinator.GameState = function() {
   this.pauseText = null;
   this.spawnPositions = [];
   this.numberOfEnemies = 1;
-  this.sword = null;
 }
 
 Darwinator.GameState.prototype = {
@@ -49,6 +48,8 @@ Darwinator.GameState.prototype = {
 
     this.playerWeapon = new window.Darwinator.Weapon(this.game, 0, 0, 200, 1000, this.bullets, 10);
     this.game.player.weapon = this.playerWeapon;
+
+    this.sword = this.game.player.sword;
 
     this.initSpawnPosition();
     this.spawnEnemies();
@@ -166,6 +167,7 @@ Darwinator.GameState.prototype = {
   },
 
   update: function () {
+    this.game.physics.collide(this.enemies, this.sword);
     this.game.physics.collide(this.game.player, this.layer);
     this.game.physics.collide(this.enemies, this.layer);
     this.game.physics.collide(this.enemies);

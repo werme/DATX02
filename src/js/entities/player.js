@@ -158,7 +158,6 @@ Darwinator.Player.prototype.update = function() {
 
   if (this.attacking && (this.attackTimer > (this.game.time.time - this.attackTimer + 300))) {
        this.attacking = false;
-       console.log("Attacking: false");
   }
 };
 
@@ -192,7 +191,6 @@ Darwinator.Player.prototype.initKeys = function(game) {
   var meleeAttack = function(key) {
     if (!this.attacking) {
       this.attacking = true;
-      console.log("Attacking: true");
       this.attackTimer = this.game.time.time;
     } 
   };

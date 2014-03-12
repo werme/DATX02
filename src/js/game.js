@@ -194,7 +194,7 @@ Darwinator.GameState.prototype = {
         enemy = obj2;
         enemy.takeDamage(this.game.player.damage);
       } else {
-        console.log("no damage was dealt");
+        console.log("No melee damage was dealt");
       }
     } 
   },

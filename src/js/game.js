@@ -11,6 +11,7 @@ Darwinator.GameState = function() {
   this.stats    = null;
   this.health   = null;
   this.secondsRemaining = null;
+  this.enemiesRemaining = null;
   this.pauseText = null;
   this.spawnPositions = [];
   this.numberOfEnemies = null;
@@ -73,6 +74,10 @@ Darwinator.GameState.prototype = {
     this.secondsRemaining = this.game.add.text(16, 76, 'Seconds remaining: ' + this.roundLengthSeconds, style);
     this.secondsRemaining.fixedToCamera = true;
 
+    // for debugging - easier to check if a round ended too early
+    this.enemiesRemaining = this.game.add.text(16, 96, 'Enemies remaining: ', style);
+    this.enemiesRemaining.fixedToCamera = true;
+
     this.gameOver = this.game.add.text(this.game.width / 2, this.game.height / 2, '', {fontSize: '48px', fill:'#F08'});
     this.gameOver.fixedToCamera = true;
 
@@ -91,10 +96,7 @@ Darwinator.GameState.prototype = {
     this.numberOfEnemies = 10;
   },
 
-  
-
   spawnPlayer: function (x, y) {
-
     // Instanciate new player or reset existing.
     if (!this.game.player) {
       this.game.player = new Darwinator.Player(this.game, x, y, this.cursors, Darwinator.PLAYER_START_HEALTH, 10, 15, 15);
@@ -140,6 +142,7 @@ Darwinator.GameState.prototype = {
     this.fps.content = 'FPS: ' + this.game.time.fps;
     this.stats.content = 'Player stamina: ' + Math.round(this.game.player.currBreath) + '/' + this.game.player.stamina;
     this.health.content = 'Health: ' + Math.round(this.game.player.health);
+    this.enemiesRemaining.content = 'Enemies remaining: ' + this.enemies.countLiving();
 
     // end round when all enemies are dead
     if(this.enemies.countLiving() === 0){
@@ -202,7 +205,9 @@ Darwinator.GameState.prototype = {
   },
 
   endRound: function() {
-    this.game.state.start('resultScreen', true);
+    if(this.roundSecondsPassed >= this.roundLengthSeconds || this.enemies.countLiving() === 0){
+      this.game.state.start('resultScreen', true);
+    }
   },
 
   paused: function () {

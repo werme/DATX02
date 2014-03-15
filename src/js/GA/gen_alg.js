@@ -155,9 +155,10 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
         var startVar = (i-1) * bitsPerVar;
         decoded[i-1] += individual[startVar + l - 1] * Math.pow(2, -l);
       }
-      decoded[i-1] = -pointsToSpend + 2 * pointsToSpend * decoded[i-1]/(1 - Math.pow(2,-bitsPerVar));
+      //decoded[i-1] = -pointsToSpend + 2 * pointsToSpend * decoded[i-1]/(1 - Math.pow(2,-bitsPerVar));
       // reserved point + [0, range]
-      decoded[i-1] = Math.abs(decoded[i-1]) + 1;
+      decoded[i-1] = pointsToSpend * decoded[i-1]/(1 - Math.pow(2,-bitsPerVar));
+      //decoded[i-1] = Math.abs(decoded[i-1]) + 1;
       if(pointsToSpend > 0){
         pointsToSpend -= decoded[i-1];
       }
@@ -288,13 +289,13 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   */
   translateEnemyWave: function(enemyGroup){
     var currentSize = enemyGroup.length; //could add an extra param for this.
+    console.log('currentSize: ' + currentSize);
     var population  = new Array(currentSize);
     var fitness     = new Array(currentSize);
     var bestIndex   = 0;
     for(var i = 0; i < currentSize; i++){
       var enemy     = enemyGroup.getAt(i);
       population[i] = this.enemyToChromosome(enemy);
-      population.push(this.enemyToChromosome(enemy));
       fitness[i]    = this.evaluateInd(enemy); //eval score rather than strength etc.
       if(fitness[i] > fitness[bestIndex]){
         bestIndex = i;
@@ -309,6 +310,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   translatePopulation: function(population, enemyGroup, game, target){
     enemyGroup.removeAll(); // clear all since the length of the new population may differ
     for(var i = 0; i < population.length; i++){
+      console.log('adding enemy nbr ' + i);
       var attributes  = this.decodeIndividual(population[i]);
       var strength    = attributes[0];
       var agility     = attributes[1];
@@ -339,7 +341,6 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
         binaryString = binaryString.slice(-bitsPerVar);
       }
       // debug
-      console.log(binaryString);
       return binaryString;
   }
 

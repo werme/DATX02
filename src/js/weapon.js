@@ -16,24 +16,23 @@
     updateManually: function(x, y){
       this.x = x;
       this.y = y;
-      this.game.physics.angleToPointer(this);
-      if (this.game.input.activePointer.isDown){
-        this.fire();
-      }
     },
 
-    fire: function(){
+    fire: function(x, y){
       if (this.game.time.now > this.nextFire && this.bullets.countDead() > 0){
           this.nextFire = this.game.time.now + this.coolDown;
           var bullet    = this.bullets.getFirstDead();
-          this.resetBullet(bullet);
+          bullet.reset(this.x, this.y);
+          bullet.rotation = this.takeAim(x, y);
       }
     },
 
-    resetBullet: function(bullet){
-      bullet.reset(this.x, this.y); // resets sprite and body
-      bullet.rotation = this.game.physics.moveToPointer(bullet, this.bulletSpeed);
+    takeAim: function(x, y) {
+      var perfAngle = this.game.physics.angleToXY(this.game.player, x, y);
+      // TODO: Make targeting depend on users intelligence.
+      return perfAngle;
     }
+
   };
 
   window.Darwinator = window.Darwinator || {};

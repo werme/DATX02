@@ -5,7 +5,7 @@ Darwinator.GameState = function() {
   this.bullets  = null;
   this.playerWeapon = null;
   this.cursors  = null;
-  this.map      = null;
+  
   this.tileset  = null;
   this.layer    = null;
   this.fps      = null;
@@ -22,9 +22,6 @@ Darwinator.GameState.prototype = {
   create: function () {
     this.reset();
 
-    this.loadLevel();
-    this.game.world.setBounds(0,0, this.map.widthInPixels, this.map.heightInPixels);
-
     this.cursors = this.game.input.keyboard.createCursorKeys();
 
     var cheatKey = this.game.input.keyboard.addKey(Phaser.Keyboard.E);
@@ -35,7 +32,15 @@ Darwinator.GameState.prototype = {
     // Since states by default lack a callback for the resume event.
     this.game.onResume.add(this.resumed, this);
 
+    //initiate level & spawn enemies and player
+    //TODO group these to make the order constant.
+    this.level = new Darwinator.Level(this.game);
+    this.layer = this.level.layer;
     this.spawnPlayer(160, 620);
+    this.level.spawnEnemies(this.numberOfEnemies);
+    this.enemies = this.level.enemies;
+    //renders the non-collidable top layer on top of player and enemies.
+    this.level.addTopLayer();
 
     // TODO move bullets to separate class
     this.bullets = this.game.add.group();
@@ -50,11 +55,6 @@ Darwinator.GameState.prototype = {
     this.playerWeapon = new window.Darwinator.Weapon(this.game, 0, 0, 200, 1000, this.bullets, 10);
     this.game.player.weapon = this.playerWeapon;
 
-    this.initSpawnPosition();
-    this.spawnEnemies();
-
-    //Maiking sure top layer is rendered on top of player
-    this.map.createLayer('Tile Layer 3');
 
     // For development only
     var style = { font: "16px monospace", fill: '#fff' };
@@ -69,33 +69,13 @@ Darwinator.GameState.prototype = {
 
     this.gameOver = this.game.add.text(this.game.width / 2, this.game.height / 2, '', {fontSize: '48px', fill:'#F08'});
     this.gameOver.fixedToCamera = true;
-
-    Darwinator.Pathfinder = new EasyStar.js();
-    Darwinator.Pathfinder.enableDiagonals();
-    var indexes = Darwinator.Helpers.convertTileMap(this.map.layers[0].data);
-    Darwinator.Pathfinder.setGrid(indexes);
-    Darwinator.Pathfinder.setAcceptableTiles([1337, 168, 156, 157, 158, 172, 173, 174, 188, 189, 190, 205]);
   },
 
   reset: function () {
     this.numberOfEnemies = 10;
   },
 
-  loadLevel: function () {
-    this.map = this.game.add.tilemap('level1');
-    this.map.addTilesetImage('tiles', 'tiles');
-
-    Darwinator.setTileSize(this.map.tileWidth, this.map.tileHeight);
-
-    this.map.setCollisionByExclusion([1337, 168, 156, 157, 158, 172, 173, 174, 188, 189, 190, 205]);
-    this.map.createLayer('Tile Layer 2');
-    this.layer = this.map.createLayer('Tile Layer 1');
-
-    this.layer.debug = true;
-
-    this.map.collisionLayer = this.layer;
-    this.layer.resizeWorld();
-  },
+  
 
   spawnPlayer: function (x, y) {
 
@@ -103,7 +83,7 @@ Darwinator.GameState.prototype = {
     if (!this.game.player) {
       this.game.player = new Darwinator.Player(this.game, x, y, this.cursors, Darwinator.PLAYER_START_HEALTH, 10, 15, 15);
     } else {
-      this.game.player.reset(x, y, Darwinator.PLAYER_START_HEALTH);
+      this.game.player = new Darwinator.Player(this.game, x, y, this.cursors, Darwinator.PLAYER_START_HEALTH, 10, 15, 15);
       this.game.player.bringToTop();
       this.game.player.updateAttributes();
 
@@ -131,39 +111,7 @@ Darwinator.GameState.prototype = {
     this.pauseText.visible = false;
   },
 
-  spawnEnemies: function () {
-    var spawnIndexes = new Array(this.spawnPositions.length);
-
-    for (var i = 0; i < spawnIndexes.length; i++) {
-      spawnIndexes[i] = i;
-    }
-
-    var rInd;
-    var pos;
-
-    while (this.numberOfEnemies && spawnIndexes.length) {
-      rInd = Math.round(Math.random() * spawnIndexes.length -1);
-      pos = spawnIndexes.splice(rInd,1);
-      this.enemies.add(new Darwinator.Enemy(this.game, this.game.player,
-        this.spawnPositions[pos].x,
-        this.spawnPositions[pos].y, 100, 5, 5, 15));
-      this.numberOfEnemies--;
-    }
-  },
-
-  initSpawnPosition: function () {
-    var matrix = Darwinator.Helpers.convertTileMap(this.map.layers[0].data);
-
-    this.enemies = this.game.add.group();
-
-    for (var i = 0; i < matrix.length; i++) {
-      for(var j = 0; j < matrix[i].length; j++) {
-        if (matrix[i][j] === 168){
-          this.spawnPositions.push(Darwinator.Helpers.tileToPixels(j,i));
-        }
-      }
-    }
-  },
+  
 
   update: function () {
     this.game.physics.collide(this.game.player, this.layer);

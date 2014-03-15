@@ -39,11 +39,7 @@ Darwinator.Enemy.prototype.update = function() {
   if(!(pathLength &&  this.path[pathLength - 1].x === targetTile.x &&
                       this.path[pathLength - 1].y === targetTile.y)) {
     if (Darwinator.Helpers.calculateDistance(targetTile, currTile) * 5 < this.lastPathUpdate) {
-      Darwinator.Pathfinder.findPath(currTile.x, currTile.y, targetTile.x, targetTile.y, function(path){
-        this.path = !!path ? path : [];
-      }.bind(this));
-      Darwinator.Pathfinder.calculate();
-      this.lastPathUpdate = 0;
+      this.updatePath();
     } else {
       this.lastPathUpdate++;
     }
@@ -84,6 +80,16 @@ Darwinator.Enemy.prototype.update = function() {
 
 };
 
+Darwinator.Enemy.prototype.updatePath = function() {
+  var currTile = Darwinator.Helpers.pixelsToTile(this.body.x, this.body.y);
+  var targetTile = Darwinator.Helpers.pixelsToTile(this.target.body.x, this.target.body.y);
+  Darwinator.Pathfinder.findPath(currTile.x, currTile.y, targetTile.x, targetTile.y, function(path){
+    this.path = !!path ? path : [];
+  }.bind(this));
+  Darwinator.Pathfinder.calculate();
+  this.lastPathUpdate = 0;
+};
+
 Darwinator.Enemy.prototype.followPath = function() {
   var targetPos = Darwinator.Helpers.tileToPixels(this.path[1].x, this.path[1].y);
   targetPos.x = Math.round(targetPos.x - this.body.width / 2);
@@ -93,11 +99,10 @@ Darwinator.Enemy.prototype.followPath = function() {
     // Remember, include (x,y,health) in reset, otherwise health will = 1.
     this.reset(targetPos.x, targetPos.y, this.health);
     this.path.splice(0,1); // Remove first tile in path.
-    targetPos = Darwinator.Helpers.tileToPixels(this.path[1].x, this.path[1].y);
-    targetPos.x = Math.round(targetPos.x - this.body.width / 2);
-    targetPos.y = Math.round(targetPos.y - this.body.height / 2);
+    this.updatePath();
+  } else {
+    this.game.physics.moveToXY(this, targetPos.x, targetPos.y, this.speed);
   }
-  this.game.physics.moveToXY(this, targetPos.x, targetPos.y, this.speed);
   if (this.path.length < 5 && this.currBreath > 1) {
     this.body.velocity.multiply(2,2);
     this.currBreath--;

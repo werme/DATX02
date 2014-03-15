@@ -28,9 +28,14 @@
     },
 
     takeAim: function(x, y) {
-      var perfAngle = this.game.physics.angleToXY(this.game.player, x, y);
+      var perfAngle = this.game.physics.angleToXY(this, x, y);
       // TODO: Make targeting depend on users intelligence.
       return perfAngle;
+    },
+
+    resetBullet: function(bullet){
+      bullet.reset(this.x, this.y); // resets sprite and body
+      bullet.rotation = this.game.physics.moveToPointer(bullet, this.bulletSpeed);
     }
 
   };

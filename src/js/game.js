@@ -43,6 +43,7 @@ Darwinator.GameState.prototype = {
     this.enemies = this.level.enemies;
     //renders the non-collidable top layer on top of player and enemies.
     this.level.addTopLayer();
+    this.sword = this.game.player.sword;
 
     // TODO move bullets to separate class
     this.bullets = this.game.add.group();
@@ -127,9 +128,6 @@ Darwinator.GameState.prototype = {
   },
 
   update: function () {
-    if (this.sword === null) {
-      this.sword = this.game.player.sword;
-    }
     this.game.physics.collide(this.enemies, this.sword, this.meleeAttack, null, this);
     this.game.physics.collide(this.game.player, this.layer);
     this.game.physics.collide(this.enemies, this.layer);

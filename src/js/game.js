@@ -18,6 +18,7 @@ Darwinator.GameState = function() {
   this.sword    = null;
   this.roundLengthSeconds = 60; 
   this.roundSecondsPassed = 0;
+  this.bulletsRemaining = null;
 }
 
 Darwinator.GameState.prototype = {
@@ -54,9 +55,8 @@ Darwinator.GameState.prototype = {
     this.bullets.setAll('scale.x', 0.1);
     this.bullets.setAll('scale.y', 0.1);
     this.bullets.setAll('outOfBoundsKill', true);
-    this.bullets.setAll('name', 'bullet');
 
-    this.playerWeapon = new window.Darwinator.Weapon(this.game, 0, 0, 200, 1000, this.bullets, 10);
+    this.playerWeapon = new window.Darwinator.Weapon(this.game, 0, 0, 200, 1000, this.bullets, 10, this.game.player);
     this.game.player.weapon = this.playerWeapon;
 
 
@@ -80,6 +80,9 @@ Darwinator.GameState.prototype = {
 
     this.gameOver = this.game.add.text(this.game.width / 2, this.game.height / 2, '', {fontSize: '48px', fill:'#F08'});
     this.gameOver.fixedToCamera = true;
+
+    this.bulletsRemaining = this.game.add.text(16, 116, 'Bullets remaining: ', style);
+    this.bulletsRemaining.fixedToCamera = true;
 
     // end round when the time limit is reached
     this.game.time.events.add(Phaser.Timer.SECOND * this.roundLengthSeconds, this.endRound, this);
@@ -143,6 +146,7 @@ Darwinator.GameState.prototype = {
     this.stats.content = 'Player stamina: ' + Math.round(this.game.player.currBreath) + '/' + this.game.player.stamina;
     this.health.content = 'Health: ' + Math.round(this.game.player.health);
     this.enemiesRemaining.content = 'Enemies remaining: ' + this.enemies.countLiving();
+    this.bulletsRemaining.content = 'Bullets remaining: ' + this.bullets.countLiving();
 
     // end round when all enemies are dead
     if(this.enemies.countLiving() === 0){

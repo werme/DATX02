@@ -15,6 +15,8 @@
 Darwinator.Entity = function(game, x, y, key, health, strength, agility, intellect) {
   Phaser.Sprite.call(this, game, x, y, key);
 
+  game.physics.enable(this, Phaser.Physics.ARCADE);
+
   this.game                     = game;
   this.body.collideWorldBounds  = true;
 

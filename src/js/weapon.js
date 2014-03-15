@@ -16,7 +16,7 @@
     updateManually: function(x, y){
       this.x = x;
       this.y = y;
-      this.game.physics.angleToPointer(this);
+      this.game.physics.arcade.angleToPointer(this);
       if (this.game.input.activePointer.isDown){
         this.fire();
       }

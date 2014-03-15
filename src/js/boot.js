@@ -17,6 +17,10 @@ Darwinator.Boot.prototype = {
 
     // this.game.stage.disableVisibilityChange = true;
 
+
+    // Enable Arcade physic system
+    this.game.physics.startSystem(Phaser.Physics.ARCADE);
+
     if (this.game.device.desktop) {
       this.game.stage.scale.pageAlignHorizontally = true;
     } else {

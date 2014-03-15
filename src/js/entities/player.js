@@ -18,8 +18,6 @@ Darwinator.Player = function(game, x, y, cursors, health, strength, agility, int
   this.sword         = null;
   this.attacking     = false;
   this.attackTimer   = null;
-
-  this.body.setRectangle(12, 4, 2, 12);
 };
 Darwinator.Player.prototype = Object.create(Darwinator.Entity.prototype);
 

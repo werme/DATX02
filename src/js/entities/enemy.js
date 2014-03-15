@@ -51,12 +51,12 @@ Darwinator.Enemy.prototype.update = function() {
   if (this.path.length) {
     this.followPath();
   } else {
-    this.game.physics.moveToXY(this, this.target.body.x, this.target.body.y, this.speed);
+    this.game.physics.arcade.moveToXY(this, this.target.body.x, this.target.body.y, this.speed);
   }
 
   // Target (ie. player) takes damage while the target and enemy overlap.
   // If they continuously overlap the target will take damage every 0.25 seconds
-  this.overlap = this.game.physics.overlap(this, this.target);
+  this.overlap = this.game.physics.arcade.overlap(this, this.target);
 
   if (this.overlap && !this.attacking){
     var crit = Math.random() - this.criticalStrike;
@@ -102,7 +102,7 @@ Darwinator.Enemy.prototype.followPath = function() {
     this.path.splice(0,1); // Remove first tile in path.
     this.updatePath();
   } else {
-    this.game.physics.moveToXY(this, targetPos.x, targetPos.y, this.speed);
+    this.game.physics.arcade.moveToXY(this, targetPos.x, targetPos.y, this.speed);
   }
   if (this.path.length < 5 && this.currBreath > 1) {
     this.body.velocity.multiply(2,2);

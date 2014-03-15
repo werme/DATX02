@@ -3,16 +3,18 @@
 Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intellect) {
 
   if (strength > intellect && strength > agility) {
-    Darwinator.Entity.call(this, game, x, y, 'enemy_strength', [], health, strength, agility, intellect);
+    Darwinator.Entity.call(this, game, x, y, 'enemy_strength',/* [],*/ health, strength, agility, intellect);
   } else if (agility > intellect && agility > strength) {
-    Darwinator.Entity.call(this, game, x, y, 'enemy_agility', [], health, strength, agility, intellect);
+    Darwinator.Entity.call(this, game, x, y, 'enemy_agility',/* [],*/ health, strength, agility, intellect);
   } else if (intellect > strength && intellect > agility) {
-    Darwinator.Entity.call(this, game, x, y, 'enemy_intellect', [], health, strength, agility, intellect);
+    Darwinator.Entity.call(this, game, x, y, 'enemy_intellect',/* [],*/ health, strength, agility, intellect);
   } else {
-    Darwinator.Entity.call(this, game, x, y, 'enemy', [], health, strength, agility, intellect);
+    Darwinator.Entity.call(this, game, x, y, 'enemy',/* [],*/ health, strength, agility, intellect);
   }
   this.scale.setTo(0.25,0.25);
   this.target = target;
+  if(!target)
+    console.log('Enemy: target is falsey');
   this.path = [];
   this.attacking = false;
   this.time = null;
@@ -21,6 +23,10 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
   //Allow enemy to overlap objects, i.e. reduce the hitbox
   //this.body.setRectangle(20*4, 16*4, 0, 16*4);
   this.lastPathUpdate = 0;
+  // score properties to measure success
+  this.dateOfBirthMs = Date.now();
+  this.timeSurvivedMs = undefined; //set this to dateOfBirthMs - Date.now() on death OR end of game round
+  this.damageDone = 0;
 };
 
 Darwinator.Enemy.prototype = Object.create(Darwinator.Entity.prototype);
@@ -58,9 +64,11 @@ Darwinator.Enemy.prototype.update = function() {
   if (this.overlap && !this.attacking){
     var crit = Math.random() - this.criticalStrike;
     if (crit < 0){
+      this.damageDone += this.damage*2;
       this.target.takeDamage(this.damage*2);
       console.log('CRIT!');
     } else {
+      this.damageDone += this.damage;
       this.target.takeDamage(this.damage);
     }
     this.time = this.game.time.time;
@@ -69,9 +77,9 @@ Darwinator.Enemy.prototype.update = function() {
     this.attacking = false;
   }
 
-  if (this.health <= 0){
+  if (this.health <= 0 && this.alive){
     console.log('died');
-    this.destroy();
+    this.kill();
   }
 
 };

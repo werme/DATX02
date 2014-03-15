@@ -89,7 +89,7 @@ Darwinator.Enemy.prototype.followPath = function() {
   targetPos.x = Math.round(targetPos.x - this.body.width / 2);
   targetPos.y = Math.round(targetPos.y - this.body.height / 2);
   var distance = Darwinator.Helpers.calculateDistance(targetPos, [this.body.x, this.body.y]);
-  if (distance < 2 && this.path.length > 2) {      // Trial and error - modify if need be.
+  if (distance < 4 && this.path.length > 2) {      // Trial and error - modify if need be.
     // Remember, include (x,y,health) in reset, otherwise health will = 1.
     this.reset(targetPos.x, targetPos.y, this.health);
     this.path.splice(0,1); // Remove first tile in path.

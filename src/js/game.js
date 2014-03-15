@@ -71,7 +71,7 @@ Darwinator.GameState.prototype = {
     this.gameOver.fixedToCamera = true;
 
     Darwinator.Pathfinder = new EasyStar.js();
-    Darwinator.Pathfinder.enableDiagonals();
+    //Darwinator.Pathfinder.enableDiagonals();
     var indexes = Darwinator.Helpers.convertTileMap(this.map.layers[0].data);
     Darwinator.Pathfinder.setGrid(indexes);
     Darwinator.Pathfinder.setAcceptableTiles([1337, 168, 156, 157, 158, 172, 173, 174, 188, 189, 190, 205]);

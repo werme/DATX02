@@ -11,7 +11,6 @@ Darwinator.GameState = function() {
   this.stats    = null;
   this.health   = null;
   this.pauseText = null;
-  this.spawnPositions = [];
   this.numberOfEnemies = 1;
   this.sword = null;
 }
@@ -130,7 +129,7 @@ Darwinator.GameState.prototype = {
     // GA development - generate next generation when the enemies are defeated
     if(this.enemies.countLiving() === 0){
       console.log('Killed all enemies! Here comes the new wave!');
-      this.enemies = Darwinator.GeneticAlgorithm.generatePopulation(this.game, this.game.player, this.enemies, true, this.spawnPositions);
+      this.enemies = Darwinator.GeneticAlgorithm.generatePopulation(this.game, this.game.player, this.enemies, true, this.level.spawnPositions);
     }
   },
 

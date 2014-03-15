@@ -14,12 +14,16 @@ Darwinator.Preloader.prototype = {
     this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
     this.load.setPreloadSprite(this.asset);
     this.load.image('enemy', 'assets/player.png');
+    this.load.image('enemy_strength', 'assets/player_strength.png');
+    this.load.image('enemy_agility', 'assets/player_agility.png');
+    this.load.image('enemy_intellect', 'assets/player_intellect.png');
     this.load.bitmapFont('minecraftia', 'assets/minecraftia.png', 'assets/minecraftia.xml');
     this.load.tilemap('level1', 'assets/level2.json', null, Phaser.Tilemap.TILED_JSON);
     this.game.load.image('tiles', 'assets/landscape.png');
     this.load.image('sword','assets/sword.png');
-    
-    this.load.spritesheet('player', 'assets/gal.png', 16, 16, 16);
+    this.load.spritesheet('player', 'assets/darwin.png', 32, 32, 16);
+    this.game.load.image('plus-button', 'assets/plus-button.png');
+    this.load.spritesheet('continue-game-button', 'assets/continue-game-button.png', 322, 66, 2);
   },
 
   create: function () {

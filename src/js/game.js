@@ -10,9 +10,13 @@ Darwinator.GameState = function() {
   this.fps      = null;
   this.stats    = null;
   this.health   = null;
+  this.secondsRemaining = null;
   this.pauseText = null;
-  this.numberOfEnemies = 1;
-  this.sword = null;
+  this.spawnPositions = [];
+  this.numberOfEnemies = null;
+  this.sword    = null;
+  this.roundLengthSeconds = 60; 
+  this.roundSecondsPassed = 0;
 }
 
 Darwinator.GameState.prototype = {
@@ -65,8 +69,21 @@ Darwinator.GameState.prototype = {
     this.health = this.game.add.text(16, 56, '', style);
     this.health.fixedToCamera = true;
 
+    this.secondsRemaining = this.game.add.text(16, 76, 'Seconds remaining: ' + this.roundLengthSeconds, style);
+    this.secondsRemaining.fixedToCamera = true;
+
     this.gameOver = this.game.add.text(this.game.width / 2, this.game.height / 2, '', {fontSize: '48px', fill:'#F08'});
     this.gameOver.fixedToCamera = true;
+
+    // end round when the time limit is reached
+    this.game.time.events.add(Phaser.Timer.SECOND * this.roundLengthSeconds, this.endRound, this);
+    this.roundSecondsPassed = 0;
+    this.game.time.events.repeat(Phaser.Timer.SECOND * 1, this.roundLengthSeconds-1, this.displayTimer, this);
+  },
+
+  displayTimer: function(){ //callback to update time remaining display every second
+    this.roundSecondsPassed++;
+    this.secondsRemaining.content = 'Seconds remaining: ' + (this.roundLengthSeconds - this.roundSecondsPassed);
   },
 
   reset: function () {
@@ -126,10 +143,11 @@ Darwinator.GameState.prototype = {
     this.stats.content = 'Player stamina: ' + Math.round(this.game.player.currBreath) + '/' + this.game.player.stamina;
     this.health.content = 'Health: ' + Math.round(this.game.player.health);
 
-    // GA development - generate next generation when the enemies are defeated
+    // end round when all enemies are dead
     if(this.enemies.countLiving() === 0){
-      console.log('Killed all enemies! Here comes the new wave!');
-      this.enemies = Darwinator.GeneticAlgorithm.generatePopulation(this.game, this.game.player, this.enemies, true, this.level.spawnPositions);
+      //console.log('Killed all enemies! Here comes the new wave!');
+      //this.enemies = Darwinator.GeneticAlgorithm.generatePopulation(this.game, this.game.player, this.enemies, true, this.level.spawnPositions);
+      this.endRound();
     }
   },
 

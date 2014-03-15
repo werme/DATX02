@@ -28,7 +28,7 @@ Darwinator.GameState.prototype = {
     this.cursors = this.game.input.keyboard.createCursorKeys();
 
     var cheatKey = this.game.input.keyboard.addKey(Phaser.Keyboard.E);
-    cheatKey.onDown.add(this.endRound, this);
+    cheatKey.onDown.add(this.endRoundCheat, this);
 
     this.initPauseOverlay();
 
@@ -84,7 +84,7 @@ Darwinator.GameState.prototype = {
     // end round when the time limit is reached
     this.game.time.events.add(Phaser.Timer.SECOND * this.roundLengthSeconds, this.endRound, this);
     this.roundSecondsPassed = 0;
-    this.game.time.events.repeat(Phaser.Timer.SECOND * 1, this.roundLengthSeconds-1, this.displayTimer, this);
+    this.game.time.events.repeat(Phaser.Timer.SECOND, this.roundLengthSeconds, this.displayTimer, this);
   },
 
   displayTimer: function(){ //callback to update time remaining display every second
@@ -204,7 +204,12 @@ Darwinator.GameState.prototype = {
     bullet.kill();
   },
 
+  endRoundCheat: function(){ //cheatButton callback
+    this.game.state.start('resultScreen', true);
+  },
+
   endRound: function() {
+    // only end round if time is up or the enemies are defeated
     if(this.roundSecondsPassed >= this.roundLengthSeconds || this.enemies.countLiving() === 0){
       this.game.state.start('resultScreen', true);
     }

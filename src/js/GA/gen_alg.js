@@ -25,8 +25,6 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @return {Array} The last population generated.
   */
   generatePopulation: function(game, target, enemyGroup, singleGeneration) {
-    if(!target)
-      console.log('GA generatePopulation: target is falsey');
     if(!enemyGroup){
       enemyGroup = game.add.group();
       console.log('GA: Enemy group not provided. Initializing with default values.');
@@ -116,14 +114,12 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @return {Array} An enemy population with default attribute values.
   */
   initPopulation: function(enemyGroup, game, target) {
-    if(!target)
-      console.log('GA initPopulation: target is falsey');
     // 4 different enemy initial set of attributes - just an example, not permanent!
-    var enemiesPerType = this.POPULATION_SIZE / 4;
+    var enemiesPerType = this.POPULATION_SIZE / 5;
     for(var i = 0; i < this.POPULATION_SIZE; i++){
       if(i < enemiesPerType){
-        // hybrid
-        enemyGroup.add(new Darwinator.Enemy(game, target, 0, 0, undefined, 10, 10, 10));
+        // smart and quick but weak
+        enemyGroup.add(new Darwinator.Enemy(game, target, 0, 0, undefined, 1, 15, 14));
       }else if(i < enemiesPerType*2){
         // strong but slow and stupid
         enemyGroup.add(new Darwinator.Enemy(game, target, 0, 0, undefined, 20, 5, 5));
@@ -131,8 +127,8 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
         // strong and quick but stupid
         enemyGroup.add(new Darwinator.Enemy(game, target, 0, 0, undefined, 15, 15, 0));
       }else{
-        // smart and quick but weak
-        enemyGroup.add(new Darwinator.Enemy(game, target, 0, 0, undefined, 1, 15, 14));
+        // hybrid
+        enemyGroup.add(new Darwinator.Enemy(game, target, 0, 0, undefined, 10, 10, 10));
       }
     }
     return enemyGroup;
@@ -276,9 +272,9 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   // tranlates the attributes of an enemy to a binary chromosome
   enemyToChromosome: function (enemy){
     // concatenate the translation of all attributes - NOTE: order matters!
-    var chrom = this.attrToGenes(enemy.strength)
-                  .concat(this.attrToGenes(enemy.agility))
-                  .concat(this.attrToGenes(enemy.intellect));
+    var chrom = this.attrToGenes(enemy.attributes.strength)
+                  .concat(this.attrToGenes(enemy.attributes.agility))
+                  .concat(this.attrToGenes(enemy.attributes.intellect));
 
     if(chrom.length !== this.NUMBER_OF_GENES){ // just in case
       console.log('Illegal length of chromosome: ' + chrom.length);
@@ -318,7 +314,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
       var strength    = attributes[0];
       var agility     = attributes[1];
       var intellect   = attributes[2];
-      var enemy       = new Darwinator.Enemy(game, target, 0, 0, 100, strength, agility, intellect);
+      var enemy       = new Darwinator.Enemy(game, target, 0, 0, undefined, strength, agility, intellect);
       enemyGroup.add(enemy);
     }
     return enemyGroup;
@@ -343,6 +339,8 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
         // keep last bitsPerVar bits
         binaryString = binaryString.slice(-bitsPerVar);
       }
+      // debug
+      console.log(binaryString);
       return binaryString;
   }
 

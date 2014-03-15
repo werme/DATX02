@@ -150,8 +150,6 @@ Darwinator.GameState.prototype = {
     }
 */
     // for development only: call once for init, call twice to actually run GA.. all are spawned on (0,0)
-    if(!this.game.player)
-      console.log('game spawnEnemies: player is falsey');
     this.enemies = Darwinator.GeneticAlgorithm.generatePopulation(this.game, this.game.player, this.enemies, true);
     this.enemies = Darwinator.GeneticAlgorithm.generatePopulation(this.game, this.game.player, this.enemies, true);
   },

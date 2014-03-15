@@ -70,8 +70,9 @@ Darwinator.Enemy.prototype.update = function() {
   }
 
   if (this.health <= 0){
-    console.log('died');
-    this.destroy();
+    //console.log('died');
+    //this.destroy(); no, destroy removes the sprite from the group entirely!
+    this.kill();
   }
 
 };

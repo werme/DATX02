@@ -287,27 +287,26 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
       returns [population, fitness, bestIndividualIndex]
   */
   translateEnemyWave: function(enemyGroup){
-    var currentSize = enemyGroup.length;
+    var currentSize = enemyGroup.length; //could add an extra param for this.
     var population  = new Array(currentSize);
     var fitness     = new Array(currentSize);
     var bestIndex   = 0;
     for(var i = 0; i < currentSize; i++){
       var enemy     = enemyGroup.getAt(i);
       population[i] = this.enemyToChromosome(enemy);
+      population.push(this.enemyToChromosome(enemy));
       fitness[i]    = this.evaluateInd(enemy); //eval score rather than strength etc.
       if(fitness[i] > fitness[bestIndex]){
         bestIndex = i;
       }
     }
     return [population, fitness, bestIndex];
-  },
+  }, 
 
   /*
     Translates the chromosomes to a new sprite group.
   */
   translatePopulation: function(population, enemyGroup, game, target){
-    // arguments needed for constructor
-
     enemyGroup.removeAll(); // clear all since the length of the new population may differ
     for(var i = 0; i < population.length; i++){
       var attributes  = this.decodeIndividual(population[i]);

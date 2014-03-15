@@ -151,7 +151,7 @@ Darwinator.GameState.prototype = {
 */
     // for development only: call once for init, call twice to actually run GA.. all are spawned on (0,0)
     this.enemies = Darwinator.GeneticAlgorithm.generatePopulation(this.game, this.game.player, this.enemies, true);
-    this.enemies = Darwinator.GeneticAlgorithm.generatePopulation(this.game, this.game.player, this.enemies, true);
+    //this.enemies = Darwinator.GeneticAlgorithm.generatePopulation(this.game, this.game.player, this.enemies, true);
   },
 
   initSpawnPosition: function () {
@@ -179,6 +179,11 @@ Darwinator.GameState.prototype = {
     this.stats.content = 'Player stamina: ' + Math.round(this.game.player.currBreath) + '/' + this.game.player.stamina;
     this.health.content = 'Health: ' + Math.round(this.game.player.health);
 
+    // GA development - generate next generation when the enemies are defeated
+    if(this.enemies.countLiving() === 0){
+      console.log('Killed all enemies! Here comes the new wave!');
+      this.enemies = Darwinator.GeneticAlgorithm.generatePopulation(this.game, this.game.player, this.enemies, true);
+    }
   },
 
   checkBulletSpeed: function(bullet){

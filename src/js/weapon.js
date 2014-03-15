@@ -2,10 +2,6 @@
   'use strict';
 
   function Weapon(game, x, y, coolDown, bulletSpeed, bullets, damage) {
-    //Phaser.Sprite.call(this, game, x, y, imgName);
-    //this.anchor.setTo(0.5, 0.5);
-    //this.scale.setTo(0.2, 0.2);
-    //this.body.collideWorldBounds = true;
     this.game = game;
     this.x = x;
     this.y = y;
@@ -16,13 +12,11 @@
     this.damage = damage;
   }
 
-  //Weapon.prototype = Object.create(Phaser.Sprite.prototype);
-
   Weapon.prototype = {
     updateManually: function(x, y){
       this.x = x;
       this.y = y;
-      this.rotation = this.game.physics.angleToPointer(this);
+      this.game.physics.angleToPointer(this);
       if (this.game.input.activePointer.isDown){
         this.fire();
       }

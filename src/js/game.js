@@ -13,8 +13,8 @@ Darwinator.GameState = function() {
   this.health   = null;
   this.pauseText = null;
   this.spawnPositions = [];
-  this.numberOfEnemies = 1;
-  this.sword = null;
+  this.numberOfEnemies = null;
+  this.sword    = null;
 }
 
 Darwinator.GameState.prototype = {
@@ -71,7 +71,7 @@ Darwinator.GameState.prototype = {
     this.gameOver.fixedToCamera = true;
 
     Darwinator.Pathfinder = new EasyStar.js();
-    Darwinator.Pathfinder.enableDiagonals();
+    //Darwinator.Pathfinder.enableDiagonals();
     var indexes = Darwinator.Helpers.convertTileMap(this.map.layers[0].data);
     Darwinator.Pathfinder.setGrid(indexes);
     Darwinator.Pathfinder.setAcceptableTiles([1337, 168, 156, 157, 158, 172, 173, 174, 188, 189, 190, 205]);
@@ -132,7 +132,7 @@ Darwinator.GameState.prototype = {
   },
 
   spawnEnemies: function () {
-    var spawnIndexes = new Array(this.spawnPositions.length);
+    /*var spawnIndexes = new Array(this.spawnPositions.length);
 
     for (var i = 0; i < spawnIndexes.length; i++) {
       spawnIndexes[i] = i;
@@ -140,22 +140,23 @@ Darwinator.GameState.prototype = {
 
     var rInd;
     var pos;
-
-    while (this.numberOfEnemies && spawnIndexes.length) {
+    */
+    /*while (this.numberOfEnemies && spawnIndexes.length) {
       rInd = Math.round(Math.random() * spawnIndexes.length -1);
       pos = spawnIndexes.splice(rInd,1);
       this.enemies.add(new Darwinator.Enemy(this.game, this.game.player,
         this.spawnPositions[pos].x,
-        this.spawnPositions[pos].y, 100, 5, 5, 15));
+        this.spawnPositions[pos].y, 100, Math.random() * 20, Math.random() * 20, Math.random() * 20));
       this.numberOfEnemies--;
-    }
+    }*/
+
+    // create the first generation
+    this.enemies = Darwinator.GeneticAlgorithm.generatePopulation(this.game, this.game.player, undefined, true, this.spawnPositions);
   },
 
   initSpawnPosition: function () {
     var matrix = Darwinator.Helpers.convertTileMap(this.map.layers[0].data);
-
-    this.enemies = this.game.add.group();
-
+    
     for (var i = 0; i < matrix.length; i++) {
       for(var j = 0; j < matrix[i].length; j++) {
         if (matrix[i][j] === 168){
@@ -166,6 +167,10 @@ Darwinator.GameState.prototype = {
   },
 
   update: function () {
+    if (this.sword === null) {
+      this.sword = this.game.player.sword;
+    }
+    this.game.physics.collide(this.enemies, this.sword, this.meleeAttack, null, this);
     this.game.physics.collide(this.game.player, this.layer);
     this.game.physics.collide(this.enemies, this.layer);
     this.game.physics.collide(this.enemies);
@@ -178,22 +183,42 @@ Darwinator.GameState.prototype = {
     this.stats.content = 'Player stamina: ' + Math.round(this.game.player.currBreath) + '/' + this.game.player.stamina;
     this.health.content = 'Health: ' + Math.round(this.game.player.health);
 
+    // GA development - generate next generation when the enemies are defeated
+    if(this.enemies.countLiving() === 0){
+      console.log('Killed all enemies! Here comes the new wave!');
+      this.enemies = Darwinator.GeneticAlgorithm.generatePopulation(this.game, this.game.player, this.enemies, true, this.spawnPositions);
+    }
   },
 
-  checkBulletSpeed: function (bullet) {
+  meleeAttack: function (obj1, obj2) {
+    var enemy;
+    if (this.game.player.attacking) {
+      if (obj1 instanceof Darwinator.Enemy) {
+        enemy = obj1;
+        enemy.takeDamage(this.game.player.damage);
+      } else if (obj2 instanceof Darwinator.Enemy) {
+        enemy = obj2;
+        enemy.takeDamage(this.game.player.damage);
+      } else {
+        console.log("No melee damage was dealt");
+      }
+    } 
+  },
 
-    var speed = Math.sqrt( (bullet.body.velocity.x * bullet.body.velocity.x) +
-        (bullet.body.velocity.y * bullet.body.velocity.y)),
-        tolerance = 0.1;
-
-    if (bullet !== null && Math.abs(speed - this.playerWeapon.bulletSpeed) > tolerance) { //illegal speed
-      if (bullet.x === this.playerWeapon.x && bullet.y === this.playerWeapon.y) { // bullet didn't reset properly on revival
+  checkBulletSpeed: function(bullet){
+    if(!bullet){
+      console.log('checkBulletSpeed: Undefined bullet');
+      return;
+    }
+    var speed = Math.sqrt(  (bullet.body.velocity.x * bullet.body.velocity.x) 
+                          + (bullet.body.velocity.y * bullet.body.velocity.y));
+    var tolerance = 0.1;
+    if(Math.abs(speed - this.playerWeapon.bulletSpeed) > tolerance){ //illegal speed
+      if(bullet.x === this.playerWeapon.x && bullet.y === this.playerWeapon.y){ // bullet didn't reset properly on revival
         this.playerWeapon.resetBullet(bullet);
       } else { //bullet got stuck or bounced
         bullet.kill();
       }
-    } else if (bullet === null) {
-      console.log('checkBulletSpeed: bullet was null');
     }
   },
 

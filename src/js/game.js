@@ -5,7 +5,6 @@ Darwinator.GameState = function() {
   this.bullets  = null;
   this.playerWeapon = null;
   this.cursors  = null;
-  
   this.tileset  = null;
   this.layer    = null;
   this.fps      = null;
@@ -109,41 +108,6 @@ Darwinator.GameState.prototype = {
 
     // Should be hidden by default.
     this.pauseText.visible = false;
-  },
-
-  spawnEnemies: function () {
-    /*var spawnIndexes = new Array(this.spawnPositions.length);
-
-    for (var i = 0; i < spawnIndexes.length; i++) {
-      spawnIndexes[i] = i;
-    }
-
-    var rInd;
-    var pos;
-    */
-    /*while (this.numberOfEnemies && spawnIndexes.length) {
-      rInd = Math.round(Math.random() * spawnIndexes.length -1);
-      pos = spawnIndexes.splice(rInd,1);
-      this.enemies.add(new Darwinator.Enemy(this.game, this.game.player,
-        this.spawnPositions[pos].x,
-        this.spawnPositions[pos].y, 100, Math.random() * 20, Math.random() * 20, Math.random() * 20));
-      this.numberOfEnemies--;
-    }*/
-
-    // create the first generation
-    this.enemies = Darwinator.GeneticAlgorithm.generatePopulation(this.game, this.game.player, undefined, true, this.spawnPositions);
-  },
-
-  initSpawnPosition: function () {
-    var matrix = Darwinator.Helpers.convertTileMap(this.map.layers[0].data);
-    
-    for (var i = 0; i < matrix.length; i++) {
-      for(var j = 0; j < matrix[i].length; j++) {
-        if (matrix[i][j] === 168){
-          this.spawnPositions.push(Darwinator.Helpers.tileToPixels(j,i));
-        }
-      }
-    }
   },
 
   update: function () {

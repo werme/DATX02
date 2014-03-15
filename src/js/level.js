@@ -1,11 +1,10 @@
 'use strict';
 
 Darwinator.Level = function(game) {
-this.enemies 		= null;
 this.game 			= game;
 this.spawnPositions = [];
 this.map      		= null;
-
+this.enemies 		= null;
 this.loadLevel();
 this.initSpawnPosition();
 this.game.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -38,28 +37,27 @@ initPathFinder: function () {
 },
 
 spawnEnemies: function (nrOfEnemies) {
-	this.numberOfEnemies = nrOfEnemies;
-    var spawnIndexes = new Array(this.spawnPositions.length);
-    for (var i = 0; i < spawnIndexes.length; i++) {
-      spawnIndexes[i] = i;
-    }
-    var rInd;
-    var pos;
-    console.log(this.numberOfEnemies);
-    while (this.numberOfEnemies && spawnIndexes.length) {
-      rInd = Math.round(Math.random() * spawnIndexes.length -1);
-      pos = spawnIndexes.splice(rInd,1);
-      this.enemies.add(new Darwinator.Enemy(this.game, this.game.player,
-        this.spawnPositions[pos].x,
-        this.spawnPositions[pos].y, 100, 5, 5, 15));
-      this.numberOfEnemies--;
-    }
+ // this.numberOfEnemies = nrOfEnemies;
+ //    var spawnIndexes = new Array(this.spawnPositions.length);
+ //    for (var i = 0; i < spawnIndexes.length; i++) {
+ //      spawnIndexes[i] = i;
+ //    }
+ //    var rInd;
+ //    var pos;
+ //    console.log(this.numberOfEnemies);
+ //    while (this.numberOfEnemies && spawnIndexes.length) {
+ //      rInd = Math.round(Math.random() * spawnIndexes.length -1);
+ //      pos = spawnIndexes.splice(rInd,1);
+ //      this.enemies.add(new Darwinator.Enemy(this.game, this.game.player,
+ //        this.spawnPositions[pos].x,
+ //        this.spawnPositions[pos].y, 100, 5, 5, 15));
+ //      this.numberOfEnemies--;
+ //    }
+ 	this.enemies = Darwinator.GeneticAlgorithm.generatePopulation(this.game, this.game.player, undefined, true, this.spawnPositions);
   },
 
   initSpawnPosition: function () {
     var matrix = Darwinator.Helpers.convertTileMap(this.map.layers[0].data);
-
-    this.enemies = this.game.add.group();
 
     for (var i = 0; i < matrix.length; i++) {
       for(var j = 0; j < matrix[i].length; j++) {

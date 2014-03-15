@@ -1,15 +1,16 @@
 (function() {
   'use strict';
 
-  function Weapon(game, x, y, coolDown, bulletSpeed, bullets, damage) {
-    this.game = game;
-    this.x = x;
-    this.y = y;
-    this.coolDown = coolDown;
-    this.nextFire = 0;
-    this.bullets = bullets;
-    this.bulletSpeed = bulletSpeed;
-    this.damage = damage;
+  function Weapon(game, x, y, coolDown, bulletSpeed, bullets, damage, owner) {
+    this.game         = game;
+    this.x            = x;
+    this.y            = y;
+    this.coolDown     = coolDown;
+    this.nextFire     = 0;
+    this.bullets      = bullets;
+    this.bulletSpeed  = bulletSpeed;
+    this.damage       = damage;
+    this.owner        = owner;
   }
 
   Weapon.prototype = {
@@ -22,20 +23,21 @@
       if (this.game.time.now > this.nextFire && this.bullets.countDead() > 0){
           this.nextFire = this.game.time.now + this.coolDown;
           var bullet    = this.bullets.getFirstDead();
-          bullet.reset(this.x, this.y);
-          bullet.rotation = this.takeAim(x, y);
+          this.resetBullet(bullet, x, y);
       }
     },
 
     takeAim: function(x, y) {
       var perfAngle = this.game.physics.angleToXY(this, x, y);
-      // TODO: Make targeting depend on users intelligence.
+      perfAngle += (Math.random() - 0.5) * 15 / this.owner.attributes.intellect;
       return perfAngle;
     },
 
-    resetBullet: function(bullet){
+    resetBullet: function(bullet, x, y){
       bullet.reset(this.x, this.y); // resets sprite and body
-      bullet.rotation = this.game.physics.moveToPointer(bullet, this.bulletSpeed);
+      var angle = this.takeAim(x, y);
+      bullet.rotation = angle;
+      this.game.physics.velocityFromRotation(angle, this.bulletSpeed, bullet.body.velocity);
     }
 
   };

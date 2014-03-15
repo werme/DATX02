@@ -17,6 +17,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * Generates a population of individuals from a given population or a randomly created one.
   * The new population is likely to be more better adapted to find a solution to the given
   * goal function.
+  *
   * @method Darwinator.GeneticAlgorithm#generatePopulation
   * @param {Phaser.Game} [game] - The game that uses the algorithm.
   * @param {Phaser.Sprite} [target] - The sprite to be attacked by the enemies.
@@ -107,6 +108,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
 
   /**
   * Generates a binary encoded population at random.
+  *
   * @method Darwinator.GeneticAlgorithm#initPopulation
   * @param {Phaser.Group} [enemyGroup] - The enemy group to fill with enemies.
   * @param {Phaser.Game} [game] - The game that uses the algorithm.
@@ -137,6 +139,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   /**
   * Decodes a individual from binary encoding to real numbers. The values of each
   * variable will lie in the range [1, this.VARIABLE_RANGE].
+  *
   * @method Darwinator.GeneticAlgorithm#decodeIndividual
   * @param {Array} [individual] - The binary encoded individual to be decoded
   * @return {Array} The decoded individual. Will have a length of this.NUMBER_OF_VARIABLES
@@ -155,10 +158,8 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
         var startVar = (i-1) * bitsPerVar;
         decoded[i-1] += individual[startVar + l - 1] * Math.pow(2, -l);
       }
-      //decoded[i-1] = -pointsToSpend + 2 * pointsToSpend * decoded[i-1]/(1 - Math.pow(2,-bitsPerVar));
       // reserved point + [0, range]
       decoded[i-1] = pointsToSpend * decoded[i-1]/(1 - Math.pow(2,-bitsPerVar));
-      //decoded[i-1] = Math.abs(decoded[i-1]) + 1;
       if(pointsToSpend > 0){
         pointsToSpend -= decoded[i-1];
       }
@@ -169,9 +170,10 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   /**
   * Cross two individuals to create two new ones. Will select a crossing point at random,
   * and swap the binary encoded values between the individuals from the selected point.
+  *
   * @method Darwinator.GeneticAlgorithm#cross
-  * @param {Array} - The first individual to be crossed
-  * @param {Array} - The second individual to be crossed
+  * @param {Array} [firstInd] - The first individual to be crossed
+  * @param {Array} [secondInd] - The second individual to be crossed
   * @return {Array} - A touple containing the two new individuals.
   */
   cross: function(firstInd, secondInd) {
@@ -197,6 +199,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * this.TOURNAMENT_SIZE many individuals will be selected at random, and one of them will
   * be returned. The tournament works in such a way that a individual with a high fitness level
   * is more likely to be returned from the tournament, but is not more likely to participate.
+  *
   * @method Darwinator.GeneticAlgorithm#selection
   * @param {Array} - The fitness levels of the entire population
   * @return {Number} - The index of the selected individual.
@@ -207,7 +210,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     /* Select individuals at random, and represent them as a touple containing their indexes and their
     * fitness levels. */
     for (var i = 0; i < this.TOURNAMENT_SIZE; i++) {
-      tournamentParticipants[i] = new Array(2);
+      tournamentParticipants[i]    = new Array(2);
       tournamentParticipants[i][0] = Math.round(Math.random() * (this.POPULATION_SIZE - 1));
       tournamentParticipants[i][1] = fitnessLevels[tournamentParticipants[i][0]];
     }
@@ -229,6 +232,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   /**
   * Mutate a given individual by swapping some of the binary encoded values at random.
   * The chance of a value swapping is set by this.MUTATION_PROBABILITY.
+  *
   * @method Darwinator.GeneticAlgorithm#mutate
   * @param {Array} - The individual to be mutated
   * @return {Array} - The mutated individual.
@@ -243,9 +247,10 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   },
 
   /**
-  * Evaluates an enemy sprite according to its score.
-  * @method Darwinator.GeneticAlgorithm#cross
-  * @param {Array} - The individual to be evaluated
+  * Evaluates an enemy sprite based on its score.
+  *
+  * @method Darwinator.GeneticAlgorithm#evaluateInd
+  * @param {Phaser.Sprite} - The individual to be evaluated
   * @return {Number} - The fitness level of the individual
   */
   evaluateInd: function(enemy) { 
@@ -253,24 +258,36 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     return fitness == -Infinity ? 0 : fitness;// maximize fitness based on enemy score
   },
 
-  // goal function - calculates the score of an enemy based on collected data
-  // perhaps move this to the actual enemy prototype?
+  /**
+  * Calculates the score of an enemy based on statistical attributes.
+  *
+  * @method Darwinator.GeneticAlgorithm#enemyScore
+  * @param {Phaser.Sprite} - An enemy sprite
+  * @return {Number} - The score of the enemy for a given game round.
+  */
   enemyScore: function(enemy) {
     // TODO need better evaluation..
     return enemy.damageDone;
   },
 
   /* Example function for testing and debugging. */
-  exampleFunction: function(ind) {
+  /*exampleFunction: function(ind) {
     var x = ind[0];
     var y = ind[1];
     return (1 + Math.pow((x + y + 1), 2) * (19 - 14 * x + 3 *
             Math.pow(x, 2) - 14 * y + 6 * x * y + 3 * Math.pow(y, 2))) *
     (30 + Math.pow((2*x - 3*y), 2) * (18 - 32 * x + 12 *
             Math.pow(x, 2) + 48 * y - 36 * x + 27 * Math.pow(y, 2)));
-  },
+  },*/
 
-  // tranlates the attributes of an enemy to a binary chromosome
+  /**
+  *
+  * Tranlates the attributes of an enemy to a binary chromosome.
+  *
+  * @method Darwinator.GeneticAlgorithm#cross
+  * @param {Phaser.Sprite} - An enemy sprite
+  * @return {Number} - The enemy represented as a binary chromosome
+  */
   enemyToChromosome: function (enemy){
     // concatenate the translation of all attributes - NOTE: order matters!
     var chrom = this.attrToGenes(enemy.attributes.strength)
@@ -284,12 +301,16 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     }
   },
 
-  /*
-      returns [population, fitness, bestIndividualIndex]
+  /**
+  * Translates an enemy group of sprites to chromosomes and fitnessLevels.
+  *
+  * @method Darwinator.GeneticAlgorithm#translateEnemyWave
+  * @param {Phaser.Group} - A group of enemy sprites
+  * @return {Array} - Chromosomes, fitnessLevels and the index of the fittest individual.
+  *                     as [chromosomes, fitnessLevels, fittestIndex]
   */
   translateEnemyWave: function(enemyGroup){
     var currentSize = enemyGroup.length; //could add an extra param for this.
-    console.log('currentSize: ' + currentSize);
     var population  = new Array(currentSize);
     var fitness     = new Array(currentSize);
     var bestIndex   = 0;
@@ -304,13 +325,19 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     return [population, fitness, bestIndex];
   }, 
 
-  /*
-    Translates the chromosomes to a new sprite group.
-  */
+  /**
+  * Replaces the given group of enemy sprites to the next generation of sprites.
+  *
+  * @method Darwinator.GeneticAlgorithm#translatePopulation
+  * @param {Array} [population] - The chromosomes of the new generation.
+  * @param {Phaser.Group} [enemyGroup] - The enemy sprite group to replace.
+  * @param {Phaser.Game} [game] - The game that uses the algorithm.
+  * @param {Phaser.Sprite} [target] - The sprite to be attacked by the enemies.
+  * @return {Phaser.Group} The new group of enemies.
+  */    
   translatePopulation: function(population, enemyGroup, game, target){
     enemyGroup.removeAll(); // clear all since the length of the new population may differ
     for(var i = 0; i < population.length; i++){
-      console.log('adding enemy nbr ' + i);
       var attributes  = this.decodeIndividual(population[i]);
       var strength    = attributes[0];
       var agility     = attributes[1];
@@ -321,7 +348,13 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     return enemyGroup;
   },
 
-  // translate an attribute to a binary string
+  /**
+  * Translates an enemy attribute to a binary string of length this.NUMBER_OF_GENES / this.NUMBER_OF_VARIABLES.
+  *
+  * @method Darwinator.GeneticAlgorithm#attrToGenes
+  * @param {Number} - An enemy attribute.
+  * @return {Array} - A binary string representation of the enemy attribute.
+  */
   attrToGenes: function(attr) {
       var base = 2;
       var binaryString = Number(attr).toString(base).split('').
@@ -340,7 +373,6 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
         // keep last bitsPerVar bits
         binaryString = binaryString.slice(-bitsPerVar);
       }
-      // debug
       return binaryString;
   }
 

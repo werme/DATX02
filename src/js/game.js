@@ -184,22 +184,9 @@ Darwinator.GameState.prototype = {
     }
   },
 
-  bulletCollisionHandler: function(obj1, obj2){
-    var bullet;
-
-    if (obj1.name === 'bullet') {
-      bullet = obj1;
-      if (obj2 instanceof Darwinator.Enemy) {
-        obj2.takeDamage(this.game.player.damage);
-      }
-    } else if (obj2.name === 'bullet') {
-      bullet = obj2;
-      if (obj1 instanceof Darwinator.Enemy) {
-        obj1.takeDamage(this.game.player.damage);
-      }
-    } else {
-      console.log('A bullet collision without bullets occurred. That\'s odd.');
-      return;
+  bulletCollisionHandler: function(bullet, target){
+    if (target instanceof Darwinator.Enemy) {
+      target.takeDamage(this.game.player.damage);
     }
     bullet.kill();
   },

@@ -23,6 +23,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @param {Phaser.Sprite} [target] - The sprite to be attacked by the enemies.
   * @param {Phaser.Group} [enemyGroup] - Optional. If not provided, a group with default values will be set.
   * @param {Boolean} [singleGeneration] - If true, only one iteration will be run, else, this.NUMBER_OF_GENERATIONS is used.
+  * @param {Array} [spawnPositions] - The positions on which the enemies are allowed to spawn.
   * @return {Array} The last population generated.
   */
   generatePopulation: function(game, target, enemyGroup, singleGeneration, spawnPositions) {
@@ -113,6 +114,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @param {Phaser.Group} [enemyGroup] - The enemy group to fill with enemies.
   * @param {Phaser.Game} [game] - The game that uses the algorithm.
   * @param {Phaser.Sprite} [target] - The sprite to be attacked by the enemies.
+  * @param {Array} [spawnPositions] - The positions on which the enemies are allowed to spawn.
   * @return {Array} An enemy population with default attribute values.
   */
   initPopulation: function(enemyGroup, game, target, spawnPositions) {
@@ -286,7 +288,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   *
   * Tranlates the attributes of an enemy to a binary chromosome.
   *
-  * @method Darwinator.GeneticAlgorithm#cross
+  * @method Darwinator.GeneticAlgorithm#enemyToChromosome
   * @param {Phaser.Sprite} - An enemy sprite
   * @return {Number} - The enemy represented as a binary chromosome
   */
@@ -335,6 +337,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @param {Phaser.Group} [enemyGroup] - The enemy sprite group to replace.
   * @param {Phaser.Game} [game] - The game that uses the algorithm.
   * @param {Phaser.Sprite} [target] - The sprite to be attacked by the enemies.
+  * @param {Array} [spawnPositions] - The positions on which the enemies are allowed to spawn.
   * @return {Phaser.Group} The new group of enemies.
   */    
   translatePopulation: function(population, enemyGroup, game, target, spawnPositions){ 

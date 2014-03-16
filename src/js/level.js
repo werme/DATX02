@@ -36,25 +36,8 @@ Darwinator.Level.prototype = {
     Darwinator.Pathfinder.setAcceptableTiles([1337, 168, 156, 157, 158, 172, 173, 174, 188, 189, 190, 205]);
   },
 
-  spawnEnemies: function (nrOfEnemies) {
-    // this.numberOfEnemies = nrOfEnemies;
-    // var spawnIndexes = new Array(this.spawnPositions.length);
-    // for (var i = 0; i < spawnIndexes.length; i++) {
-    //   spawnIndexes[i] = i;
-    // }
-    // var rInd;
-    // var pos;
-    // console.log(this.numberOfEnemies);
-    // while (this.numberOfEnemies && spawnIndexes.length) {
-    //   rInd = Math.round(Math.random() * spawnIndexes.length -1);
-    //   pos = spawnIndexes.splice(rInd,1);
-    //   this.enemies.add(new Darwinator.Enemy(this.game, this.game.player,
-    //   this.spawnPositions[pos].x,
-    //   this.spawnPositions[pos].y, 100, 5, 5, 15));
-    //   this.numberOfEnemies--;
-    // }
-  
-   	this.enemies = Darwinator.GeneticAlgorithm.generatePopulation(this.game, this.game.player, undefined, true, this.spawnPositions);
+  spawnEnemies: function () {
+ 	  this.enemies = Darwinator.GeneticAlgorithm.generatePopulation(this.game, this.game.player, undefined, true, this.spawnPositions);
   },
 
   initSpawnPosition: function () {

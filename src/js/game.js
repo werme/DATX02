@@ -13,7 +13,7 @@ Darwinator.GameState = function() {
   this.enemiesRemaining = null;
   this.pauseText = null;
   this.spawnPositions = [];
-  this.roundLengthSeconds = 10; 
+  this.roundLengthSeconds = 60; 
   this.roundSecondsRemaining = null;
   this.endRoundTimer = null;
   this.displayTimeLeftTimer = null;
@@ -56,7 +56,7 @@ Darwinator.GameState.prototype = {
 
 
     // For development only
-    var style = { font: "16px monospace", fill: '#fff' };
+    var style = { font: '16px monospace', fill: '#fff' };
     this.fps = this.game.add.text(16, 16, 'FPS: 0', style);
     this.fps.fixedToCamera = true;
 
@@ -161,7 +161,7 @@ Darwinator.GameState.prototype = {
         enemy = obj2;
         enemy.takeDamage(this.game.player.damage);
       } else {
-        console.log("No melee damage was dealt");
+        console.log('No melee damage was dealt');
       }
     } 
   },
@@ -210,12 +210,12 @@ Darwinator.GameState.prototype = {
 
   paused: function () {
     this.pauseText.visible = true;
-    console.log("Paused game.");
+    console.log('Paused game.');
   },
 
   resumed: function() {
     this.pauseText.visible = false;
-    console.log("Resumed game.");
+    console.log('Resumed game.');
   }
 
 };

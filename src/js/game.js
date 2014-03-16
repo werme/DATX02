@@ -51,15 +51,15 @@ Darwinator.GameState.prototype = {
 
     // TODO move bullets to separate class
     this.bullets = this.game.add.group();
-    this.bullets.createMultiple(30, 'enemy');
+    this.bullets.createMultiple(30, 'arrow');
     this.bullets.setAll('anchor.x', 0.5);
     this.bullets.setAll('anchor.y', 0.5);
-    this.bullets.setAll('scale.x', 0.1);
-    this.bullets.setAll('scale.y', 0.1);
+    // this.bullets.setAll('scale.x', 2);
+    // this.bullets.setAll('scale.y', 2);
     this.bullets.setAll('outOfBoundsKill', true);
 
     this.game.player.weapon = new window.Darwinator.Weapon(this.game, 0, 0,
-    Darwinator.PLAYER_RANGE_WEAPON_BASE_COOLDOWN, 1000, this.bullets, 10, this.game.player);
+    Darwinator.PLAYER_RANGE_WEAPON_BASE_COOLDOWN, 500, this.bullets, 10, this.game.player);
 
     // For development only
     var style = { font: '16px monospace', fill: '#fff' };

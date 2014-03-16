@@ -24,14 +24,13 @@ Darwinator.Player = function(game, x, y, cursors) {
 Darwinator.Player.prototype = Object.create(Darwinator.Entity.prototype);
 
 Darwinator.Player.prototype.update = function () {
-  
+
   if (this.weapon !== null) {
     this.weapon.updateManually(this.x, this.y);
   }
 
   var addSword = function(player) {
     player.sword = new Phaser.Sprite(player.game, player.x+12, player.y+26, 'sword');
-    player.sword.scale.setTo(2,2);
     player.sword.angle = 180;
     player.sword.anchor.setTo(0.5, 0.15);
     player.game.add.existing(player.sword);

@@ -18,11 +18,11 @@
       this.y = y;
   };
 
-  Darwinator.Weapon.prototype.fire = function(x, y){
-    if (this.game.time.now > this.nextFire && this.bullets.countDead() > 0){
+  Darwinator.Weapon.prototype.fire = function (x, y) {
+    if (this.game.time.now > this.nextFire && this.bullets.countDead() > 0) {
         this.nextFire = this.game.time.now + this.coolDown;
         var bullet    = this.bullets.getFirstDead();
-        bullet.target = {x: x, y: y};
+        bullet.target = { x: x, y: y };
         this.resetBullet(bullet);
     }
   };

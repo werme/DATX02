@@ -52,7 +52,7 @@ Darwinator.GameState.prototype = {
     this.bullets.setAll('outOfBoundsKill', true);
     this.bullets.setAll('name', 'bullet');
 
-    this.game.player.weapon = new window.Darwinator.Weapon(this.game, 0, 0, 200, 1000, this.bullets, 10);
+    this.game.player.weapon = new window.Darwinator.Weapon(this.game, 0, 0, Darwinator.PLAYER_RANGE_WEAPON_BASE_COOLDOWN, 1000, this.bullets, 10);
 
 
     // For development only

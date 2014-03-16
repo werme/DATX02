@@ -15,7 +15,17 @@ window.Darwinator = window.Darwinator || {
     game.state.start('boot');
   },
 
-  PLAYER_START_HEALTH: 100,
+  PLAYER_BASE_HEALTH  : 100,
+  PLAYER_BASE_STAMINA : 50,
+  PLAYER_BASE_DAMAGE  : 5,
+  PLAYER_BASE_SPEED   : 75,
+
+  PLAYER_RANGE_WEAPON_BASE_COOLDOWN : 800,
+
+  ENTITY_BASE_HEALTH  : 50,
+  ENTITY_BASE_STAMINA : 50,
+  ENTITY_BASE_DAMAGE  : 5,
+  ENTITY_BASE_SPEED   : 75,
   
   TILE_WIDTH: 0,
   TILE_HEIGHT: 0,

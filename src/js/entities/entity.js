@@ -15,20 +15,21 @@
 Darwinator.Entity = function(game, x, y, key, health, strength, agility, intellect) {
   Phaser.Sprite.call(this, game, x, y, key);
 
-  this.game                     = game;
-  this.body.collideWorldBounds  = true;
+  this.game                    = game;
+  this.body.collideWorldBounds = true;
 
   this.attributes = {
-    strength:  !!strength  ? strength  : 0,
-    agility:   !!agility   ? agility   : 0,
-    intellect: !!intellect ? intellect : 0
+    strength  : !!strength  ? strength  : 0,
+    agility   : !!agility   ? agility   : 0,
+    intellect : !!intellect ? intellect : 0
   }
 
-  // TODO: DRY
-  this.health         = !!health ? health + this.attributes.strength : 50;
-  this.damage         = 5  + this.attributes.strength / 3;
-  this.speed          = 75 + this.attributes.agility*1 - this.attributes.strength / 8;
-  this.stamina        = 50 + this.attributes.agility*2 - this.attributes.strength / 5;
+  var baseHealth = !!health ? health : Darwinator.ENTITY_BASE_HEALTH;
+
+  this.health         = baseHealth + this.attributes.strength;
+  this.damage         = Darwinator.ENTITY_BASE_DAMAGE  + this.attributes.strength / 3;
+  this.speed          = Darwinator.ENTITY_BASE_SPEED   + this.attributes.agility - this.attributes.strength / 8;
+  this.stamina        = Darwinator.ENTITY_BASE_STAMINA + this.attributes.agility * 2 - this.attributes.strength / 5;
   this.aim            = this.attributes.intellect; //Intended to define how well the enemy aims. 0 = "shitty" aim, 100 = "perfect" aim
   this.criticalStrike = this.attributes.intellect / 100; //Critical strike percentage
   this.currBreath     = this.stamina;
@@ -37,17 +38,6 @@ Darwinator.Entity = function(game, x, y, key, health, strength, agility, intelle
 Darwinator.Entity.prototype = Object.create(Phaser.Sprite.prototype);
 
 Darwinator.Entity.prototype.update = function() {};
-
-Darwinator.Entity.prototype.updateAttributes = function() {
-  // TODO: All is obviously bananas, fix!
-  this.health         = this.health + this.attributes.strength; // : 50;
-  this.damage         = 5  + this.attributes.strength / 3;
-  this.speed          = 75 + this.attributes.agility * 1 - this.attributes.strength / 8;
-  this.stamina        = 50 + this.attributes.agility * 2 - this.attributes.strength / 5;
-  this.aim            = this.attributes.intellect; //Intended to define how well the enemy aims. 0 = "shitty" aim, 100 = "perfect" aim
-  this.criticalStrike = this.attributes.intellect / 100; //Critical strike percentage
-  this.currBreath     = this.stamina;
-};
 
 Darwinator.Entity.prototype.takeDamage = function(amount) {
   this.health = this.health - amount;

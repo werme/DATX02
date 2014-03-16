@@ -2,23 +2,21 @@
 
 Darwinator.Player = function(game, x, y, cursors, health, strength, agility, intellect) {
   Darwinator.Entity.call(this, game, x, y, 'player', health, strength, agility, intellect);
-
   this.cursors = cursors;
-  // this.scale.setTo(2,2);
   this.anchor.setTo(0.5, 0.5);
   this.body.maxVelocity.setTo(50, 50);
   this.initKeys(game);
   this.initAnimations();
+  this.updateAttributes();
 
-  this.weapon        = null;
-  this.dashTimer     = null;
-  this.direction     = 90;
-  this.orgSpeed      = this.speed;
-  this.dashCounter   = 0;
-  this.sword         = null;
-  this.attacking     = false;
-  this.attackTimer   = null;
-};
+  this.weapon      = null;
+  this.dashTimer   = null;
+  this.direction   = 90;
+  this.dashCounter = 0;
+  this.sword       = null;
+  this.attacking   = false;
+  this.origSpeed   = this.speed;
+}
 Darwinator.Player.prototype = Object.create(Darwinator.Entity.prototype);
 
 Darwinator.Player.prototype.update = function() {
@@ -44,10 +42,10 @@ Darwinator.Player.prototype.update = function() {
   }
 
   /*
-      If dashing, override manual controls and
-      just keep the values assigned in dash. Once
-      dash is completed, return to normal controls.
-  */
+   *  If dashing, override manual controls and
+   *  just keep the values assigned in dash. Once
+   *  dash is completed, return to normal controls.
+   */
   if (!!this.dashCounter) {
     this.dashCounter--;
     //Draw the sword outside the world to prevent it dragging behind player
@@ -55,10 +53,10 @@ Darwinator.Player.prototype.update = function() {
     this.sword.y = -50;
     this.game.physics.velocityFromAngle(this.direction, this.speed, this.body.velocity);
   } else {
-      this.speed = this.orgSpeed;
-      this.body.velocity.setTo(0,0);
-      var dir = [0,0];
-      var moving = false;
+    this.speed = this.origSpeed;
+    this.body.velocity.setTo(0,0);
+    var dir = [0,0];
+    var moving = false;
 
     if (this.cursors.left.isDown || this.leftKey.isDown) {
       dir[0] = -1;
@@ -175,6 +173,7 @@ Darwinator.Player.prototype.initKeys = function(game) {
   var checkTimer = function(key) {
     if (!!key.lastReleased && this.game.time.time - key.lastReleased < 200 && this.currBreath > 30) {
       this.dashCounter = 10;
+      this.origSpeed = this.speed;
       this.speed = 1000;
       this.currBreath -= 30;
       if (key === this.cursors.left || key === this.leftKey) {
@@ -217,6 +216,24 @@ Darwinator.Player.prototype.initKeys = function(game) {
   this.cursors.left.onDown.add(checkTimer, this);
 
   this.slashKey.onDown.add(meleeAttack, this);
+};
+
+Darwinator.Entity.prototype.updateAttributes = function() {
+  this.health         = Darwinator.PLAYER_BASE_HEALTH  + this.attributes.strength;
+  this.damage         = Darwinator.PLAYER_BASE_DAMAGE  + this.attributes.strength / 3;
+  this.speed          = Darwinator.PLAYER_BASE_SPEED   + this.attributes.agility * 2 - this.attributes.strength / 8;
+  this.stamina        = Darwinator.PLAYER_BASE_STAMINA + this.attributes.agility * 2 - this.attributes.strength / 5;
+  this.aim            = this.attributes.intellect; //Intended to define how well the enemy aims. 0 = "shitty" aim, 100 = "perfect" aim
+  this.criticalStrike = this.attributes.intellect / 100; //Critical strike percentage
+  this.currBreath     = this.stamina;
+
+  var red = 'color: red; font-weight: bold;';
+
+  console.log('%cUpdated player attributes! ', 'background: #222; color: #dc3');
+  console.log('\tHealth:  ' + '%c' + this.health,  red);
+  console.log('\tDamage:  ' + '%c' + this.damage,  red);
+  console.log('\tSpeed:   ' + '%c' + this.speed,   red);
+  console.log('\tStamina: ' + '%c' + this.stamina + '\n', red);
 };
 
 Darwinator.Player.prototype.initAnimations = function() {

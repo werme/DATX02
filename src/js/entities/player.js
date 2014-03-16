@@ -15,8 +15,8 @@ Darwinator.Player = function(game, x, y, cursors, health, strength, agility, int
   this.dashCounter = 0;
   this.sword       = null;
   this.attacking   = false;
-  this.attackTimer = null;
-};
+  this.origSpeed   = this.speed;
+}
 Darwinator.Player.prototype = Object.create(Darwinator.Entity.prototype);
 
 Darwinator.Player.prototype.update = function() {
@@ -37,10 +37,10 @@ Darwinator.Player.prototype.update = function() {
   }
 
   /*
-      If dashing, override manual controls and
-      just keep the values assigned in dash. Once
-      dash is completed, return to normal controls.
-  */
+   *  If dashing, override manual controls and
+   *  just keep the values assigned in dash. Once
+   *  dash is completed, return to normal controls.
+   */
   if (!!this.dashCounter) {
     this.dashCounter--;
     //Draw the sword outside the world to prevent it dragging behind player
@@ -48,9 +48,10 @@ Darwinator.Player.prototype.update = function() {
     this.sword.y = -50;
     this.game.physics.velocityFromAngle(this.direction, this.speed, this.body.velocity);
   } else {
-      this.body.velocity.setTo(0,0);
-      var dir = [0,0];
-      var moving = false;
+    this.speed = this.origSpeed;
+    this.body.velocity.setTo(0,0);
+    var dir = [0,0];
+    var moving = false;
 
     if (this.cursors.left.isDown || this.leftKey.isDown) {
       dir[0] = -1;
@@ -167,6 +168,7 @@ Darwinator.Player.prototype.initKeys = function(game) {
   var checkTimer = function(key) {
     if (!!key.lastReleased && this.game.time.time - key.lastReleased < 200 && this.currBreath > 30) {
       this.dashCounter = 10;
+      this.origSpeed = this.speed;
       this.speed = 1000;
       this.currBreath -= 30;
       if (key === this.cursors.left || key === this.leftKey) {
@@ -212,7 +214,6 @@ Darwinator.Player.prototype.initKeys = function(game) {
 };
 
 Darwinator.Entity.prototype.updateAttributes = function() {
-  console.log(this);
   this.health         = Darwinator.PLAYER_BASE_HEALTH  + this.attributes.strength;
   this.damage         = Darwinator.PLAYER_BASE_DAMAGE  + this.attributes.strength / 3;
   this.speed          = Darwinator.PLAYER_BASE_SPEED   + this.attributes.agility * 2 - this.attributes.strength / 8;

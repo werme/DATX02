@@ -214,6 +214,18 @@ Darwinator.Player.prototype.initKeys = function(game) {
   this.slashKey.onDown.add(meleeAttack, this);
 };
 
+Darwinator.Entity.prototype.updateAttributes = function() {
+  this.health         = Darwinator.PLAYER_BASE_HEALTH  + this.attributes.strength;
+  this.damage         = Darwinator.PLAYER_BASE_DAMAGE  + this.attributes.strength / 3;
+  this.speed          = Darwinator.PLAYER_BASE_SPEED   + this.attributes.agility * 2 - this.attributes.strength / 8;
+  this.stamina        = Darwinator.PLAYER_BASE_STAMINA + this.attributes.agility * 2 - this.attributes.strength / 5;
+  this.aim            = this.attributes.intellect; //Intended to define how well the enemy aims. 0 = "shitty" aim, 100 = "perfect" aim
+  this.criticalStrike = this.attributes.intellect / 100; //Critical strike percentage
+  this.currBreath     = this.stamina;
+
+  console.log("Updated player attributes.");
+};
+
 Darwinator.Player.prototype.initAnimations = function() {
   var anims = [['walk-left', [8,9,10,11], 10, true], ['walk-right', [12,13,14,15], 10, true],
                ['walk-up', [0,1,2,3], 10, true], ['walk-down', [4,5,6,7], 10, true]];

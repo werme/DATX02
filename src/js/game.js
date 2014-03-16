@@ -91,8 +91,6 @@ Darwinator.GameState.prototype = {
     this.numberOfEnemies = 10;
   },
 
-  
-
   spawnPlayer: function (x, y) {
 
     // Instanciate new player or reset existing.

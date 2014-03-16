@@ -28,8 +28,4 @@ Darwinator.Boot.prototype = {
     this.game.state.start('preloader');
   },
 
-  togglePause: function() {
-    this.game.paused = !this.game.paused;
-  }
-
 };

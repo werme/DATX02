@@ -1,22 +1,24 @@
 'use strict';
 
 Darwinator.GameState = function() {
-  this.enemies  = null;
-  this.bullets  = null;
-  this.cursors  = null;
-  this.tileset  = null;
-  this.layer    = null;
-  this.fps      = null;
-  this.stats    = null;
-  this.health   = null;
-  this.secondsRemaining = null;
-  this.enemiesRemaining = null;
-  this.pauseText = null;
-  this.spawnPositions = [];
-  this.roundLengthSeconds = 60;
+
+  this.enemies               = null;
+  this.bullets               = null;
+  this.cursors               = null;
+  this.tileset               = null;
+  this.layer                 = null;
+  this.fps                   = null;
+  this.stats                 = null;
+  this.health                = null;
+  this.secondsRemaining      = null;
+  this.enemiesRemaining      = null;
+  this.pauseText             = null;
   this.roundSecondsRemaining = null;
-  this.endRoundTimer = null;
-  this.displayTimeLeftTimer = null;
+  this.endRoundTimer         = null;
+  this.displayTimeLeftTimer  = null;
+
+  this.spawnPositions        = [];
+  this.roundLengthSeconds    = 60;
 }
 
 Darwinator.GameState.prototype = {
@@ -43,7 +45,7 @@ Darwinator.GameState.prototype = {
     this.spawnPlayer(160, 620);
     this.level.spawnEnemies();
     this.enemies = this.level.enemies;
-    
+
     // Renders the non-collidable top layer on top of player and enemies.
     this.level.addTopLayer();
 
@@ -83,12 +85,12 @@ Darwinator.GameState.prototype = {
     this.startTimers();
   },
 
-  displayTimer: function(){ //callback to update time remaining display every second
+  displayTimer: function () { //callback to update time remaining display every second
     this.roundSecondsRemaining--;
     this.secondsRemaining.content = 'Seconds remaining: ' + this.roundSecondsRemaining;
   },
 
-  startTimers: function(){
+  startTimers: function () {
     // end round when the time limit is reached
     this.endRoundTimer = this.game.time.events.add(Phaser.Timer.SECOND * this.roundLengthSeconds, this.endRound, this);
     // display seconds remaining until round ends
@@ -96,7 +98,7 @@ Darwinator.GameState.prototype = {
     this.displayTimeLeftTimer = this.game.time.events.repeat(Phaser.Timer.SECOND, this.roundLengthSeconds, this.displayTimer, this);
   },
 
-  stopTimers: function(){
+  stopTimers: function () {
     this.game.time.events.remove(this.endRoundTimer);
     this.game.time.events.remove(this.displayTimeLeftTimer);
   },
@@ -170,8 +172,8 @@ Darwinator.GameState.prototype = {
     }
   },
 
-  checkBulletSpeed: function(bullet){
-    if(!bullet){
+  checkBulletSpeed: function (bullet) {
+    if (!bullet) {
       console.log('checkBulletSpeed: Undefined bullet');
       return;
     }
@@ -187,11 +189,15 @@ Darwinator.GameState.prototype = {
     }
   },
 
-  bulletCollisionHandler: function(bullet, target){
+  bulletCollisionHandler: function (bullet, target) {
     if (target instanceof Darwinator.Enemy) {
       target.takeDamage(this.game.player.damage);
     }
     bullet.kill();
+  },
+
+  togglePause: function() {
+    this.game.paused = !this.game.paused;
   },
 
   endRound: function() {

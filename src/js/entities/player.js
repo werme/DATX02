@@ -231,11 +231,11 @@ Darwinator.Player.prototype.initKeys = function (game) {
 Darwinator.Entity.prototype.updateAttributes = function () {
 
   this.health         = Darwinator.PLAYER_BASE_HEALTH  + this.attributes.strength;
-  this.damage         = Darwinator.PLAYER_BASE_DAMAGE  + this.attributes.strength / 3;
-  this.speed          = Darwinator.PLAYER_BASE_SPEED   + this.attributes.agility * 2 - this.attributes.strength / 8;
+  this.damage         = Darwinator.PLAYER_BASE_DAMAGE  + this.attributes.strength;
+  this.speed          = Darwinator.PLAYER_BASE_SPEED   + this.attributes.agility * 3 - this.attributes.strength;
   this.stamina        = Darwinator.PLAYER_BASE_STAMINA + this.attributes.agility * 2 - this.attributes.strength / 5;
-  this.aim            = this.attributes.intellect; //Intended to define how well the enemy aims. 0 = "shitty" aim, 100 = "perfect" aim
-  this.criticalStrike = this.attributes.intellect / 100; //Critical strike percentage
+  this.aim            = this.attributes.intellect; // Intended to define how well the enemy aims. 0 = "shitty" aim, 100 = "perfect" aim
+  this.criticalStrike = this.attributes.intellect / 100; // Critical strike percentage
   this.currBreath     = this.stamina;
   this.currentSpeed   = this.speed;
 

@@ -1,13 +1,17 @@
 'use strict';
 
-Darwinator.Player = function(game, x, y, cursors, health, strength, agility, intellect) {
-  Darwinator.Entity.call(this, game, x, y, 'player', health, strength, agility, intellect);
+Darwinator.Player = function(game, x, y, cursors) {
+  Darwinator.Entity.call(this, game, x, y, 'player');
   this.cursors = cursors;
   this.anchor.setTo(0.5, 0.5);
   this.body.maxVelocity.setTo(50, 50);
   this.initKeys(game);
   this.initAnimations();
   this.updateAttributes();
+
+  this.attributes.strength  = Darwinator.PLAYER_BASE_STRENGTH;
+  this.attributes.agility   = Darwinator.PLAYER_BASE_AGILITY;
+  this.attributes.intellect = Darwinator.PLAYER_BASE_INTELLECT;
 
   this.weapon      = null;
   this.dashTimer   = null;

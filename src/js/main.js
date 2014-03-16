@@ -35,6 +35,7 @@ window.Darwinator = window.Darwinator || {
   TILE_HEIGHT: 0,
 
   MENU_BACKGROUND_COLOR: 0x222d42,
+  HEALTHBAR_BACKGROUND_COLOR: 0xff0000,
 
   setTileSize: function(w,h) {
     this.TILE_WIDTH = w;

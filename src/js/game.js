@@ -61,6 +61,18 @@ Darwinator.GameState.prototype = {
     this.game.player.weapon = new window.Darwinator.Weapon(this.game, 0, 0,
     Darwinator.PLAYER_RANGE_WEAPON_BASE_COOLDOWN, 500, this.bullets, 10, this.game.player);
 
+    this.displayGUI();
+
+    this.startTimers();
+  },
+
+  displayTimer: function () { // Callback to update time remaining display every second
+    this.roundSecondsRemaining--;
+    this.secondsRemaining.content = 'Seconds remaining: ' + this.roundSecondsRemaining;
+  },
+
+  displayGUI: function () {
+    
     // For development only
     var style = { font: '16px monospace', fill: '#fff' };
     this.fps = this.game.add.text(16, 16, 'FPS: 0', style);
@@ -81,13 +93,6 @@ Darwinator.GameState.prototype = {
 
     this.gameOver = this.game.add.text(this.game.width / 2, this.game.height / 2, '', {fontSize: '48px', fill:'#F08'});
     this.gameOver.fixedToCamera = true;
-
-    this.startTimers();
-  },
-
-  displayTimer: function () { //callback to update time remaining display every second
-    this.roundSecondsRemaining--;
-    this.secondsRemaining.content = 'Seconds remaining: ' + this.roundSecondsRemaining;
   },
 
   startTimers: function () {

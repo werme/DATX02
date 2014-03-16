@@ -5,7 +5,10 @@ Darwinator.Weapon = function (game, x, y, coolDown, bulletSpeed, bullets, damage
 
   this.x           = x;
   this.y           = y;
-  this.coolDown    = coolDown;
+
+  var baseCoolDown = Darwinator.PLAYER_RANGE_WEAPON_BASE_COOLDOWN - game.player.attributes.intellect * 20;
+  this.coolDown    = baseCoolDown > 200 ? baseCoolDown : 100;
+  
   this.nextFire    = 0;
   this.bullets     = bullets;
   this.bulletSpeed = bulletSpeed;

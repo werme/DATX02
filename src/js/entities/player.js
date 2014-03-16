@@ -9,13 +9,13 @@ Darwinator.Player = function(game, x, y, cursors, health, strength, agility, int
   this.initAnimations();
   this.updateAttributes();
 
-  this.weapon        = null;
-  this.dashTimer     = null;
-  this.direction     = 90;
-  this.dashCounter   = 0;
-  this.sword         = null;
-  this.attacking     = false;
-  this.attackTimer   = null;
+  this.weapon      = null;
+  this.dashTimer   = null;
+  this.direction   = 90;
+  this.dashCounter = 0;
+  this.sword       = null;
+  this.attacking   = false;
+  this.attackTimer = null;
 };
 Darwinator.Player.prototype = Object.create(Darwinator.Entity.prototype);
 

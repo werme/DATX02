@@ -54,7 +54,6 @@ Darwinator.GameState.prototype = {
 
     this.game.player.weapon = new window.Darwinator.Weapon(this.game, 0, 0, Darwinator.PLAYER_RANGE_WEAPON_BASE_COOLDOWN, 1000, this.bullets, 10);
 
-
     // For development only
     var style = { font: '16px monospace', fill: '#fff' };
     this.fps = this.game.add.text(16, 16, 'FPS: 0', style);

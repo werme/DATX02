@@ -2,18 +2,16 @@
 
 Darwinator.Player = function(game, x, y, cursors, health, strength, agility, intellect) {
   Darwinator.Entity.call(this, game, x, y, 'player', health, strength, agility, intellect);
-
   this.cursors = cursors;
-  // this.scale.setTo(2,2);
   this.anchor.setTo(0.5, 0.5);
   this.body.maxVelocity.setTo(50, 50);
   this.initKeys(game);
   this.initAnimations();
+  this.updateAttributes();
 
   this.weapon        = null;
   this.dashTimer     = null;
   this.direction     = 90;
-  this.orgSpeed      = this.speed;
   this.dashCounter   = 0;
   this.sword         = null;
   this.attacking     = false;
@@ -50,7 +48,6 @@ Darwinator.Player.prototype.update = function() {
     this.sword.y = -50;
     this.game.physics.velocityFromAngle(this.direction, this.speed, this.body.velocity);
   } else {
-      this.speed = this.orgSpeed;
       this.body.velocity.setTo(0,0);
       var dir = [0,0];
       var moving = false;
@@ -215,6 +212,7 @@ Darwinator.Player.prototype.initKeys = function(game) {
 };
 
 Darwinator.Entity.prototype.updateAttributes = function() {
+  console.log(this);
   this.health         = Darwinator.PLAYER_BASE_HEALTH  + this.attributes.strength;
   this.damage         = Darwinator.PLAYER_BASE_DAMAGE  + this.attributes.strength / 3;
   this.speed          = Darwinator.PLAYER_BASE_SPEED   + this.attributes.agility * 2 - this.attributes.strength / 8;
@@ -223,7 +221,11 @@ Darwinator.Entity.prototype.updateAttributes = function() {
   this.criticalStrike = this.attributes.intellect / 100; //Critical strike percentage
   this.currBreath     = this.stamina;
 
-  console.log("Updated player attributes.");
+  console.log('%c Updated player attributes! ', 'background: #222; color: #dc3');
+  console.log('Health:\t\t'  + this.health);
+  console.log('Damage:\t\t'  + this.damage);
+  console.log('Speed:\t\t'   + this.speed);
+  console.log('Stamina:\t'   + this.stamina);
 };
 
 Darwinator.Player.prototype.initAnimations = function() {

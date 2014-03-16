@@ -27,19 +27,24 @@ Darwinator.GameState.prototype = {
     var cheatKey = this.game.input.keyboard.addKey(Phaser.Keyboard.E);
     cheatKey.onDown.add(this.endRound, this);
 
+    // Toggle pause with space
+    var key = this.game.input.keyboard.addKey(Phaser.Keyboard.P);
+    key.onDown.add(this.togglePause, this);
+
     this.initPauseOverlay();
 
     // Since states by default lack a callback for the resume event.
     this.game.onResume.add(this.resumed, this);
 
-    //initiate level & spawn enemies and player
-    //TODO group these to make the order constant.
+    // Initiate level & spawn enemies and player
+    // TODO group these to make the order constant.
     this.level = new Darwinator.Level(this.game);
     this.layer = this.level.layer;
     this.spawnPlayer(160, 620);
     this.level.spawnEnemies();
     this.enemies = this.level.enemies;
-    //renders the non-collidable top layer on top of player and enemies.
+    
+    // Renders the non-collidable top layer on top of player and enemies.
     this.level.addTopLayer();
 
     // TODO move bullets to separate class
@@ -52,7 +57,7 @@ Darwinator.GameState.prototype = {
     this.bullets.setAll('outOfBoundsKill', true);
 
     this.game.player.weapon = new window.Darwinator.Weapon(this.game, 0, 0,
-      Darwinator.PLAYER_RANGE_WEAPON_BASE_COOLDOWN, 1000, this.bullets, 10, this.game.player);
+    Darwinator.PLAYER_RANGE_WEAPON_BASE_COOLDOWN, 1000, this.bullets, 10, this.game.player);
 
     // For development only
     var style = { font: '16px monospace', fill: '#fff' };

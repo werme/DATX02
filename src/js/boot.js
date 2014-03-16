@@ -11,10 +11,6 @@ Darwinator.Boot.prototype = {
   create: function () {
     this.game.input.maxPointers = 1;
 
-    // Toggle pause with space
-    var key = this.game.input.keyboard.addKey(Phaser.Keyboard.P);
-    key.onDown.add(this.togglePause, this);
-
     // this.game.stage.disableVisibilityChange = true;
 
     if (this.game.device.desktop) {

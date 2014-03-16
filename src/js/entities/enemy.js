@@ -75,7 +75,7 @@ Darwinator.Enemy.prototype.update = function() {
   }
 
   if (this.health <= 0 && this.alive){
-    console.log('died');
+    console.log('%c Enemy killed by player! ', 'background: black; color: orange');
     this.kill();
   }
 

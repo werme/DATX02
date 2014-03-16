@@ -24,6 +24,7 @@ Darwinator.Player = function(game, x, y, cursors) {
 Darwinator.Player.prototype = Object.create(Darwinator.Entity.prototype);
 
 Darwinator.Player.prototype.update = function () {
+  
   if (this.weapon !== null) {
     this.weapon.updateManually(this.x, this.y);
   }
@@ -228,6 +229,7 @@ Darwinator.Player.prototype.initKeys = function (game) {
 };
 
 Darwinator.Entity.prototype.updateAttributes = function () {
+
   this.health         = Darwinator.PLAYER_BASE_HEALTH  + this.attributes.strength;
   this.damage         = Darwinator.PLAYER_BASE_DAMAGE  + this.attributes.strength / 3;
   this.speed          = Darwinator.PLAYER_BASE_SPEED   + this.attributes.agility * 2 - this.attributes.strength / 8;
@@ -237,9 +239,15 @@ Darwinator.Entity.prototype.updateAttributes = function () {
   this.currBreath     = this.stamina;
   this.currentSpeed   = this.speed;
 
-  var red = 'color: red; font-weight: bold;';
+  var red   = 'color: red; font-weight: bold;';
+  var green = 'color: #02c;';
 
   console.log('%c Updated player attributes! ', 'background: #222; color: #dc3');
+
+  console.log('%c\tStrength:  ' + this.attributes.strength,  green);
+  console.log('%c\tAgility:   ' + this.attributes.agility,   green);
+  console.log('%c\tIntellect: ' + this.attributes.intellect, green);
+
   console.log('\tHealth:  ' + '%c' + this.health,  red);
   console.log('\tDamage:  ' + '%c' + this.damage,  red);
   console.log('\tSpeed:   ' + '%c' + this.speed,   red);

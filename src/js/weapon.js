@@ -23,7 +23,8 @@
       if (this.game.time.now > this.nextFire && this.bullets.countDead() > 0){
           this.nextFire = this.game.time.now + this.coolDown;
           var bullet    = this.bullets.getFirstDead();
-          this.resetBullet(bullet, x, y);
+          bullet.target = {x: x, y: y};
+          this.resetBullet(bullet);
       }
     },
 
@@ -33,9 +34,9 @@
       return perfAngle;
     },
 
-    resetBullet: function(bullet, x, y){
+    resetBullet: function(bullet){
       bullet.reset(this.x, this.y); // resets sprite and body
-      var angle = this.takeAim(x, y);
+      var angle = this.takeAim(bullet.target.x, bullet.target.y);
       bullet.rotation = angle;
       this.game.physics.velocityFromRotation(angle, this.bulletSpeed, bullet.body.velocity);
     }

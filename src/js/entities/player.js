@@ -222,11 +222,13 @@ Darwinator.Entity.prototype.updateAttributes = function() {
   this.criticalStrike = this.attributes.intellect / 100; //Critical strike percentage
   this.currBreath     = this.stamina;
 
-  console.log('%c Updated player attributes! ', 'background: #222; color: #dc3');
-  console.log('Health:\t\t'  + this.health);
-  console.log('Damage:\t\t'  + this.damage);
-  console.log('Speed:\t\t'   + this.speed);
-  console.log('Stamina:\t'   + this.stamina);
+  var red = 'color: red; font-weight: bold;';
+
+  console.log('%cUpdated player attributes! ', 'background: #222; color: #dc3');
+  console.log('\tHealth:  ' + '%c' + this.health,  red);
+  console.log('\tDamage:  ' + '%c' + this.damage,  red);
+  console.log('\tSpeed:   ' + '%c' + this.speed,   red);
+  console.log('\tStamina: ' + '%c' + this.stamina + '\n', red);
 };
 
 Darwinator.Player.prototype.initAnimations = function() {

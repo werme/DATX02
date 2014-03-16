@@ -13,7 +13,7 @@ Darwinator.GameState = function() {
   this.enemiesRemaining = null;
   this.pauseText = null;
   this.spawnPositions = [];
-  this.roundLengthSeconds = 60; 
+  this.roundLengthSeconds = 60;
   this.roundSecondsRemaining = null;
   this.endRoundTimer = null;
   this.displayTimeLeftTimer = null;
@@ -50,9 +50,9 @@ Darwinator.GameState.prototype = {
     this.bullets.setAll('scale.x', 0.1);
     this.bullets.setAll('scale.y', 0.1);
     this.bullets.setAll('outOfBoundsKill', true);
-    this.bullets.setAll('name', 'bullet');
 
-    this.game.player.weapon = new window.Darwinator.Weapon(this.game, 0, 0, Darwinator.PLAYER_RANGE_WEAPON_BASE_COOLDOWN, 1000, this.bullets, 10);
+    this.game.player.weapon = new window.Darwinator.Weapon(this.game, 0, 0,
+      Darwinator.PLAYER_RANGE_WEAPON_BASE_COOLDOWN, 1000, this.bullets, 10, this.game.player);
 
     // For development only
     var style = { font: '16px monospace', fill: '#fff' };
@@ -162,7 +162,7 @@ Darwinator.GameState.prototype = {
       } else {
         console.log('No melee damage was dealt');
       }
-    } 
+    }
   },
 
   checkBulletSpeed: function(bullet){
@@ -170,7 +170,7 @@ Darwinator.GameState.prototype = {
       console.log('checkBulletSpeed: Undefined bullet');
       return;
     }
-    var speed = Math.sqrt(  (bullet.body.velocity.x * bullet.body.velocity.x) 
+    var speed = Math.sqrt(  (bullet.body.velocity.x * bullet.body.velocity.x)
                           + (bullet.body.velocity.y * bullet.body.velocity.y));
     var tolerance = 0.1;
     if(Math.abs(speed - this.game.player.weapon.bulletSpeed) > tolerance){ //illegal speed
@@ -182,22 +182,9 @@ Darwinator.GameState.prototype = {
     }
   },
 
-  bulletCollisionHandler: function(obj1, obj2){
-    var bullet;
-
-    if (obj1.name === 'bullet') {
-      bullet = obj1;
-      if (obj2 instanceof Darwinator.Enemy) {
-        obj2.takeDamage(this.game.player.damage);
-      }
-    } else if (obj2.name === 'bullet') {
-      bullet = obj2;
-      if (obj1 instanceof Darwinator.Enemy) {
-        obj1.takeDamage(this.game.player.damage);
-      }
-    } else {
-      console.log('A bullet collision without bullets occurred. That\'s odd.');
-      return;
+  bulletCollisionHandler: function(bullet, target){
+    if (target instanceof Darwinator.Enemy) {
+      target.takeDamage(this.game.player.damage);
     }
     bullet.kill();
   },

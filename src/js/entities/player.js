@@ -36,6 +36,11 @@ Darwinator.Player.prototype.update = function () {
     addSword(this);
   }
 
+  var pointer = this.game.input.activePointer;
+  if (pointer.isDown){
+    this.weapon.fire(pointer.worldX, pointer.worldY);
+  }
+
   /*
    *  If dashing, override manual controls and
    *  just keep the values assigned in dash. Once

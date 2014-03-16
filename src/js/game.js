@@ -13,8 +13,8 @@ Darwinator.GameState = function() {
   this.enemiesRemaining = null;
   this.pauseText = null;
   this.spawnPositions = [];
-  this.roundLengthSeconds = 60; 
-  this.roundSecondsPassed = 0;
+  this.roundLengthSeconds = 10; 
+  this.roundSecondsRemaining = null;
   this.endRoundTimer = null;
   this.displayTimeLeftTimer = null;
 }
@@ -76,15 +76,20 @@ Darwinator.GameState.prototype = {
     this.gameOver = this.game.add.text(this.game.width / 2, this.game.height / 2, '', {fontSize: '48px', fill:'#F08'});
     this.gameOver.fixedToCamera = true;
 
-    // end round when the time limit is reached
-    this.endRoundTimer = this.game.time.events.add(Phaser.Timer.SECOND * this.roundLengthSeconds, this.endRound, this);
-    this.roundSecondsPassed = 0;
-    this.displayTimeLeftTimer = this.game.time.events.repeat(Phaser.Timer.SECOND, this.roundLengthSeconds, this.displayTimer, this);
+    this.startTimers();
   },
 
   displayTimer: function(){ //callback to update time remaining display every second
-    this.roundSecondsPassed++;
-    this.secondsRemaining.content = 'Seconds remaining: ' + (this.roundLengthSeconds - this.roundSecondsPassed);
+    this.roundSecondsRemaining--;
+    this.secondsRemaining.content = 'Seconds remaining: ' + this.roundSecondsRemaining;
+  },
+
+  startTimers: function(){
+    // end round when the time limit is reached
+    this.endRoundTimer = this.game.time.events.add(Phaser.Timer.SECOND * this.roundLengthSeconds, this.endRound, this);
+    // display seconds remaining until round ends
+    this.roundSecondsRemaining = this.roundLengthSeconds;
+    this.displayTimeLeftTimer = this.game.time.events.repeat(Phaser.Timer.SECOND, this.roundLengthSeconds, this.displayTimer, this);
   },
 
   stopTimers: function(){

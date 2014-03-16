@@ -63,7 +63,7 @@ Darwinator.Enemy.prototype.update = function() {
     if (crit < 0){
       this.damageDone += this.damage*2;
       this.target.takeDamage(this.damage*2);
-      console.log('CRIT!');
+      console.log('%c Enemy made a critical hit! ', 'background: red; color: white');
     } else {
       this.damageDone += this.damage;
       this.target.takeDamage(this.damage);

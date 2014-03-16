@@ -17,6 +17,7 @@ Darwinator.Player = function(game, x, y, cursors, health, strength, agility, int
   this.attacking   = false;
   this.origSpeed   = this.speed;
 }
+
 Darwinator.Player.prototype = Object.create(Darwinator.Entity.prototype);
 
 Darwinator.Player.prototype.update = function() {
@@ -171,7 +172,7 @@ Darwinator.Player.prototype.initKeys = function(game) {
   this.slashKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
   var checkTimer = function(key) {
-    if (!!key.lastReleased && this.game.time.time - key.lastReleased < 200 && this.currBreath > 30) {
+    if (!this.isDashing() && !!key.lastReleased && this.game.time.time - key.lastReleased < 200 && this.currBreath > 30) {
       this.dashCounter = 10;
       this.origSpeed = this.speed;
       this.speed = 1000;
@@ -218,7 +219,7 @@ Darwinator.Player.prototype.initKeys = function(game) {
   this.slashKey.onDown.add(meleeAttack, this);
 };
 
-Darwinator.Entity.prototype.updateAttributes = function() {
+Darwinator.Entity.prototype.updateAttributes = function () {
   this.health         = Darwinator.PLAYER_BASE_HEALTH  + this.attributes.strength;
   this.damage         = Darwinator.PLAYER_BASE_DAMAGE  + this.attributes.strength / 3;
   this.speed          = Darwinator.PLAYER_BASE_SPEED   + this.attributes.agility * 2 - this.attributes.strength / 8;
@@ -229,16 +230,20 @@ Darwinator.Entity.prototype.updateAttributes = function() {
 
   var red = 'color: red; font-weight: bold;';
 
-  console.log('%cUpdated player attributes! ', 'background: #222; color: #dc3');
+  console.log('%c Updated player attributes! ', 'background: #222; color: #dc3');
   console.log('\tHealth:  ' + '%c' + this.health,  red);
   console.log('\tDamage:  ' + '%c' + this.damage,  red);
   console.log('\tSpeed:   ' + '%c' + this.speed,   red);
   console.log('\tStamina: ' + '%c' + this.stamina + '\n', red);
 };
 
-Darwinator.Player.prototype.initAnimations = function() {
+Darwinator.Player.prototype.initAnimations = function () {
   var anims = [['walk-left', [8,9,10,11], 10, true], ['walk-right', [12,13,14,15], 10, true],
                ['walk-up', [0,1,2,3], 10, true], ['walk-down', [4,5,6,7], 10, true]];
 
   this.setAnimations(anims);
 };
+
+Darwinator.Player.prototype.isDashing = function () {
+  return this.dashCounter > 0;
+}

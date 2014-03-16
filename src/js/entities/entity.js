@@ -24,24 +24,20 @@ Darwinator.Entity = function(game, x, y, key, health, strength, agility, intelle
     intellect : !!intellect ? intellect : 0
   }
 
-  this.updateAttributes();
-};
+  var baseHealth = !!health ? health : Darwinator.ENTITY_BASE_HEALTH;
 
-Darwinator.Entity.prototype = Object.create(Phaser.Sprite.prototype);
-
-Darwinator.Entity.prototype.update = function() {};
-
-Darwinator.Entity.prototype.updateAttributes = function() {
-  this.health         = Darwinator.ENTITY_BASE_HEALTH  + this.attributes.strength;
+  this.health         = baseHealth + this.attributes.strength;
   this.damage         = Darwinator.ENTITY_BASE_DAMAGE  + this.attributes.strength / 3;
   this.speed          = Darwinator.ENTITY_BASE_SPEED   + this.attributes.agility - this.attributes.strength / 8;
   this.stamina        = Darwinator.ENTITY_BASE_STAMINA + this.attributes.agility * 2 - this.attributes.strength / 5;
   this.aim            = this.attributes.intellect; //Intended to define how well the enemy aims. 0 = "shitty" aim, 100 = "perfect" aim
   this.criticalStrike = this.attributes.intellect / 100; //Critical strike percentage
   this.currBreath     = this.stamina;
-
-  console.log("Updated entity attributes.");
 };
+
+Darwinator.Entity.prototype = Object.create(Phaser.Sprite.prototype);
+
+Darwinator.Entity.prototype.update = function() {};
 
 Darwinator.Entity.prototype.takeDamage = function(amount) {
   this.health = this.health - amount;

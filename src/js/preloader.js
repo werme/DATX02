@@ -21,6 +21,7 @@ Darwinator.Preloader.prototype = {
     this.load.tilemap('level1', 'assets/level2.json', null, Phaser.Tilemap.TILED_JSON);
     this.game.load.image('tiles', 'assets/landscape.png');
     this.load.image('sword','assets/sword.png');
+    this.load.image('arrow','assets/arrow.png');
     this.load.spritesheet('player', 'assets/darwin.png', 32, 32, 16);
     this.game.load.image('plus-button', 'assets/plus-button.png');
     this.load.spritesheet('continue-game-button', 'assets/continue-game-button.png', 322, 66, 2);

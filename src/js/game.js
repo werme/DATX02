@@ -145,7 +145,6 @@ Darwinator.GameState.prototype = {
     this.game.physics.collide(this.enemies, this.game.player.sword, this.meleeAttack, null, this);
     this.game.physics.collide(this.game.player, this.layer);
     this.game.physics.collide(this.enemies, this.layer);
-    this.game.physics.collide(this.enemies);
     this.game.physics.collide(this.bullets, this.enemies, this.bulletCollisionHandler, null, this);
     this.game.physics.collide(this.bullets, this.layer, this.bulletCollisionHandler, null, this);
     this.bullets.forEachAlive(this.checkBulletSpeed, this); //workaround for misbehaving bullets..

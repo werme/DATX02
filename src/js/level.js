@@ -20,7 +20,7 @@ Darwinator.Level.prototype = {
     Darwinator.setTileSize(this.map.tileWidth, this.map.tileHeight);
 
     // TODO For debug only
-    this.layer.debug = true;
+    this.layer.debug = false;
 
     this.map.collisionLayer = this.layer;
   	this.map.setCollisionByExclusion([1337, 168, 156, 157, 158, 172, 173, 174, 188, 189, 190, 205]);

@@ -151,7 +151,7 @@ Darwinator.GameState.prototype = {
 
     // For development only
     this.fps.content = 'FPS: ' + this.game.time.fps;
-    this.stats.content = 'Player stamina: ' + Math.round(this.game.player.currBreath) + '/' + this.game.player.stamina;
+    this.stats.content = 'Player stamina: ' + Math.round(this.game.player.currBreath) + '/' + Math.round(this.game.player.stamina);
     this.health.content = 'Health: ' + Math.round(this.game.player.health);
     this.enemiesRemaining.content = 'Enemies remaining: ' + this.enemies.countLiving();
 

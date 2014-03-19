@@ -19,7 +19,7 @@ Darwinator.GameState = function() {
 
   this.spawnPositions        = [];
   this.roundLengthSeconds    = 60;
-}
+};
 
 Darwinator.GameState.prototype = {
 
@@ -72,7 +72,7 @@ Darwinator.GameState.prototype = {
   },
 
   displayGUI: function () {
-    
+
     // For development only
     var style = { font: '16px monospace', fill: '#fff' };
     this.fps = this.game.add.text(16, 16, 'FPS: 0', style);
@@ -181,8 +181,8 @@ Darwinator.GameState.prototype = {
       console.log('checkBulletSpeed: Undefined bullet');
       return;
     }
-    var speed = Math.sqrt(  (bullet.body.velocity.x * bullet.body.velocity.x)
-                          + (bullet.body.velocity.y * bullet.body.velocity.y));
+    var speed = Math.sqrt( (bullet.body.velocity.x * bullet.body.velocity.x) +
+                           (bullet.body.velocity.y * bullet.body.velocity.y) );
     var tolerance = 0.1;
     if(Math.abs(speed - this.game.player.weapon.bulletSpeed) > tolerance){ // Illegal speed
       if(bullet.x === this.game.player.weapon.x && bullet.y === this.game.player.weapon.y){ // bullet didn't reset properly on revival

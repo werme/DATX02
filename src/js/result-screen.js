@@ -29,10 +29,9 @@ Darwinator.ResultScreen.prototype = {
         this.initAttributes(this.game.player.attributes);
         this.initButtons();
 
-        var styling = { font: '16px minecraftia', align: 'center' },
-            text    = "Points left to spend: " + this.unspentPoints;
-        this.unspentPointsText = this.add.bitmapText(this.game.width/2, 90, text, styling);
-        this.unspentPointsText.anchor.setTo(0.5, 0.5);
+        var text = "Points left to spend: " + this.unspentPoints;
+        this.unspentPointsText = this.add.bitmapText(this.game.width/2, 90, 'minecraftia', text, 16);
+        // this.unspentPointsText.anchor.setTo(0.5, 0.5);
 
         // Setup done button
         this.continueGameButton = this.game.add.button(this.game.width/2, this.game.height - 100, 'continue-game-button', this.continueGame, this, 1, 0, 1);
@@ -42,14 +41,13 @@ Darwinator.ResultScreen.prototype = {
     initAttributes: function (attributes) {
         var x       = this.game.width  / 2 - 70,
             y       = 170,
-            styling = { font: '20px minecraftia', align: 'center' },
             text;
 
         // TODO: Doesn't ensure order.
         for (var attribute in attributes) {
             if (attributes.hasOwnProperty(attribute)) {
                 text = attribute + ": " + attributes[attribute];
-                this.attributes[attribute] = this.add.bitmapText(x, y, text, styling);
+                this.attributes[attribute] = this.add.bitmapText(x, y, 'minecraftia', text, 20);
                 this.attributes[attribute].fixedToCamera = true;
                 y += 42; // Render the next attribute on a new line.
             }
@@ -84,7 +82,7 @@ Darwinator.ResultScreen.prototype = {
         // Increment attribute.
         this.game.player.attributes[attribute] += 1;
         console.log("Incremented player " + attribute + " to " + this.game.player.attributes[attribute] + ".");
-        
+
         // Update bitmap text.
         var text = attribute + ": " + this.game.player.attributes[attribute];
         this.attributes[attribute].setText(text);

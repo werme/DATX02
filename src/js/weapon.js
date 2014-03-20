@@ -28,7 +28,7 @@
   };
 
   Darwinator.Weapon.prototype.takeAim = function(x, y) {
-    var perfAngle = this.game.physics.angleToXY(this, x, y);
+    var perfAngle = this.game.physics.arcade.angleToXY(this, x, y);
     perfAngle += (Math.random() - 0.5) / (Math.round(this.owner.attributes.intellect / 5) + 1);
     return perfAngle;
   };
@@ -37,5 +37,5 @@
     bullet.reset(this.x, this.y); // resets sprite and body
     var angle = this.takeAim(bullet.target.x, bullet.target.y);
     bullet.rotation = angle;
-    this.game.physics.velocityFromRotation(angle, this.bulletSpeed, bullet.body.velocity);
+    this.game.physics.arcade.velocityFromRotation(angle, this.bulletSpeed, bullet.body.velocity);
   };

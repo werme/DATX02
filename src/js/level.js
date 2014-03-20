@@ -20,11 +20,11 @@ Darwinator.Level.prototype = {
     Darwinator.setTileSize(this.map.tileWidth, this.map.tileHeight);
 
     // TODO For debug only
-    this.layer.debug = false;
+    this.layer.debug = true;
 
     this.map.collisionLayer = this.layer;
-  	this.map.setCollisionByExclusion([1337, 168, 156, 157, 158, 172, 173, 174, 188, 189, 190, 205]);
-  	this.layer.resizeWorld();
+    this.map.setCollisionByExclusion([1, 168, 156, 157, 158, 172, 173, 174, 188, 189, 190, 205]);
+    this.layer.resizeWorld();
     this.initPathFinder();
   },
 
@@ -33,7 +33,7 @@ Darwinator.Level.prototype = {
     // Darwinator.Pathfinder.enableDiagonals();
     var indexes = Darwinator.Helpers.convertTileMap(this.layer.map.layers[0].data);
     Darwinator.Pathfinder.setGrid(indexes);
-    Darwinator.Pathfinder.setAcceptableTiles([1337, 168, 156, 157, 158, 172, 173, 174, 188, 189, 190, 205]);
+    Darwinator.Pathfinder.setAcceptableTiles([1, 168, 156, 157, 158, 172, 173, 174, 188, 189, 190, 205]);
   },
 
   spawnEnemies: function () {

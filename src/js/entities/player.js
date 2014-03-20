@@ -4,7 +4,6 @@ Darwinator.Player = function(game, x, y, cursors) {
   Darwinator.Entity.call(this, game, x, y, 'player');
   this.cursors = cursors;
   this.anchor.setTo(0.5, 0.5);
-  this.body.maxVelocity.setTo(50, 50);
   this.initKeys(game);
   this.initAnimations();
   this.updateAttributes();
@@ -17,8 +16,6 @@ Darwinator.Player = function(game, x, y, cursors) {
   this.dashTimer   = null;
   this.direction   = 90;
   this.dashCounter = 0;
-  this.sword       = null;
-  this.attacking   = false;
 }
 
 Darwinator.Player.prototype = Object.create(Darwinator.Entity.prototype);
@@ -27,17 +24,6 @@ Darwinator.Player.prototype.update = function () {
 
   if (this.weapon !== null) {
     this.weapon.updateManually(this.x, this.y);
-  }
-
-  var addSword = function(player) {
-    player.sword = new Phaser.Sprite(player.game, player.x+12, player.y+26, 'sword');
-    player.sword.angle = 180;
-    player.sword.anchor.setTo(0.5, 0.15);
-    player.game.add.existing(player.sword);
-  }
-
-  if (this.sword === null) {
-    addSword(this);
   }
 
   var pointer = this.game.input.activePointer;
@@ -52,10 +38,8 @@ Darwinator.Player.prototype.update = function () {
    */
   if (this.isDashing()) {
     this.dashCounter--;
-    // Draw the sword outside the world to prevent it dragging behind player
-    this.sword.x = -50;
-    this.sword.y = -50;
-    this.game.physics.velocityFromAngle(this.direction, this.currentSpeed, this.body.velocity);
+    this.game.physics.arcade.velocityFromAngle(this.direction, this.currentSpeed, this.body.velocity);
+    console.log(this.body.velocity);
   } else {
     this.currentSpeed = this.speed;
     this.body.velocity.setTo(0,0);
@@ -70,7 +54,7 @@ Darwinator.Player.prototype.update = function () {
       moving = true;
     }
     if (this.cursors.up.isDown || this.upKey.isDown) {
-      if (this.topLeft.y <= 0 || this.topRight.y <= 0) {
+      if (this.getBounds().y <= 0 || this.getBounds().y <= 0) { // top right
         this.body.velocity.y = 0;
       }
       dir[1] = 1;
@@ -83,31 +67,11 @@ Darwinator.Player.prototype.update = function () {
     if (!moving) {
       this.animations.stop();
       this.body.frame = 4;
-      if (this.direction === 0) {
-        //Right
-        this.sword.x = this.x+22;
-        this.sword.y = this.y-2;
-      } else if (this.direction === 90 || this.direction === 45 || this.direction === 135) {
-        //Down
-        this.sword.x = this.x+12;
-        this.sword.y = this.y+26;
-      } else if (this.direction === 180) {
-        //Left
-        this.sword.x = this.x-22;
-        this.sword.y = this.y-2;
-      } else if (this.direction === 270 || this.direction === 225 || this.direction === 315) {
-        this.sword.x = this.x-12;
-        this.sword.y = this.y-12;
-      }
     } else {
       //Going upwards
       if (dir[1] === 1) {
         this.direction = 270;
         this.animations.play('walk-up');
-        this.bringToTop();
-        this.sword.x = this.x-12;
-        this.sword.y = this.y-12;
-        this.sword.angle = 0;
         //Also going right or left
         if(dir[0] === 1) {
           this.direction = 315;
@@ -118,10 +82,6 @@ Darwinator.Player.prototype.update = function () {
       } else if (dir[1] === -1) {
         this.direction = 90;
         this.animations.play('walk-down');
-        this.sword.bringToTop();
-        this.sword.x = this.x+12;
-        this.sword.y = this.y+26;
-        this.sword.angle = 180;
         //Also going right or left
         if (dir[0] === 1) {
           this.direction = 45;
@@ -132,21 +92,13 @@ Darwinator.Player.prototype.update = function () {
       } else if (dir[0] === 1) {
         this.direction = 0;
         this.animations.play('walk-right');
-        this.bringToTop();
-        this.sword.x = this.x+22;
-        this.sword.y = this.y-2;
-        this.sword.angle = 60;
         //Going left
       } else if (dir[0] === -1) {
         this.direction = 180;
         this.animations.play('walk-left');
-        this.sword.bringToTop();
-        this.sword.x = this.x-22;
-        this.sword.y = this.y-2;
-        this.sword.angle = -60;
       }
-      //Set speed and angle
-      this.game.physics.velocityFromAngle(this.direction, this.currentSpeed, this.body.velocity);
+      // Set speed and angle
+      this.game.physics.arcade.velocityFromAngle(this.direction, this.currentSpeed, this.body.velocity);
     }
   }
   if (this.sprintKey.isDown && this.currBreath > 1 && moving) {
@@ -157,12 +109,8 @@ Darwinator.Player.prototype.update = function () {
   }
 
   if (this.health <= 0) {
-    //TODO Set to this.kill();
+    // TODO Set to this.kill();
     this.health = 100;
-  }
-
-  if (this.attacking && (this.attackTimer > (this.game.time.time - this.attackTimer + 300))) {
-    this.attacking = false;
   }
 };
 
@@ -173,12 +121,11 @@ Darwinator.Player.prototype.initKeys = function (game) {
   this.downKey   = game.input.keyboard.addKey(Phaser.Keyboard.S);
   this.rightKey  = game.input.keyboard.addKey(Phaser.Keyboard.D);
   this.sprintKey = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
-  this.slashKey  = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
   var checkTimer = function (key) {
-    
-    if (!this.isDashing() && !!key.lastReleased && this.game.time.time - key.lastReleased < 200 && this.currBreath > 30) {
-      
+
+    if (!this.isDashing() && !!key.lastReleased && this.game.time.now - key.lastReleased < 200 && this.currBreath > 30) {
+
       this.dashCounter = 10;
       this.currentSpeed = 1000;
       this.currBreath -= 30;
@@ -195,15 +142,8 @@ Darwinator.Player.prototype.initKeys = function (game) {
     }
   };
 
-  var addTimer = function(key) { 
-    key.lastReleased = this.game.time.time;
-  };
-
-  var meleeAttack = function(key) {
-    if (!this.attacking) {
-      this.attacking   = true;
-      this.attackTimer = this.game.time.time;
-    } 
+  var addTimer = function(key) {
+    key.lastReleased = this.game.time.now;
   };
 
   this.upKey.onUp.add(addTimer, this);
@@ -224,7 +164,6 @@ Darwinator.Player.prototype.initKeys = function (game) {
   this.cursors.right.onDown.add(checkTimer, this);
   this.cursors.left.onDown.add(checkTimer, this);
 
-  this.slashKey.onDown.add(meleeAttack, this);
 };
 
 Darwinator.Entity.prototype.updateAttributes = function () {

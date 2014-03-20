@@ -2,21 +2,24 @@
 
 window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
 
+  /*
+  * Make sure that:
+  * NUMBER_OF_GENES is divisible by NUMBER_OF_VARIABLES
+  */
   POPULATION_SIZE:          10,
   NUMBER_OF_GENES:          60, // NOTE with real-valued genes (number of genes)  = (number of variables)
   CROSSOVER_PROBABILITY:    0.8,
   MUTATION_PROBABILITY:     0.025,
   TOURNAMENT_PARAMETER:     0.75,
-  VARIABLE_RANGE:           100, // should be set to max attribute value (or 5 for exampleFunction)
+  VARIABLE_RANGE:           100, // should be set to max attribute value
   NUMBER_OF_GENERATIONS:    100,
-  NUMBER_OF_VARIABLES:      3, // set to number of attributes (or 2 for example function)
+  NUMBER_OF_VARIABLES:      3, // set to number of attributes
   TOURNAMENT_SIZE:          4,
   ELITISM_DEGREE:           1, // should probably be really high
 
   /**
-  * Generates a population of individuals from a given population or a randomly created one.
-  * The new population is likely to be more better adapted to find a solution to the given
-  * goal function.
+  * Generates a population of individuals from a given population. The new population is likely to be 
+  * more adapted to find a solution to the enemyScore() function.
   *
   * @method Darwinator.GeneticAlgorithm#generatePopulation
   * @param {Phaser.Game} [game] - The game that uses the algorithm.
@@ -86,7 +89,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   },
 
   /**
-  * Generates a binary encoded population at random.
+  * Generates a group of enemy sprites with some default values.
   *
   * @method Darwinator.GeneticAlgorithm#initPopulation
   * @param {Phaser.Group} [enemyGroup] - The enemy group to fill with enemies.
@@ -275,7 +278,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
                   .concat(this.attrToGenes(enemy.attributes.agility))
                   .concat(this.attrToGenes(enemy.attributes.intellect));
 
-    if(chrom.length !== this.NUMBER_OF_GENES){ // just in case
+    if(chrom.length !== this.NUMBER_OF_GENES){
       console.log('Illegal length of chromosome: ' + chrom.length);
     }else{
       return chrom;
@@ -283,7 +286,8 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   },
 
   /**
-  * Translates an enemy group of sprites to chromosomes and fitnessLevels.
+  * Translates an enemy group of sprites to chromosomes and fitness levels. 
+  * The index of the most fit individual is also provided.
   *
   * @method Darwinator.GeneticAlgorithm#translateEnemyWave
   * @param {Phaser.Group} - A group of enemy sprites
@@ -298,7 +302,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     for(var i = 0; i < currentSize; i++){
       var enemy     = enemyGroup.getAt(i);
       population[i] = this.enemyToChromosome(enemy);
-      fitness[i]    = this.evaluateInd(enemy); //eval score rather than strength etc.
+      fitness[i]    = this.evaluateInd(enemy);
       if(fitness[i] > fitness[bestIndex]){
         bestIndex = i;
       }

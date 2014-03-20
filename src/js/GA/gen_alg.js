@@ -143,7 +143,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
         decoded[i-1] += individual[startVar + l - 1] * Math.pow(2, -l);
       }
       // reserved point + [0, range]
-      decoded[i-1] = pointsToSpend * decoded[i-1]/(1 - Math.pow(2,-bitsPerVar));
+      decoded[i-1] = 1 + pointsToSpend * decoded[i-1]/(1 - Math.pow(2,-bitsPerVar));
       if(pointsToSpend > 0){
         pointsToSpend -= decoded[i-1];
       }

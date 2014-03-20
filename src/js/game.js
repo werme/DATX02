@@ -45,6 +45,7 @@ Darwinator.GameState.prototype = {
     this.spawnPlayer(160, 620);
     this.level.spawnEnemies();
     this.enemies = this.level.enemies;
+    this.enemies.setAll('alive', true);
 
     // Renders the non-collidable top layer on top of player and enemies
     this.level.addTopLayer();
@@ -65,6 +66,7 @@ Darwinator.GameState.prototype = {
 
     this.displayGUI();
 
+    this.game.time.advancedTiming = true;
     this.startTimers();
   },
 
@@ -112,17 +114,17 @@ Darwinator.GameState.prototype = {
 
   spawnPlayer: function (x, y) {
     // Instanciate new player or reset existing
-    // if (!this.game.player) {
+    if (!this.game.player) {
       this.game.player = new Darwinator.Player(this.game, x, y, this.cursors);
-    // } else {
-    // //   this.game.player.reset(x, y, Darwinator.PLAYER_BASE_HEALTH);
-    //   this.game.player.bringToTop();
-    //   this.game.player.updateAttributes();
-    //
-    //   // TODO Find out why this is neccessary
-    //   this.game.player.cursors = this.cursors;
-    //   this.game.player.initKeys(this.game);
-    // }
+    } else {
+    //   this.game.player.reset(x, y, Darwinator.PLAYER_BASE_HEALTH);
+      this.game.player.bringToTop();
+      this.game.player.updateAttributes();
+
+      // TODO Find out why this is neccessary
+      this.game.player.cursors = this.cursors;
+      this.game.player.initKeys(this.game);
+    }
 
     // Add player sprite to stage and focus camera
     this.game.add.existing(this.game.player);
@@ -152,14 +154,14 @@ Darwinator.GameState.prototype = {
     this.bullets.forEachAlive(this.checkBulletSpeed, this); // Workaround for misbehaving bullets
 
     // For development only
-    this.fps.content = 'FPS: ' + this.game.time.fps;
-    this.stats.content = 'Player stamina: ' + Math.round(this.game.player.currBreath) + '/' + Math.round(this.game.player.stamina);
-    this.health.content = 'Health: ' + Math.round(this.game.player.health);
-    this.enemiesRemaining.content = 'Enemies remaining: ' + this.enemies.countLiving();
+    this.fps.text = 'FPS: ' + this.game.time.fps;
+    this.stats.text = 'Player stamina: ' + Math.round(this.game.player.currBreath) + '/' + Math.round(this.game.player.stamina);
+    this.health.text = 'Health: ' + Math.round(this.game.player.health);
+    this.enemiesRemaining.text = 'Enemies remaining: ' + this.enemies.countLiving();
 
     // End round when all enemies are dead
     if(this.enemies.countLiving() === 0){
-    //   this.endRound();
+      this.endRound();
     }
   },
 

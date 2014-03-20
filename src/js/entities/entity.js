@@ -1,7 +1,7 @@
 'use strict';
 
   /**
-  * Shared attributes between of the different entities, player and enemies. 
+  * Shared attributes between of the different entities, player and enemies.
   * @method Darwinator.Entity
   * @param {Phaser.Game}  - The current game instance
   * @param {Number}       - [x] The x-value of the pixel

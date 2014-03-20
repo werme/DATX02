@@ -77,16 +77,16 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
         var ind2 = this.selection(fitnessLevels);
         // crossover
         if (Math.random() < this.CROSSOVER_PROBABILITY) {
-          var chromePair = this.cross(population[ind1], population[ind2]);
-          tmpPopulation[l] = chromePair[0];
-          tmpPopulation[l + 1] = chromePair[1];
+          var chromePair        = this.cross(population[ind1], population[ind2]);
+          tmpPopulation[l]      = chromePair[0];
+          tmpPopulation[l + 1]  = chromePair[1];
         } else {
-          tmpPopulation[l] = population[ind1];
-          tmpPopulation[l + 1] = population[ind2];
+          tmpPopulation[l]      = population[ind1];
+          tmpPopulation[l + 1]  = population[ind2];
         }
         // mutation
-        tmpPopulation[l] = this.mutate(tmpPopulation[l]);
-        tmpPopulation[l+1] = this.mutate(tmpPopulation[l+1]);
+        tmpPopulation[l]    = this.mutate(tmpPopulation[l]);
+        tmpPopulation[l+1]  = this.mutate(tmpPopulation[l+1]);
       }
 
       /*
@@ -156,9 +156,8 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   decodeIndividual: function(individual) {
     // make sure each attribute is in the range [1, this.VARIABLE_RANGE] by reserving 1 point per attribute
     var pointsToSpend = (this.NUMBER_OF_VARIABLES * this.VARIABLE_RANGE) - this.NUMBER_OF_VARIABLES;
-
-    var bitsPerVar = this.NUMBER_OF_GENES / this.NUMBER_OF_VARIABLES;
-    var decoded = [];
+    var bitsPerVar    = this.NUMBER_OF_GENES / this.NUMBER_OF_VARIABLES;
+    var decoded       = [];
 
     for(var i = 1; i <= this.NUMBER_OF_VARIABLES; i++) {
       decoded[i - 1] = 0;

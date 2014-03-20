@@ -2,7 +2,6 @@
 
 Darwinator.GameState = function() {
 
-  this.enemies               = null;
   this.bullets               = null;
   this.cursors               = null;
   this.tileset               = null;
@@ -44,8 +43,8 @@ Darwinator.GameState.prototype = {
     this.layer = this.level.layer;
     this.spawnPlayer(160, 620);
     this.level.spawnEnemies();
-    this.enemies = this.level.enemies;
-    this.enemies.setAll('alive', true);
+    this.game.enemies = this.level.enemies;
+    this.game.enemies.setAll('alive', true);
 
     // Renders the non-collidable top layer on top of player and enemies
     this.level.addTopLayer();
@@ -146,10 +145,9 @@ Darwinator.GameState.prototype = {
   },
 
   update: function () {
-    this.game.physics.arcade.collide(this.enemies, this.game.player.sword, this.meleeAttack, null, this);
     this.game.physics.arcade.collide(this.game.player, this.layer);
-    this.game.physics.arcade.collide(this.enemies, this.layer);
-    this.game.physics.arcade.collide(this.bullets, this.enemies, this.bulletCollisionHandler, null, this);
+    this.game.physics.arcade.collide(this.game.enemies, this.layer);
+    this.game.physics.arcade.collide(this.bullets, this.game.enemies, this.bulletCollisionHandler, null, this);
     this.game.physics.arcade.collide(this.bullets, this.layer, this.bulletCollisionHandler, null, this);
     this.bullets.forEachAlive(this.checkBulletSpeed, this); // Workaround for misbehaving bullets
 
@@ -157,10 +155,10 @@ Darwinator.GameState.prototype = {
     this.fps.text = 'FPS: ' + this.game.time.fps;
     this.stats.text = 'Player stamina: ' + Math.round(this.game.player.currBreath) + '/' + Math.round(this.game.player.stamina);
     this.health.text = 'Health: ' + Math.round(this.game.player.health);
-    this.enemiesRemaining.text = 'Enemies remaining: ' + this.enemies.countLiving();
+    this.enemiesRemaining.text = 'Enemies remaining: ' + this.game.enemies.countLiving();
 
     // End round when all enemies are dead
-    if(this.enemies.countLiving() === 0){
+    if(this.game.enemies.countLiving() === 0){
       this.endRound();
     }
   },

@@ -39,7 +39,6 @@ Darwinator.Player.prototype.update = function () {
   if (this.isDashing()) {
     this.dashCounter--;
     this.game.physics.arcade.velocityFromAngle(this.direction, this.currentSpeed, this.body.velocity);
-    console.log(this.body.velocity);
   } else {
     this.currentSpeed = this.speed;
     this.body.velocity.setTo(0,0);

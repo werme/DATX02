@@ -56,7 +56,7 @@ Darwinator.Player.prototype.update = function () {
     // Draw the sword outside the world to prevent it dragging behind player
     this.sword.x = -50;
     this.sword.y = -50;
-    this.game.physics.velocityFromAngle(this.direction, this.currentSpeed, this.body.velocity);
+    this.game.physics.arcade.velocityFromAngle(this.direction, this.currentSpeed, this.body.velocity);
   } else {
     this.currentSpeed = this.speed;
     this.body.velocity.setTo(0,0);
@@ -71,7 +71,7 @@ Darwinator.Player.prototype.update = function () {
       moving = true;
     }
     if (this.cursors.up.isDown || this.upKey.isDown) {
-      if (this.topLeft.y <= 0 || this.topRight.y <= 0) {
+      if (this.getBounds().y <= 0 || this.getBounds().y <= 0) { // top right
         this.body.velocity.y = 0;
       }
       dir[1] = 1;
@@ -147,7 +147,7 @@ Darwinator.Player.prototype.update = function () {
         this.sword.angle = -60;
       }
       // Set speed and angle
-      this.game.physics.velocityFromAngle(this.direction, this.currentSpeed, this.body.velocity);
+      this.game.physics.arcade.velocityFromAngle(this.direction, this.currentSpeed, this.body.velocity);
     }
   }
   if (this.sprintKey.isDown && this.currBreath > 1 && moving) {
@@ -162,7 +162,7 @@ Darwinator.Player.prototype.update = function () {
     this.health = 100;
   }
 
-  if (this.attacking && (this.attackTimer > (this.game.time.time - this.attackTimer + 300))) {
+  if (this.attacking && (this.attackTimer > (this.game.time.now - this.attackTimer + 300))) {
     this.attacking = false;
   }
 };
@@ -177,9 +177,9 @@ Darwinator.Player.prototype.initKeys = function (game) {
   this.slashKey  = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
   var checkTimer = function (key) {
-    
-    if (!this.isDashing() && !!key.lastReleased && this.game.time.time - key.lastReleased < 200 && this.currBreath > 30) {
-      
+
+    if (!this.isDashing() && !!key.lastReleased && this.game.time.now - key.lastReleased < 200 && this.currBreath > 30) {
+
       this.dashCounter = 10;
       this.currentSpeed = 1000;
       this.currBreath -= 30;
@@ -196,15 +196,15 @@ Darwinator.Player.prototype.initKeys = function (game) {
     }
   };
 
-  var addTimer = function(key) { 
-    key.lastReleased = this.game.time.time;
+  var addTimer = function(key) {
+    key.lastReleased = this.game.time.now;
   };
 
   var meleeAttack = function(key) {
     if (!this.attacking) {
       this.attacking   = true;
-      this.attackTimer = this.game.time.time;
-    } 
+      this.attackTimer = this.game.time.now;
+    }
   };
 
   this.upKey.onUp.add(addTimer, this);

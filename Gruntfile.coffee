@@ -11,9 +11,7 @@ module.exports = (grunt) ->
     # For the moment grab latest phaser build
     # from GH, later on phaser might have Bower support
     'curl-dir':
-      '<%= SRC_DIR %>/js/lib/': [
-        'https://raw.github.com/photonstorm/phaser/master/build/phaser.js'
-      ]
+      '<%= SRC_DIR %>/js/lib/': ['https://raw.githubusercontent.com/photonstorm/phaser/dev/build/phaser.js']
 
     clean:
       options:
@@ -119,4 +117,3 @@ module.exports = (grunt) ->
   @registerTask 'server',  ['jshint', 'connect', 'watch']
   @registerTask 'update', ['curl-dir']
   @registerTask 'default', ['server']
-

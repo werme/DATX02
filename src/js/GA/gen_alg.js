@@ -84,12 +84,17 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
           tmpPopulation[l] = population[ind1];
           tmpPopulation[l + 1] = population[ind2];
         }
+        // mutation
+        tmpPopulation[l] = this.mutate(tmpPopulation[l]);
+        tmpPopulation[l+1] = this.mutate(tmpPopulation[l+1]);
       }
 
+      /*
       // mutation
       for(l = 0; l < population.length; l++) {
         tmpPopulation[l] = this.mutate(tmpPopulation[l]);
       }
+      */
 
       // elitism
       for(l = 0; l < this.ELITISM_DEGREE; l++) {

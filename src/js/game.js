@@ -43,7 +43,6 @@ Darwinator.GameState.prototype = {
     this.layer = this.level.layer;
     this.spawnPlayer(160, 620);
     this.level.spawnEnemies();
-    this.game.enemies = this.level.enemies;
 
     // Renders the non-collidable top layer on top of player and enemies.
     this.level.addTopLayer();

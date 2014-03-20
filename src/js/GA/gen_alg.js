@@ -321,8 +321,10 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @param {Array} [spawnPositions] - The positions on which the enemies are allowed to spawn.
   * @return {Phaser.Group} The new group of enemies.
   */    
-  translatePopulation: function(population, enemyGroup, game, target, spawnPositions){ 
-    enemyGroup.removeAll(); // clear all since the length of the new population may differ
+  translatePopulation: function(population, enemyGroup, game, target, spawnPositions){
+    // FIXME possible memory leak, should call destroy but it crashes for some reason..
+    //game.enemies.destroy(true);
+    enemyGroup = game.add.group();
     var pos = [];
     for(var i = 0; i < population.length; i++){
       pos = spawnPositions[i];

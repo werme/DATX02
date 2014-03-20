@@ -4,7 +4,6 @@ Darwinator.Level = function(game) {
   this.game 			= game;
   this.spawnPositions = [];
   this.map      		= null;
-  this.enemies 		= null;
   this.loadLevel();
   this.initSpawnPosition();
   this.game.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -37,7 +36,7 @@ Darwinator.Level.prototype = {
   },
 
   spawnEnemies: function () {
- 	  this.enemies = Darwinator.GeneticAlgorithm.generatePopulation(this.game, this.game.player, undefined, true, this.spawnPositions);
+ 	  this.game.enemies = Darwinator.GeneticAlgorithm.generatePopulation(this.game, this.game.player, this.game.enemies, true, this.spawnPositions);
   },
 
   initSpawnPosition: function () {

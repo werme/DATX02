@@ -249,9 +249,9 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @param {Phaser.Sprite} - An enemy sprite
   * @return {Number} - The score of the enemy for a given game round.
   */
-  enemyScore: function(enemy) {
-    // TODO need better evaluation..
-    return enemy.damageDone;
+  enemyScore: function(enemy) { 
+    var score = enemy.alive ? enemy.damageDone*2 : enemy.damageDone;
+    return score;
   },
 
   /* Example function for testing and debugging. */

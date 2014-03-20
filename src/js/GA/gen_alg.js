@@ -40,27 +40,9 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     var bestIndex         = translatedEnemies[2];
     var bestIndividual    = population[bestIndex];
     console.log('Best fitness: ' +  fitnessLevels[bestIndex]);
-    //var totalMaxFit       = 0.0;
 
     // algorithm main loop
     for (var i = 0; i < (singleGeneration ? 1 : this.NUMBER_OF_GENERATIONS); i++) {
-
-      //var maxFit = 0.0;
-      //var bestIndividual = population[0];
-
-      /*
-      for(var l = 0; l < population.length; l++) {
-        var decodedInd = this.decodeIndividual(population[l]);
-        fitnessLevels[l] = this.evaluateInd(decodedInd);
-        if(fitnessLevels[l] > maxFit) {
-          maxFit = fitnessLevels[l];
-          bestIndividual = population[l];
-          if (maxFit > totalMaxFit) {
-            totalMaxFit = maxFit;
-          }
-        }
-      }
-      */
       
       // clone population
       var tmpPopulation = new Array(population.length);
@@ -89,13 +71,6 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
         tmpPopulation[l+1]  = this.mutate(tmpPopulation[l+1]);
       }
 
-      /*
-      // mutation
-      for(l = 0; l < population.length; l++) {
-        tmpPopulation[l] = this.mutate(tmpPopulation[l]);
-      }
-      */
-
       // elitism
       for(l = 0; l < this.ELITISM_DEGREE; l++) {
         tmpPopulation[l] = bestIndividual;
@@ -105,8 +80,6 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
       population = tmpPopulation;
     } //endof algorithm main loop
 
-    //console.log(1/maxFit);
-    //console.log(this.decodeIndividual(bestIndividual));
     var nextGeneration = this.translatePopulation(population, enemyGroup, game, target, spawnPositions);
     console.log('GA: Returning the new generation!');
     return nextGeneration;

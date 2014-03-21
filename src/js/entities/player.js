@@ -22,10 +22,6 @@ Darwinator.Player.prototype = Object.create(Darwinator.Entity.prototype);
 
 Darwinator.Player.prototype.update = function () {
 
-  if (this.weapon !== null) {
-    this.weapon.updateManually(this.x, this.y);
-  }
-
   var pointer = this.game.input.activePointer;
   if (pointer.isDown){
     this.weapon.fire(pointer.worldX, pointer.worldY);

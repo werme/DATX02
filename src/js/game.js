@@ -60,7 +60,7 @@ Darwinator.GameState.prototype = {
 
     this.game.physics.enable(this.bullets, Phaser.Physics.ARCADE);
 
-    this.game.player.weapon = new window.Darwinator.Weapon(this.game, 0, 0,
+    this.game.player.weapon = new window.Darwinator.Weapon(this.game,
     Darwinator.PLAYER_RANGE_WEAPON_BASE_COOLDOWN, 500, this.bullets, 10, this.game.player);
 
     this.displayGUI();
@@ -149,7 +149,6 @@ Darwinator.GameState.prototype = {
     this.game.physics.arcade.collide(this.game.enemies, this.layer);
     this.game.physics.arcade.collide(this.bullets, this.game.enemies, this.bulletCollisionHandler, null, this);
     this.game.physics.arcade.collide(this.bullets, this.layer, this.bulletCollisionHandler, null, this);
-    this.bullets.forEachAlive(this.checkBulletSpeed, this); // Workaround for misbehaving bullets
 
     // For development only
     this.fps.text = 'FPS: ' + this.game.time.fps;
@@ -160,38 +159,6 @@ Darwinator.GameState.prototype = {
     // End round when all enemies are dead
     if(this.game.enemies.countLiving() === 0){
       this.endRound();
-    }
-  },
-
-  meleeAttack: function (obj1, obj2) {
-    var enemy;
-    if (this.game.player.attacking) {
-      if (obj1 instanceof Darwinator.Enemy) {
-        enemy = obj1;
-        enemy.takeDamage(this.game.player.damage);
-      } else if (obj2 instanceof Darwinator.Enemy) {
-        enemy = obj2;
-        enemy.takeDamage(this.game.player.damage);
-      } else {
-        console.log('No melee damage was dealt');
-      }
-    }
-  },
-
-  checkBulletSpeed: function (bullet) {
-    if (!bullet) {
-      console.log('checkBulletSpeed: Undefined bullet');
-      return;
-    }
-    var speed = Math.sqrt( (bullet.body.velocity.x * bullet.body.velocity.x) +
-                           (bullet.body.velocity.y * bullet.body.velocity.y) );
-    var tolerance = 0.1;
-    if(Math.abs(speed - this.game.player.weapon.bulletSpeed) > tolerance){ // Illegal speed
-      if(bullet.x === this.game.player.weapon.x && bullet.y === this.game.player.weapon.y){ // bullet didn't reset properly on revival
-        this.game.player.weapon.resetBullet(bullet);
-      } else { // Bullet got stuck or bounced
-        bullet.kill();
-      }
     }
   },
 

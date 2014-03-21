@@ -51,8 +51,10 @@ Darwinator.GameState.prototype = {
 
     this.bullets = this.game.add.group();
 
-    this.game.player.weapon = new window.Darwinator.Weapon(this.game,
+    this.game.player.weapon = new Darwinator.Bow(this.game,
     Darwinator.PLAYER_RANGE_WEAPON_BASE_COOLDOWN, 500, this.bullets, 10, this.game.player);
+
+    console.log(this.game.player.weapon);
 
     this.displayGUI();
 

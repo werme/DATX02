@@ -1,6 +1,6 @@
 'use strict';
 
-  Darwinator.Weapon = function(game, coolDown, bulletSpeed, bullets, damage, owner) {
+  Darwinator.Weapon = function(game, coolDown, bulletSpeed, damage, owner) {
     this.game         = game;
     var baseCoolDown  = Darwinator.PLAYER_RANGE_WEAPON_BASE_COOLDOWN - game.player.attributes.intellect * 20;
     this.coolDown     = baseCoolDown > 200 ? baseCoolDown : 100;
@@ -9,12 +9,6 @@
     this.bulletSpeed  = bulletSpeed;
     this.damage       = damage;
     this.owner        = owner;
-    this.bullets.createMultiple(30, 'arrow');
-    this.bullets.setAll('anchor.x', 0.5);
-    this.bullets.setAll('anchor.y', 0.5);
-    this.bullets.setAll('outOfBoundsKill', true);
-    this.game.physics.enable(this.bullets, Phaser.Physics.ARCADE);
-    bullets.add(this.bullets);
   };
 
   Darwinator.Weapon.prototype.fire = function (x, y) {

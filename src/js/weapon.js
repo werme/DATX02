@@ -20,14 +20,11 @@
         var angle = this.takeAim(bullet.target.x, bullet.target.y);
         bullet.rotation = angle;
         this.game.physics.arcade.velocityFromRotation(angle, this.bulletSpeed, bullet.body.velocity);
-        console.log(bullet);
     }
   };
 
   Darwinator.Weapon.prototype.takeAim = function(x, y) {
     var perfAngle = this.game.physics.arcade.angleToXY(this.owner, x, y);
-    console.log(perfAngle);
     perfAngle += (Math.random() - 0.5) / (Math.round(this.owner.attributes.intellect / 5) + 1);
-    console.log(perfAngle);
     return perfAngle;
   };

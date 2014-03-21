@@ -49,16 +49,7 @@ Darwinator.GameState.prototype = {
     // Renders the non-collidable top layer on top of player and enemies
     this.level.addTopLayer();
 
-    // TODO move bullets to separate class
     this.bullets = this.game.add.group();
-    this.bullets.createMultiple(30, 'arrow');
-    this.bullets.setAll('anchor.x', 0.5);
-    this.bullets.setAll('anchor.y', 0.5);
-    // this.bullets.setAll('scale.x', 2);
-    // this.bullets.setAll('scale.y', 2);
-    this.bullets.setAll('outOfBoundsKill', true);
-
-    this.game.physics.enable(this.bullets, Phaser.Physics.ARCADE);
 
     this.game.player.weapon = new window.Darwinator.Weapon(this.game,
     Darwinator.PLAYER_RANGE_WEAPON_BASE_COOLDOWN, 500, this.bullets, 10, this.game.player);
@@ -145,10 +136,14 @@ Darwinator.GameState.prototype = {
   },
 
   update: function () {
+    for (var i = 0; i < this.bullets.length; i++) {
+      var bulletGroup = this.bullets.getAt(i);
+      this.game.physics.arcade.collide(bulletGroup, this.game.enemies, this.bulletCollisionHandler, null, this);
+      this.game.physics.arcade.collide(bulletGroup, this.layer, this.bulletCollisionHandler, null, this);
+    }
     this.game.physics.arcade.collide(this.game.player, this.layer);
     this.game.physics.arcade.collide(this.game.enemies, this.layer);
-    this.game.physics.arcade.collide(this.bullets, this.game.enemies, this.bulletCollisionHandler, null, this);
-    this.game.physics.arcade.collide(this.bullets, this.layer, this.bulletCollisionHandler, null, this);
+
 
     // For development only
     this.fps.text = 'FPS: ' + this.game.time.fps;

@@ -1,16 +1,16 @@
 'use strict';
 
 Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intellect) {
-
   if (strength > intellect && strength > agility) {
-    Darwinator.Entity.call(this, game, x, y, 'enemy_strength',/* [],*/ health, strength, agility, intellect);
+    this.type = 'enemy_agility';
   } else if (agility > intellect && agility > strength) {
-    Darwinator.Entity.call(this, game, x, y, 'enemy_agility',/* [],*/ health, strength, agility, intellect);
+    this.type = 'enemy_agility';
   } else if (intellect > strength && intellect > agility) {
-    Darwinator.Entity.call(this, game, x, y, 'enemy_intellect',/* [],*/ health, strength, agility, intellect);
+    this.type = 'enemy_intellect';
   } else {
-    Darwinator.Entity.call(this, game, x, y, 'enemy',/* [],*/ health, strength, agility, intellect);
+    this.type = 'enemy';
   }
+  Darwinator.Entity.call(this, game, x, y, this.type,/* [],*/ health, strength, agility, intellect);
 
   this.scale.setTo(0.25,0.25);
   this.target = target;

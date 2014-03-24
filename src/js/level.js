@@ -14,7 +14,7 @@ Darwinator.Level = function (game) {
 Darwinator.Level.prototype = {
 
     loadLevel: function () {
-        this.map = this.game.add.tilemap('level1');
+        this.map = new Phaser.Tilemap(this.game, 'level1');
         this.map.addTilesetImage('tiles', 'tiles');
         this.map.createLayer('Tile Layer 2');
         this.layer = this.map.createLayer('Tile Layer 1');
@@ -39,6 +39,7 @@ Darwinator.Level.prototype = {
 
     spawnEnemies: function () {
         this.enemies = Darwinator.GeneticAlgorithm.generatePopulation(this.game, this.game.player, undefined, true, this.spawnPositions);
+        return this.enemies;
     },
 
     initSpawnPosition: function () {

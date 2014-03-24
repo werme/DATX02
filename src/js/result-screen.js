@@ -6,13 +6,16 @@ Darwinator.ResultScreen = function() {
     this.unspentPoints      = 0;
     this.unspentPointsText  = null;
     this.continueGameButton = null;
-
-    this.background         = null;
+    this.container          = null;
 };
 
 Darwinator.ResultScreen.prototype = {
 
     create: function () {
+
+        this.container = this.game.add.group();
+        this.container.fixedToCamera = true;
+        this.game.add.existing(this.container);
 
         this.unspentPoints = 3;
 
@@ -21,11 +24,13 @@ Darwinator.ResultScreen.prototype = {
         this.game.camera.setPosition(0,0);
 
         // Draw background color
-        this.background = this.game.add.graphics(0, 0);
-        this.background.fixedToCamera = true;
-        this.background.beginFill(Darwinator.MENU_BACKGROUND_COLOR, 1);
-        this.background.drawRect(0, 0, this.game.width, this.game.height);
-        this.background.endFill();
+        var background = new Phaser.Graphics(this.game, 0, 0);
+        background.fixedToCamera = true;
+        background.beginFill(Darwinator.MENU_BACKGROUND_COLOR, 1);
+        background.drawRect(0, 0, this.game.width, this.game.height);
+        background.endFill();
+
+        this.container.add(background);
 
         // Render content
         this.initAttributes(this.game.player.attributes);
@@ -40,10 +45,8 @@ Darwinator.ResultScreen.prototype = {
         this.continueGameButton.anchor.setTo(0.5, 0.5);
     },
 
-    clean: function () {
-        console.log('Cleaning result screen.');
-
-        this.game.world.remove(this.background);
+    beforeSwitch: function () {
+        this.game.world.remove(this.container);
     },
 
     initAttributes: function (attributes) {
@@ -55,8 +58,8 @@ Darwinator.ResultScreen.prototype = {
         for (var attribute in attributes) {
             if (attributes.hasOwnProperty(attribute)) {
                 text = attribute + ': ' + attributes[attribute];
-                this.attributes[attribute] = this.add.bitmapText(x, y, 'minecraftia', text, 20);
-                this.attributes[attribute].fixedToCamera = true;
+                this.attributes[attribute] = new Phaser.BitmapText(this.game, x, y, 'minecraftia', text, 20);
+                this.container.add(this.attributes[attribute]);
                 y += 42; // Render the next attribute on a new line.
             }
         }
@@ -66,22 +69,24 @@ Darwinator.ResultScreen.prototype = {
         var x = this.game.width  / 2 - 100,
             y = 180;
 
+        var buttons = new Phaser.Group(this.game, 0, 0);
+
         // Buttons shall be rendered by hand, it's a craft.
-        this.buttons.push(this.add.button(x, y, 'plus-button', function() {
+        buttons.add(new Phaser.Button(this.game, x, y, 'plus-button', function() {
             this.incrementAttribute('strength');
         }, this, 2, 1, 0));
 
-        this.buttons.push(this.add.button(x, y + 42, 'plus-button', function() {
+        buttons.add(new Phaser.Button(this.game, x, y + 42, 'plus-button', function() {
             this.incrementAttribute('agility');
         }, this, 2, 1, 0));
 
-        this.buttons.push(this.add.button(x, y + 84, 'plus-button', function() {
+        buttons.add(new Phaser.Button(this.game, x, y + 84, 'plus-button', function() {
             this.incrementAttribute('intellect');
         }, this, 2, 1, 0));
 
-        this.buttons.forEach(function (button) {
-            button.fixedToCamera = true;
-        });
+        buttons.fixedToCamera = true;
+
+        this.container.add(buttons);
     },
 
     incrementAttribute: function (attribute) {
@@ -105,8 +110,8 @@ Darwinator.ResultScreen.prototype = {
     update: function () {},
 
     continueGame: function () {
-        this.clean();
-        this.game.state.start('game', true, false, true);
+        this.beforeSwitch();
+        this.game.state.start('game', false, false, true);
     }
 
 };

@@ -21,9 +21,7 @@ Darwinator.GameState = function() {
     this.roundSecondsRemaining = null;
     this.endRoundTimer         = null;
     this.displayTimeLeftTimer  = null;
-
-    // Misc
-    this.roundLengthSeconds    = 60;
+    
 };
 
 Darwinator.GameState.prototype = {
@@ -103,7 +101,7 @@ Darwinator.GameState.prototype = {
         this.fps              = gui.add(new Phaser.Text(this.game, 16, 16, 'FPS: 0', style));
         this.stats            = gui.add(new Phaser.Text(this.game, 16, 36, '', style));
         this.health           = gui.add(new Phaser.Text(this.game, 16, 56, '', style));
-        this.secondsRemaining = gui.add(new Phaser.Text(this.game, 16, 76, 'Seconds remaining: ' + this.roundLengthSeconds, style));
+        this.secondsRemaining = gui.add(new Phaser.Text(this.game, 16, 76, 'Seconds remaining: ' + Darwinator.ROUND_LENGTH_SECONDS, style));
         this.enemiesRemaining = gui.add(new Phaser.Text(this.game, 16, 96, 'Enemies remaining: ', style));
         this.pauseText        = gui.add(new Phaser.Text(this.game, x, y, 'Game paused', style));
         this.gameOver         = gui.add(new Phaser.Text(this.game, x, y, 'Game Over', {fontSize: '24px monospace', fill:'#FFF'}));
@@ -120,16 +118,16 @@ Darwinator.GameState.prototype = {
 
     startTimers: function () {
         // End round when the time limit is reached
-        this.endRoundTimer = this.game.time.events.add(Phaser.Timer.SECOND * this.roundLengthSeconds, this.endRound, this);
+        this.endRoundTimer = this.game.time.events.add(Phaser.Timer.SECOND * Darwinator.ROUND_LENGTH_SECONDS, this.endRound, this);
         // Display seconds remaining until round ends
-        this.roundSecondsRemaining = this.roundLengthSeconds;
-        this.displayTimeLeftTimer = this.game.time.events.repeat(Phaser.Timer.SECOND, this.roundLengthSeconds, this.updateTimer, this);
+        this.roundSecondsRemaining = Darwinator.ROUND_LENGTH_SECONDS;
+        this.displayTimeLeftTimer = this.game.time.events.repeat(Phaser.Timer.SECOND, Darwinator.ROUND_LENGTH_SECONDS, this.updateTimer, this);
     },
 
     stopTimers: function () {
         this.game.time.events.remove(this.endRoundTimer);
         this.game.time.events.remove(this.displayTimeLeftTimer);
-        this.secondsRemaining.text = 'Seconds remaining: ' + this.roundLengthSeconds;
+        this.secondsRemaining.text = 'Seconds remaining: ' + Darwinator.ROUND_LENGTH_SECONDS;
     },
 
     spawnPlayer: function (x, y) {

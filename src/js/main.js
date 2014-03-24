@@ -36,6 +36,8 @@ window.Darwinator = window.Darwinator || {
   ENTITY_BASE_DAMAGE  : 5,
   ENTITY_BASE_SPEED   : 75,
 
+  ROUND_LENGTH_SECONDS: 60,
+
   TILE_WIDTH: 0,
   TILE_HEIGHT: 0,
 

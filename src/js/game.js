@@ -2,10 +2,13 @@
 
 Darwinator.GameState = function() {
 
-    this.bullets               = null;
     this.cursors               = null;
-    this.tileset               = null;
-    this.layer                 = null;
+
+    // Groups
+    this.bullets               = null;
+    this.gui                   = null;
+
+    // Displayables
     this.fps                   = null;
     this.stats                 = null;
     this.health                = null;
@@ -16,7 +19,6 @@ Darwinator.GameState = function() {
     this.endRoundTimer         = null;
     this.displayTimeLeftTimer  = null;
 
-    this.spawnPositions        = [];
     this.roundLengthSeconds    = 60;
 
     this.cheatKey              = Phaser.Keyboard.E;
@@ -41,6 +43,8 @@ Darwinator.GameState.prototype = {
 
         // Since states by default lack a callback for the resume event
         this.game.onResume.add(this.resumed, this);
+
+        console.log(this.game.world.children);
     },
 
     reset: function () {
@@ -54,6 +58,10 @@ Darwinator.GameState.prototype = {
         this.pauseKey.onDown.remove(this.togglePause, this);
         this.game.onResume.remove(this.resumed, this);
 
+        this.game.world.remove(this.level.layer1);
+        this.game.world.remove(this.level.layer2);
+        this.game.world.remove(this.level.layer3);
+
         this.stopTimers();
     },
 
@@ -62,10 +70,12 @@ Darwinator.GameState.prototype = {
         // Initiate level & spawn enemies and player
         // TODO group these to make the order constant.
         this.level = new Darwinator.Level(this.game);
-        this.layer = this.level.layer;
+
         this.spawnPlayer(160, 620);
-        this.level.spawnEnemies();
-        this.game.enemies = this.level.enemies;
+
+        this.game.enemies = this.level.spawnEnemies();
+
+        // TODO Find the right way to do this
         this.game.enemies.setAll('alive', true);
 
         // Renders the non-collidable top layer on top of player and enemies
@@ -150,11 +160,11 @@ Darwinator.GameState.prototype = {
         for (var i = 0; i < this.bullets.length; i++) {
             var bulletGroup = this.bullets.getAt(i);
             this.game.physics.arcade.collide(bulletGroup, this.game.enemies, this.bulletCollisionHandler, null, this);
-            this.game.physics.arcade.collide(bulletGroup, this.layer, this.bulletCollisionHandler, null, this);
+            this.game.physics.arcade.collide(bulletGroup, this.level.layer2, this.bulletCollisionHandler, null, this);
         }
 
-        this.game.physics.arcade.collide(this.game.player, this.layer);
-        this.game.physics.arcade.collide(this.game.enemies, this.layer);
+        this.game.physics.arcade.collide(this.game.player, this.level.layer2);
+        this.game.physics.arcade.collide(this.game.enemies, this.level.layer2);
 
         this.updateGUI();
 
@@ -185,7 +195,7 @@ Darwinator.GameState.prototype = {
 
     endRound: function() {
         this.beforeSwitch();
-        this.game.state.start('resultScreen');
+        this.game.state.start('resultScreen', false);
     },
 
     togglePause: function() {

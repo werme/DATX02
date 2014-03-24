@@ -48,16 +48,10 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     for (var i = 0; i < (singleGeneration ? 1 : this.NUMBER_OF_GENERATIONS); i++) {
       
       // clone population
-      var tmpPopulation = new Array(population.length);
-      for (var l = 0; l < tmpPopulation.length; l++) {
-        tmpPopulation[l] = new Array(population[l].length);
-        for(var j = 0; j < population[l].length; j++) {
-          tmpPopulation[l][j] = population[l][j];
-        }
-      }
+      var tmpPopulation = population.slice(0);
 
       // selection
-      for(l = 0; l < population.length; l += 2) {
+      for(var l = 0; l < population.length; l += 2) {
         var ind1 = this.selection(fitnessLevels);
         var ind2 = this.selection(fitnessLevels);
         // crossover

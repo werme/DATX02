@@ -37,6 +37,7 @@ Darwinator.GameState.prototype = {
 
             // Map
             this.level = new Darwinator.Level(this.game);
+            this.level.addTopLayer();
 
             // Containers
             this.bullets = this.game.add.group();
@@ -60,7 +61,6 @@ Darwinator.GameState.prototype = {
     beforeSwitch: function () {
         this.game.world.remove(this.game.player);
         this.game.world.remove(this.game.enemies);
-        this.game.world.remove(this.level.overlaps);
         this.game.world.remove(this.gui);
         this.game.world.remove(this.bullets);
 
@@ -79,8 +79,7 @@ Darwinator.GameState.prototype = {
         // TODO Find the right way to do this
         this.game.enemies.setAll('alive', true);
 
-        // Renders the non-collidable top layer on top of player and enemies
-        this.level.addTopLayer();
+        this.game.world.bringToTop(this.level.overlaps);
 
         for (var i = 0; i < this.game.enemies.length; i++) {
             var enemy = this.game.enemies.getAt(i);

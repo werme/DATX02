@@ -27,16 +27,12 @@ Darwinator.GameState = function() {
 
 Darwinator.GameState.prototype = {
 
-    init: function (doReset) {
-        if (doReset) {
-            this.reset();
-        } else {
+    init: function (reset) {
+        if (!reset) {
             this.cursors  = this.game.input.keyboard.createCursorKeys();
             this.cheatKey = this.game.input.keyboard.addKey(Phaser.Keyboard.E);
             this.pauseKey = this.game.input.keyboard.addKey(Phaser.Keyboard.P);
-
             this.level = new Darwinator.Level(this.game);
-
             this.game.time.advancedTiming = true;
         }
 
@@ -45,12 +41,6 @@ Darwinator.GameState.prototype = {
 
         // Since states by default lack a callback for the resume event
         this.game.onResume.add(this.resumed, this);
-
-        console.log(this.game.world.children);
-    },
-
-    reset: function () {
-        console.log("reset");
     },
 
     beforeSwitch: function () {
@@ -60,9 +50,12 @@ Darwinator.GameState.prototype = {
         this.pauseKey.onDown.remove(this.togglePause, this);
         this.game.onResume.remove(this.resumed, this);
 
-        this.game.world.remove(this.level.layer1);
-        this.game.world.remove(this.level.layer2);
+        // this.game.world.remove(this.level.layer1);
+        // this.game.world.remove(this.level.layer2);
         this.game.world.remove(this.level.layer3);
+
+        this.game.world.remove(this.gui);
+        this.game.world.remove(this.bullets);
 
         this.stopTimers();
     },
@@ -83,34 +76,25 @@ Darwinator.GameState.prototype = {
 
         this.game.player.weapon = new Darwinator.Bow(this.game, Darwinator.PLAYER_RANGE_WEAPON_BASE_COOLDOWN, 500, this.bullets, 10, this.game.player);
 
-        this.displayGUI();
-        this.initPauseOverlay();
+        this.initGUI();
 
         this.startTimers();
     },
 
-    displayGUI: function () {
+    initGUI: function () {
+        this.gui = this.game.add.group();
+        this.gui.fixedToCamera = true;
 
-        // For development only
         var style = { font: '16px monospace', fill: '#fff' };
-        this.fps = this.game.add.text(16, 16, 'FPS: 0', style);
-        this.fps.fixedToCamera = true;
 
-        this.stats = this.game.add.text(16, 36, '', style);
-        this.stats.fixedToCamera = true;
+        this.fps = this.gui.add(new Phaser.Text(this.game, 16, 16, 'FPS: 0', style));
+        this.stats = this.gui.add(new Phaser.Text(this.game, 16, 36, '', style));
+        this.health = this.gui.add(new Phaser.Text(this.game, 16, 56, '', style));
+        this.secondsRemaining = this.gui.add(new Phaser.Text(this.game, 16, 76, 'Seconds remaining: ' + this.roundLengthSeconds, style));
+        this.enemiesRemaining = this.gui.add(new Phaser.Text(this.game, 16, 96, 'Enemies remaining: ', style));
+        this.gameOver = this.gui.add(new Phaser.Text(this.game, this.game.width / 2, this.game.height / 2, '', {fontSize: '48px', fill:'#F08'}));
 
-        this.health = this.game.add.text(16, 56, '', style);
-        this.health.fixedToCamera = true;
-
-        this.secondsRemaining = this.game.add.text(16, 76, 'Seconds remaining: ' + this.roundLengthSeconds, style);
-        this.secondsRemaining.fixedToCamera = true;
-
-        // For debugging - easier to check if a round ended too early
-        this.enemiesRemaining = this.game.add.text(16, 96, 'Enemies remaining: ', style);
-        this.enemiesRemaining.fixedToCamera = true;
-
-        this.gameOver = this.game.add.text(this.game.width / 2, this.game.height / 2, '', {fontSize: '48px', fill:'#F08'});
-        this.gameOver.fixedToCamera = true;
+        this.initPauseOverlay();
     },
 
     startTimers: function () {
@@ -141,14 +125,13 @@ Darwinator.GameState.prototype = {
     },
 
     initPauseOverlay: function () {
-        var styling = { fontSize: '16px', fill: '#fff', align: 'center' },
-        x       = this.game.width  / 2,
-        y       = this.game.height / 2;
+        var style = { fontSize: '16px', fill: '#fff', align: 'center' },
+            x     = this.game.width  / 2,
+            y     = this.game.height / 2;
 
         // Render text centered and fixed to camera
-        this.pauseText = this.game.add.text(x, y, 'Game paused', styling);
+        this.pauseText = this.gui.add(new Phaser.Text(this.game, x, y, 'Game paused', style));
         this.pauseText.anchor.setTo(0.5, 0.5);
-        this.pauseText.fixedToCamera = true;
 
         // Should be hidden by default
         this.pauseText.visible = false;

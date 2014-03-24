@@ -176,6 +176,9 @@ Darwinator.GameState.prototype = {
     of the bullet */
     if (target instanceof Darwinator.Player && bullet.owner instanceof Darwinator.Player ||
         target instanceof Darwinator.Enemy && bullet.owner instanceof Darwinator.Enemy) {
+        if (!(bullet instanceof Darwinator.Entity)) {
+          bullet.kill();
+        }
         return;
       }
     if (target instanceof Darwinator.Entity) {

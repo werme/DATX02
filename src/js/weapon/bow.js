@@ -1,7 +1,7 @@
 'use strict';
 
-Darwinator.Bow = function (game, coolDown, bulletSpeed, bullets, damage, owner) {
-    Darwinator.Weapon.call(this, game, coolDown, bulletSpeed, damage, owner);
+Darwinator.Bow = function (game, bulletSpeed, coolDown, damage, bulletContainer, owner) {
+    Darwinator.Weapon.call(this, game, bulletSpeed, coolDown, damage, owner);
 
     this.bullets.createMultiple(30, 'arrow');
     this.bullets.setAll('anchor.x', 0.5);
@@ -10,7 +10,7 @@ Darwinator.Bow = function (game, coolDown, bulletSpeed, bullets, damage, owner) 
 
     this.game.physics.enable(this.bullets, Phaser.Physics.ARCADE);
 
-    bullets.add(this.bullets);
+    bulletContainer.add(this.bullets);
 };
 
 Darwinator.Bow.prototype = Object.create(Darwinator.Weapon.prototype);

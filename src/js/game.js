@@ -2,7 +2,10 @@
 
 Darwinator.GameState = function() {
 
+    // Input
     this.cursors               = null;
+    this.cheatKey              = null;
+    this.pauseKey              = null;
 
     // Groups
     this.bullets               = null;
@@ -19,27 +22,35 @@ Darwinator.GameState = function() {
     this.endRoundTimer         = null;
     this.displayTimeLeftTimer  = null;
 
+    // Misc
     this.roundLengthSeconds    = 60;
-
-    this.cheatKey              = null;
-    this.pauseKey              = null;
 };
 
 Darwinator.GameState.prototype = {
 
     init: function (reset) {
         if (!reset) {
+            // Input
             this.cursors  = this.game.input.keyboard.createCursorKeys();
             this.cheatKey = this.game.input.keyboard.addKey(Phaser.Keyboard.E);
             this.pauseKey = this.game.input.keyboard.addKey(Phaser.Keyboard.P);
+
+            // Map
             this.level = new Darwinator.Level(this.game);
+
+            // Containers
+            this.bullets = this.game.add.group();
+            this.gui     = this.game.add.group();
+
+            // Misc
             this.game.time.advancedTiming = true;
+            this.gui.fixedToCamera        = true;
         }
 
         this.cheatKey.onDown.add(this.endRound, this);
         this.pauseKey.onDown.add(this.togglePause, this);
 
-        // Since states by default lack a callback for the resume event
+        // Since states lack a callback for the resume event
         this.game.onResume.add(this.resumed, this);
     },
 
@@ -68,9 +79,7 @@ Darwinator.GameState.prototype = {
         // Renders the non-collidable top layer on top of player and enemies
         this.level.addTopLayer();
 
-        this.bullets = this.game.add.group();
-
-        this.game.player.weapon = new Darwinator.Bow(this.game, Darwinator.PLAYER_RANGE_WEAPON_BASE_COOLDOWN, 500, this.bullets, 10, this.game.player);
+        this.game.player.weapon = new Darwinator.Bow(this.game, Darwinator.PLAYER_RANGE_WEAPON_BASE_BULLETSPEED, Darwinator.PLAYER_RANGE_WEAPON_BASE_COOLDOWN, Darwinator.PLAYER_BASE_DAMAGE, this.bullets, this.game.player);
 
         this.initGUI();
 
@@ -78,9 +87,6 @@ Darwinator.GameState.prototype = {
     },
 
     initGUI: function () {
-        this.gui = this.game.add.group();
-        this.gui.fixedToCamera = true;
-
         var style = { font: '16px monospace', fill: '#fff' };
 
         this.fps = this.gui.add(new Phaser.Text(this.game, 16, 16, 'FPS: 0', style));

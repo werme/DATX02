@@ -128,16 +128,16 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     var bitsPerVar    = this.NUMBER_OF_GENES / this.NUMBER_OF_VARIABLES;
     var decoded       = [];
 
-    for(var i = 1; i <= this.NUMBER_OF_VARIABLES; i++) {
-      decoded[i - 1] = 0;
-      for(var l = 1; l <= bitsPerVar; l++) {
+    for(var i = 0; i < this.NUMBER_OF_VARIABLES; i++) {
+      decoded[i] = 0;
+      for(var l = 0; l < bitsPerVar; l++) {
 
-        var startVar = (i-1) * bitsPerVar;
-        decoded[i-1] += individual[startVar + l - 1] * Math.pow(2, -l);
+        var startVar = i * bitsPerVar;
+        decoded[i] += individual[startVar + l] * Math.pow(2, -(l+1));
       }
-      decoded[i-1] = pointsToSpend * decoded[i-1]/(1 - Math.pow(2,-bitsPerVar));
+      decoded[i] = pointsToSpend * decoded[i]/(1 - Math.pow(2,-bitsPerVar));
       if(pointsToSpend > 0){
-        pointsToSpend -= decoded[i-1];
+        pointsToSpend -= decoded[i];
       }
     }
     return decoded;

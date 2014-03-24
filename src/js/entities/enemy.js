@@ -28,6 +28,7 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
   this.dateOfBirthMs = Date.now();
   this.timeSurvivedMs = undefined; //set this to dateOfBirthMs - Date.now() on death OR end of game round
   this.damageDone = 0;
+  // this.body.immovable = true;
 };
 
 Darwinator.Enemy.prototype = Object.create(Darwinator.Entity.prototype);
@@ -37,12 +38,15 @@ Darwinator.Enemy.prototype.arm = function(weapon) {
 };
 
 Darwinator.Enemy.prototype.update = function() {
+  this.body.velocity.setTo(0,0);
   var currTile = Darwinator.Helpers.pixelsToTile(this.body.x, this.body.y);
   var targetTile = Darwinator.Helpers.pixelsToTile(this.target.body.x, this.target.body.y);
 
   var pathLength = this.path.length;
-  if(!(pathLength &&  this.path[pathLength - 1].x === targetTile.x &&
-                      this.path[pathLength - 1].y === targetTile.y)) {
+  if(!(pathLength && this.path[pathLength - 1].x === targetTile.x &&
+                     this.path[pathLength - 1].y === targetTile.y &&
+                     this.path[0].x === currTile.x &&
+                     this.path[0].y === currTile.y)) {
     if (Darwinator.Helpers.calculateDistance(targetTile, currTile) * 5 < this.lastPathUpdate) {
       this.updatePath();
     } else {

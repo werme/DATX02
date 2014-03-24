@@ -2,15 +2,15 @@
 
 Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intellect) {
   if (strength > intellect && strength > agility) {
-    this.type = 'enemy_agility';
+    this.category = 'enemy_strength';
   } else if (agility > intellect && agility > strength) {
-    this.type = 'enemy_agility';
+    this.category = 'enemy_agility';
   } else if (intellect > strength && intellect > agility) {
-    this.type = 'enemy_intellect';
+    this.category = 'enemy_intellect';
   } else {
-    this.type = 'enemy';
+    this.category = 'enemy';
   }
-  Darwinator.Entity.call(this, game, x, y, this.type,/* [],*/ health, strength, agility, intellect);
+  Darwinator.Entity.call(this, game, x, y, this.category,/* [],*/ health, strength, agility, intellect);
 
   this.scale.setTo(0.25,0.25);
   this.target = target;
@@ -32,6 +32,10 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
 
 Darwinator.Enemy.prototype = Object.create(Darwinator.Entity.prototype);
 
+Darwinator.Enemy.prototype.arm = function(weapon) {
+  this.weapon = weapon;
+};
+
 Darwinator.Enemy.prototype.update = function() {
   var currTile = Darwinator.Helpers.pixelsToTile(this.body.x, this.body.y);
   var targetTile = Darwinator.Helpers.pixelsToTile(this.target.body.x, this.target.body.y);
@@ -46,12 +50,23 @@ Darwinator.Enemy.prototype.update = function() {
     }
   }
 
-  /* If a path exists - follow it. Else, try to move in the general direction of the player, ignoring
-     obsticles*/
-  if (this.path.length) {
-    this.followPath();
-  } else {
-    this.game.physics.arcade.moveToXY(this, this.target.body.x, this.target.body.y, this.speed);
+  switch(this.category) {
+  case 'enemy':
+    if (this.path.length && Darwinator.Helpers.calculateDistance(targetTile, currTile) > 10) {
+      this.followPath();
+    } else {
+      this.weapon.fire(this.target.body.x, this.target.body.y);
+    }
+    break;
+  default:
+    /* If a path exists - follow it. Else, try to move in the general direction of the player, ignoring
+       obsticles*/
+    if (this.path.length) {
+      this.followPath();
+    } else {
+      this.game.physics.arcade.moveToXY(this, this.target.body.x, this.target.body.y, this.speed);
+    }
+    break;
   }
 
   // Target (ie. player) takes damage while the target and enemy overlap.

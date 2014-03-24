@@ -6,6 +6,7 @@ Darwinator.Bow = function(game, coolDown, bulletSpeed, bullets, damage, owner) {
   this.bullets.setAll('anchor.x', 0.5);
   this.bullets.setAll('anchor.y', 0.5);
   this.bullets.setAll('outOfBoundsKill', true);
+  this.bullets.setAll('owner', this.owner);
   this.game.physics.enable(this.bullets, Phaser.Physics.ARCADE);
   bullets.add(this.bullets);
 };

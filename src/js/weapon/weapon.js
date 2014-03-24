@@ -1,6 +1,6 @@
 'use strict';
 
-Darwinator.Weapon = function (game, bulletSpeed, coolDown, damage, owner) {
+Darwinator.Weapon = function (game, coolDown, bulletSpeed, damage, owner) {
     this.game         = game;
     var baseCoolDown  = coolDown - game.player.attributes.intellect * 20;
     this.coolDown     = baseCoolDown > 200 ? baseCoolDown : 100;

@@ -17,17 +17,17 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
   if(!target)
     console.log('Enemy: target is falsey');
   this.path = [];
-  this.attacking = false;
-  this.time = null;
-  this.overlap = null;
   this.debug = true;
   //Allow enemy to overlap objects, i.e. reduce the hitbox
   //this.body.setRectangle(20*4, 16*4, 0, 16*4);
   this.lastPathUpdate = 0;
   // score properties to measure success
-  this.dateOfBirthMs = Date.now();
-  this.timeSurvivedMs = undefined; //set this to dateOfBirthMs - Date.now() on death OR end of game round
+  //this.dateOfBirthMs = Date.now();
+  //this.timeSurvivedMs = undefined; //set this to dateOfBirthMs - Date.now() on death OR end of game round
   this.damageDone = 0;
+
+  this.lastMeleeTimestamp = 0;
+  this.cooldownMs         = 250;
 };
 
 Darwinator.Enemy.prototype = Object.create(Darwinator.Entity.prototype);
@@ -77,32 +77,31 @@ Darwinator.Enemy.prototype.update = function() {
     }
     break;
   }
-
   // Target (ie. player) takes damage while the target and enemy overlap.
   // If they continuously overlap the target will take damage every 0.25 seconds
-  this.overlap = this.game.physics.arcade.overlap(this, this.target);
-
-  if (this.overlap && !this.attacking){
-    var crit = Math.random() - this.criticalStrike;
-    if (crit < 0){
-      this.damageDone += this.damage*2;
-      this.target.takeDamage(this.damage*2);
-      console.log('%c Enemy made a critical hit! ', 'background: red; color: white');
-    } else {
-      this.damageDone += this.damage;
-      this.target.takeDamage(this.damage);
-    }
-    this.time = this.game.time.time;
-    this.attacking = true;
-  } else if (!this.overlap || ((this.game.time.time - this.time) > 250)) {
-    this.attacking = false;
-  }
+  this.game.physics.arcade.overlap(this, this.target, this.meleeAttack, null, this);
 
   if (this.health <= 0 && this.alive){
     console.log('%c Enemy killed by player! ', 'background: black; color: orange');
     this.kill();
   }
 
+};
+
+Darwinator.Enemy.prototype.meleeAttack = function(){ //callback for overlapping with target
+  var onCooldown = (Date.now() - this.lastMeleeTimestamp) < this.cooldownMs;
+  if (!onCooldown){
+    var crit  = Math.random() - this.criticalStrike;
+    var dmg   = this.damage;
+
+    if (crit < 0){
+      dmg *= 2;
+      console.log('%c Enemy made a critical hit! ', 'background: red; color: white');
+    }
+    this.target.takeDamage(dmg);
+    this.damageDone += dmg;
+    this.lastMeleeTimestamp = Date.now();
+  }
 };
 
 Darwinator.Enemy.prototype.updatePath = function() {

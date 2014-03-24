@@ -11,7 +11,6 @@ Darwinator.ResultScreen = function() {
 Darwinator.ResultScreen.prototype = {
 
     create: function () {
-
         this.container = this.game.add.group();
         this.container.fixedToCamera = true;
         this.game.add.existing(this.container);
@@ -28,7 +27,6 @@ Darwinator.ResultScreen.prototype = {
         background.beginFill(Darwinator.MENU_BACKGROUND_COLOR, 1);
         background.drawRect(0, 0, this.game.width, this.game.height);
         background.endFill();
-
         this.container.add(background);
 
         // Render content
@@ -36,8 +34,11 @@ Darwinator.ResultScreen.prototype = {
         this.initButtons();
 
         var text = 'Points left to spend: ' + this.unspentPoints;
-        this.unspentPointsText = this.container.add(new Phaser.BitmapText(this.game, this.game.width/2, 90, 'minecraftia', text, 16));
-        this.container.add(new Phaser.Button(this.game, this.game.width/2, this.game.height - 100, 'continue-game-button', this.continueGame, this, 1, 0, 1));
+        this.unspentPointsText = this.container.add(new Phaser.BitmapText(this.game, 0, 90, 'minecraftia', text, 16));
+        this.unspentPointsText.position.x = this.game.width  / 2 - this.unspentPointsText.textWidth / 2;
+
+        var continueButton = this.container.add(new Phaser.Button(this.game, 0, this.game.height - 100, 'continue-game-button', this.continueGame, this, 1, 0, 1));
+        continueButton.position.x = this.game.width / 2 - continueButton.width / 2;
     },
 
     beforeSwitch: function () {

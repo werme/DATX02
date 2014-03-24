@@ -317,9 +317,8 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     // FIXME possible memory leak, should call destroy but it crashes for some reason..
     //game.enemies.destroy(true);
     enemyGroup = game.add.group();
-    var pos = [];
     for(var i = 0; i < population.length; i++){
-      pos = spawnPositions[i];
+      var pos         = spawnPositions[i];
       var attributes  = this.decodeIndividual(population[i]);
       var strength    = attributes[0];
       var agility     = attributes[1];
@@ -338,21 +337,24 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @return {Array} - A binary string representation of the enemy attribute.
   */
   attrToGenes: function(attr) {
+      // binary conversion
       var base = 2;
       var binaryString = Number(attr).toString(base).split('').
                 map(function(str){return parseInt(str, base);});
 
       var bitsPerVar = this.NUMBER_OF_GENES / this.NUMBER_OF_VARIABLES;
       if (binaryString.length < bitsPerVar){
+        // add zeros to beginning if the binary string was too short
         var nbrInitialZeros = bitsPerVar - binaryString.length;
-        var zeros = new Array(nbrInitialZeros);
+        var zeros           = new Array(nbrInitialZeros);
         for(var i = 0; i < nbrInitialZeros; i++){
           zeros[i] = 0;
         }
-        // add zeros in beginning to get correct length
+
         binaryString = zeros.concat(binaryString);
       }else if(binaryString.length > bitsPerVar){
-        // keep last bitsPerVar bits
+        // keep the last bitsPerVar bits if the binary string was too long
+        // happens if 2^bitsPerVar - 1 < this.VARIABLE_RANGE
         binaryString = binaryString.slice(-bitsPerVar);
       }
       return binaryString;

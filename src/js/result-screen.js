@@ -33,12 +33,18 @@ Darwinator.ResultScreen.prototype = {
         this.initAttributes(this.game.player.attributes);
         this.initButtons();
 
+        var logo = this.container.add(new Phaser.BitmapText(this.game, 0, 50, 'minecraftia', 'DARWINATOR', 48));
+        logo.position.x = this.game.width  / 2 - logo.textWidth / 2;
+
         var text = 'Points left to spend: ' + this.unspentPoints;
-        this.unspentPointsText = this.container.add(new Phaser.BitmapText(this.game, 0, 90, 'minecraftia', text, 16));
+        this.unspentPointsText = this.container.add(new Phaser.BitmapText(this.game, 0, 150, 'minecraftia', text, 16));
         this.unspentPointsText.position.x = this.game.width  / 2 - this.unspentPointsText.textWidth / 2;
 
-        var continueButton = this.container.add(new Phaser.Button(this.game, 0, this.game.height - 100, 'continue-game-button', this.continueGame, this, 1, 0, 1));
+        var continueButton = this.container.add(new Phaser.Button(this.game, 0, this.game.height - 120, 'continue-game-button', this.continueGame, this, 1, 0, 1));
         continueButton.position.x = this.game.width / 2 - continueButton.width / 2;
+
+        var buttonText = this.container.add(new Phaser.BitmapText(this.game, 0, this.game.height - 107, 'minecraftia', 'CONTINUE GAME', 20));
+        buttonText.position.x = this.game.width  / 2 - buttonText.textWidth / 2;
     },
 
     beforeSwitch: function () {
@@ -47,7 +53,7 @@ Darwinator.ResultScreen.prototype = {
 
     initAttributes: function (attributes) {
         var x       = this.game.width  / 2 - 70,
-            y       = 170,
+            y       = 190,
             text;
 
         // TODO Ensure order.
@@ -63,7 +69,7 @@ Darwinator.ResultScreen.prototype = {
 
     initButtons: function () {
         var x = this.game.width  / 2 - 100,
-            y = 180;
+            y = 200;
 
         var buttons = new Phaser.Group(this.game, 0, 0);
 

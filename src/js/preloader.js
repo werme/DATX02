@@ -24,7 +24,7 @@ Darwinator.Preloader.prototype = {
     this.load.image('arrow','assets/arrow.png');
     this.load.spritesheet('player', 'assets/darwin.png', 32, 32, 16);
     this.game.load.image('plus-button', 'assets/plus-button.png');
-    this.load.spritesheet('continue-game-button', 'assets/continue-game-button.png', 322, 66, 2);
+    this.load.spritesheet('continue-game-button', 'assets/continue-game-button.png', 248, 58, 2);
   },
 
   create: function () {

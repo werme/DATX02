@@ -14,18 +14,17 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
 
   this.scale.setTo(0.25,0.25);
   this.target = target;
-  if(!target)
-    console.log('Enemy: target is falsey');
-  this.path = [];
-  this.debug = true;
+  this.path   = [];
+  this.debug  = true;
+
   //Allow enemy to overlap objects, i.e. reduce the hitbox
   //this.body.setRectangle(20*4, 16*4, 0, 16*4);
   this.lastPathUpdate = 0;
+
   // score properties to measure success
-  //this.dateOfBirthMs = Date.now();
-  //this.timeSurvivedMs = undefined; //set this to dateOfBirthMs - Date.now() on death OR end of game round
   this.damageDone = 0;
 
+  // melee cooldown
   this.lastMeleeTimestamp = 0;
   this.cooldownMs         = 250;
 };
@@ -41,8 +40,8 @@ Darwinator.Enemy.prototype.update = function() {
     return;
   }
   this.body.velocity.setTo(0,0);
-  var currTile = Darwinator.Helpers.pixelsToTile(this.body.x, this.body.y);
-  var targetTile = Darwinator.Helpers.pixelsToTile(this.target.body.x, this.target.body.y);
+  var currTile    = Darwinator.Helpers.pixelsToTile(this.body.x, this.body.y);
+  var targetTile  = Darwinator.Helpers.pixelsToTile(this.target.body.x, this.target.body.y);
 
   var pathLength = this.path.length;
   if(!(pathLength && this.path[pathLength - 1].x === targetTile.x &&
@@ -105,19 +104,20 @@ Darwinator.Enemy.prototype.meleeAttack = function(){ //callback for overlapping 
 };
 
 Darwinator.Enemy.prototype.updatePath = function() {
-  var currTile = Darwinator.Helpers.pixelsToTile(this.body.x, this.body.y);
-  var targetTile = Darwinator.Helpers.pixelsToTile(this.target.body.x, this.target.body.y);
-  Darwinator.Pathfinder.findPath(currTile.x, currTile.y, targetTile.x, targetTile.y, function(path){
-    this.path = !!path ? path : [];
-  }.bind(this));
+  var currTile    = Darwinator.Helpers.pixelsToTile(this.body.x, this.body.y);
+  var targetTile  = Darwinator.Helpers.pixelsToTile(this.target.body.x, this.target.body.y);
+
+  Darwinator.Pathfinder.findPath(currTile.x, currTile.y, targetTile.x, targetTile.y, 
+                                    function(path){ this.path = !!path ? path : [];}.bind(this) );
   Darwinator.Pathfinder.calculate();
   this.lastPathUpdate = 0;
 };
 
 Darwinator.Enemy.prototype.followPath = function() {
   var targetPos = Darwinator.Helpers.tileToPixels(this.path[1].x, this.path[1].y);
-  targetPos.x = Math.round(targetPos.x - this.body.width / 2);
-  targetPos.y = Math.round(targetPos.y - this.body.height / 2);
+  targetPos.x   = Math.round(targetPos.x - this.body.width / 2);
+  targetPos.y   = Math.round(targetPos.y - this.body.height / 2);
+
   var distance = Darwinator.Helpers.calculateDistance(targetPos, [this.body.x, this.body.y]);
   if (distance < 4 && this.path.length > 2) {      // Trial and error - modify if need be.
     // Remember, include (x,y,health) in reset, otherwise health will = 1.

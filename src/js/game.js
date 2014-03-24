@@ -129,6 +129,7 @@ Darwinator.GameState.prototype = {
     stopTimers: function () {
         this.game.time.events.remove(this.endRoundTimer);
         this.game.time.events.remove(this.displayTimeLeftTimer);
+        this.secondsRemaining.text = 'Seconds remaining: ' + this.roundLengthSeconds;
     },
 
     spawnPlayer: function (x, y) {

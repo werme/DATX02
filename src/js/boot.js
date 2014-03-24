@@ -3,7 +3,7 @@
 Darwinator.Boot = function() {};
 
 Darwinator.Boot.prototype = {
-  
+
   preload: function () {
     this.load.image('preloader', 'assets/preloader.gif');
   },
@@ -12,6 +12,9 @@ Darwinator.Boot.prototype = {
     this.game.input.maxPointers = 1;
 
     // this.game.stage.disableVisibilityChange = true;
+
+    // Enable Arcade physic system
+    this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
     if (this.game.device.desktop) {
       this.game.stage.scale.pageAlignHorizontally = true;

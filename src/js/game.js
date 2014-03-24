@@ -35,6 +35,8 @@ Darwinator.GameState.prototype = {
             this.cheatKey = this.game.input.keyboard.addKey(Phaser.Keyboard.E);
             this.pauseKey = this.game.input.keyboard.addKey(Phaser.Keyboard.P);
 
+            this.level = new Darwinator.Level(this.game);
+
             this.game.time.advancedTiming = true;
         }
 
@@ -66,10 +68,6 @@ Darwinator.GameState.prototype = {
     },
 
     create: function () {
-
-        // Initiate level & spawn enemies and player
-        // TODO group these to make the order constant.
-        this.level = new Darwinator.Level(this.game);
 
         this.spawnPlayer(160, 620);
 

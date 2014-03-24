@@ -2,10 +2,9 @@
 
 Darwinator.ResultScreen = function() {
     this.attributes         = {};
-    this.buttons            = [];
+    this.buttons            = null;
     this.unspentPoints      = 0;
     this.unspentPointsText  = null;
-    this.continueGameButton = null;
     this.container          = null;
 };
 
@@ -37,12 +36,8 @@ Darwinator.ResultScreen.prototype = {
         this.initButtons();
 
         var text = 'Points left to spend: ' + this.unspentPoints;
-        this.unspentPointsText = this.add.bitmapText(this.game.width/2, 90, 'minecraftia', text, 16);
-        // this.unspentPointsText.anchor.setTo(0.5, 0.5);
-
-        // Setup done button
-        this.continueGameButton = this.game.add.button(this.game.width/2, this.game.height - 100, 'continue-game-button', this.continueGame, this, 1, 0, 1);
-        this.continueGameButton.anchor.setTo(0.5, 0.5);
+        this.unspentPointsText = this.container.add(new Phaser.BitmapText(this.game, this.game.width/2, 90, 'minecraftia', text, 16));
+        this.container.add(new Phaser.Button(this.game, this.game.width/2, this.game.height - 100, 'continue-game-button', this.continueGame, this, 1, 0, 1));
     },
 
     beforeSwitch: function () {

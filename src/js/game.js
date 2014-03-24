@@ -29,9 +29,10 @@ Darwinator.GameState.prototype = {
     init: function (reset) {
         if (!reset) {
             // Input
-            this.cursors  = this.game.input.keyboard.createCursorKeys();
-            this.cheatKey = this.game.input.keyboard.addKey(Phaser.Keyboard.E);
-            this.pauseKey = this.game.input.keyboard.addKey(Phaser.Keyboard.P);
+            this.cursors        = this.game.input.keyboard.createCursorKeys();
+            this.cheatKey       = this.game.input.keyboard.addKey(Phaser.Keyboard.E);
+            this.pauseKey       = this.game.input.keyboard.addKey(Phaser.Keyboard.P);
+            this.fullScreenKey  = this.game.input.keyboard.addKey(Phaser.Keyboard.F);
 
             // Map
             this.level = new Darwinator.Level(this.game);
@@ -51,6 +52,8 @@ Darwinator.GameState.prototype = {
 
         this.cheatKey.onDown.add(this.endRound, this);
         this.pauseKey.onDown.add(this.togglePause, this);
+        this.game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
+        this.fullScreenKey.onDown.add(this.goFullScreen, this);
 
         // Since states lack a callback for the resume event
         this.game.onResume.add(this.resumed, this);
@@ -215,6 +218,10 @@ Darwinator.GameState.prototype = {
     resumed: function() {
         this.pauseText.visible = false;
         console.log('Resumed game.');
-    }
+    },
+
+    goFullScreen: function(){
+      this.game.scale.startFullScreen();
+    },
 
 };

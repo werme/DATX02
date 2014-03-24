@@ -14,16 +14,21 @@ Darwinator.Level.prototype = {
 
   loadLevel: function () {
     this.map = this.game.add.tilemap('level1');
-    this.map.addTilesetImage('tiles', 'tiles');
-    this.map.createLayer('Tile Layer 2');
-    this.layer = this.map.createLayer('Tile Layer 1');
+    this.map.addTilesetImage('GroundTiles', 'GroundTiles');
+    this.map.addTilesetImage('ObjectTiles', 'ObjectTiles');
+    this.map.addTilesetImage('WaterTiles', 'WaterTiles');
+    this.map.createLayer('Water');
+    this.map.createLayer('Ground');
+    this.layer = this.map.createLayer('Collision');
+    this.map.createLayer('Objects');
+
     Darwinator.setTileSize(this.map.tileWidth, this.map.tileHeight);
 
     // TODO For debug only
-    this.layer.debug = true;
+    //this.layer.debug = true;
 
     this.map.collisionLayer = this.layer;
-    this.map.setCollisionByExclusion([1, 168, 156, 157, 158, 172, 173, 174, 188, 189, 190, 205]);
+    this.map.setCollisionByExclusion([1025], true, this.layer);
     this.layer.resizeWorld();
     this.initPathFinder();
   },
@@ -33,7 +38,7 @@ Darwinator.Level.prototype = {
     // Darwinator.Pathfinder.enableDiagonals();
     var indexes = Darwinator.Helpers.convertTileMap(this.layer.map.layers[0].data);
     Darwinator.Pathfinder.setGrid(indexes);
-    Darwinator.Pathfinder.setAcceptableTiles([1, 168, 156, 157, 158, 172, 173, 174, 188, 189, 190, 205]);
+    Darwinator.Pathfinder.setAcceptableTiles([1192]);
   },
 
   spawnEnemies: function () {
@@ -41,11 +46,11 @@ Darwinator.Level.prototype = {
   },
 
   initSpawnPosition: function () {
-    var matrix = Darwinator.Helpers.convertTileMap(this.map.layers[0].data);
+    var matrix = Darwinator.Helpers.convertTileMap(this.map.layers[3].data);
 
     for (var i = 0; i < matrix.length; i++) {
       for(var j = 0; j < matrix[i].length; j++) {
-        if (matrix[i][j] === 168){
+        if (matrix[i][j] === 1192){
           this.spawnPositions.push(Darwinator.Helpers.tileToPixels(j,i));
         }
       }
@@ -53,7 +58,7 @@ Darwinator.Level.prototype = {
   },
 
   addTopLayer: function() {
-    this.map.createLayer('Tile Layer 3');
+    this.map.createLayer('TopLayer');
   }
 
 }

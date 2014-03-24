@@ -126,7 +126,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   decodeIndividual: function(individual) {
     var pointsToSpend = this.NUMBER_OF_VARIABLES * this.VARIABLE_RANGE;
     var bitsPerVar    = this.NUMBER_OF_GENES / this.NUMBER_OF_VARIABLES;
-    var decoded       = [];
+    var decoded       = new Array(this.NUMBER_OF_VARIABLES);
 
     for(var i = 0; i < this.NUMBER_OF_VARIABLES; i++) {
       decoded[i] = 0;
@@ -154,8 +154,8 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   */
   cross: function(firstInd, secondInd) {
     var crossPoint = Math.round(Math.random()*this.NUMBER_OF_GENES - 1);
-    var newInd1 = [];
-    var newInd2 = [];
+    var newInd1 = new Array(this.NUMBER_OF_GENES);
+    var newInd2 = new Array(this.NUMBER_OF_GENES);
 
     for(var i = 0; i < this.NUMBER_OF_GENES; i++) {
       if (i < crossPoint) {

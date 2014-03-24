@@ -41,8 +41,8 @@ Darwinator.Level.prototype = {
     },
 
     spawnEnemies: function () {
-        this.enemies = Darwinator.GeneticAlgorithm.generatePopulation(this.game, this.game.player, undefined, true, this.spawnPositions);
-        return this.enemies;
+      this.enemies = Darwinator.GeneticAlgorithm.generatePopulation(this.game, this.game.player, this.enemies, true, this.spawnPositions);
+      return this.enemies;
     },
 
     initSpawnPosition: function () {

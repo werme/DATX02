@@ -46,16 +46,13 @@ Darwinator.GameState.prototype = {
     beforeSwitch: function () {
         this.game.world.remove(this.game.player);
         this.game.world.remove(this.game.enemies);
+        this.game.world.remove(this.level.overlaps);
+        this.game.world.remove(this.gui);
+        this.game.world.remove(this.bullets);
+
         this.cheatKey.onDown.remove(this.endRound, this);
         this.pauseKey.onDown.remove(this.togglePause, this);
         this.game.onResume.remove(this.resumed, this);
-
-        // this.game.world.remove(this.level.layer1);
-        // this.game.world.remove(this.level.layer2);
-        this.game.world.remove(this.level.layer3);
-
-        this.game.world.remove(this.gui);
-        this.game.world.remove(this.bullets);
 
         this.stopTimers();
     },
@@ -141,11 +138,11 @@ Darwinator.GameState.prototype = {
         for (var i = 0; i < this.bullets.length; i++) {
             var bulletGroup = this.bullets.getAt(i);
             this.game.physics.arcade.collide(bulletGroup, this.game.enemies, this.bulletCollisionHandler, null, this);
-            this.game.physics.arcade.collide(bulletGroup, this.level.layer2, this.bulletCollisionHandler, null, this);
+            this.game.physics.arcade.collide(bulletGroup, this.level.objects, this.bulletCollisionHandler, null, this);
         }
 
-        this.game.physics.arcade.collide(this.game.player, this.level.layer2);
-        this.game.physics.arcade.collide(this.game.enemies, this.level.layer2);
+        this.game.physics.arcade.collide(this.game.player, this.level.objects);
+        this.game.physics.arcade.collide(this.game.enemies, this.level.objects);
 
         this.updateGUI();
 

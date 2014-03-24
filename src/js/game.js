@@ -40,12 +40,15 @@ Darwinator.GameState.prototype = {
 
             // Containers
             this.bullets = this.game.add.group();
-            this.gui     = this.game.add.group();
+            this.gui     = this.initGUI();
 
             // Misc
             this.game.time.advancedTiming = true;
             this.gui.fixedToCamera        = true;
         }
+
+        this.game.add.existing(this.gui);
+        this.game.add.existing(this.bullets);
 
         this.cheatKey.onDown.add(this.endRound, this);
         this.pauseKey.onDown.add(this.togglePause, this);
@@ -81,22 +84,33 @@ Darwinator.GameState.prototype = {
 
         this.game.player.weapon = new Darwinator.Bow(this.game, Darwinator.PLAYER_RANGE_WEAPON_BASE_BULLETSPEED, Darwinator.PLAYER_RANGE_WEAPON_BASE_COOLDOWN, Darwinator.PLAYER_BASE_DAMAGE, this.bullets, this.game.player);
 
-        this.initGUI();
+        this.game.world.bringToTop(this.gui);
 
         this.startTimers();
     },
 
     initGUI: function () {
-        var style = { font: '16px monospace', fill: '#fff' };
+        var gui   = this.game.add.group(),
+            style = { font: '16px monospace', fill: '#fff' },
+            x     = this.game.width  / 2,
+            y     = this.game.height / 2;
 
-        this.fps = this.gui.add(new Phaser.Text(this.game, 16, 16, 'FPS: 0', style));
-        this.stats = this.gui.add(new Phaser.Text(this.game, 16, 36, '', style));
-        this.health = this.gui.add(new Phaser.Text(this.game, 16, 56, '', style));
-        this.secondsRemaining = this.gui.add(new Phaser.Text(this.game, 16, 76, 'Seconds remaining: ' + this.roundLengthSeconds, style));
-        this.enemiesRemaining = this.gui.add(new Phaser.Text(this.game, 16, 96, 'Enemies remaining: ', style));
-        this.gameOver = this.gui.add(new Phaser.Text(this.game, this.game.width / 2, this.game.height / 2, '', {fontSize: '48px', fill:'#F08'}));
+        this.fps              = gui.add(new Phaser.Text(this.game, 16, 16, 'FPS: 0', style));
+        this.stats            = gui.add(new Phaser.Text(this.game, 16, 36, '', style));
+        this.health           = gui.add(new Phaser.Text(this.game, 16, 56, '', style));
+        this.secondsRemaining = gui.add(new Phaser.Text(this.game, 16, 76, 'Seconds remaining: ' + this.roundLengthSeconds, style));
+        this.enemiesRemaining = gui.add(new Phaser.Text(this.game, 16, 96, 'Enemies remaining: ', style));
+        this.pauseText        = gui.add(new Phaser.Text(this.game, x, y, 'Game paused', style));
+        this.gameOver         = gui.add(new Phaser.Text(this.game, x, y, 'Game Over', {fontSize: '24px monospace', fill:'#FFF'}));
 
-        this.initPauseOverlay();
+        this.pauseText.anchor.setTo(0.5, 0.5);
+        this.gameOver.anchor.setTo(0.5, 0.5);
+
+        // Should be hidden by default
+        this.pauseText.visible = false;
+        this.gameOver.visible  = false;
+
+        return gui;
     },
 
     startTimers: function () {
@@ -124,19 +138,6 @@ Darwinator.GameState.prototype = {
         // Add player sprite to stage and focus camera
         this.game.add.existing(this.game.player);
         this.game.camera.follow(this.game.player);
-    },
-
-    initPauseOverlay: function () {
-        var style = { fontSize: '16px', fill: '#fff', align: 'center' },
-            x     = this.game.width  / 2,
-            y     = this.game.height / 2;
-
-        // Render text centered and fixed to camera
-        this.pauseText = this.gui.add(new Phaser.Text(this.game, x, y, 'Game paused', style));
-        this.pauseText.anchor.setTo(0.5, 0.5);
-
-        // Should be hidden by default
-        this.pauseText.visible = false;
     },
 
     update: function () {

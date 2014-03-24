@@ -117,15 +117,14 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
 
   /**
   * Decodes a individual from binary encoding to real numbers. The values of each
-  * variable will lie in the range [1, this.VARIABLE_RANGE].
+  * variable will lie in the range [0, this.VARIABLE_RANGE].
   *
   * @method Darwinator.GeneticAlgorithm#decodeIndividual
   * @param {Array} [individual] - The binary encoded individual to be decoded
   * @return {Array} The decoded individual. Will have a length of this.NUMBER_OF_VARIABLES
   */
   decodeIndividual: function(individual) {
-    // make sure each attribute is in the range [1, this.VARIABLE_RANGE] by reserving 1 point per attribute
-    var pointsToSpend = (this.NUMBER_OF_VARIABLES * this.VARIABLE_RANGE) - this.NUMBER_OF_VARIABLES;
+    var pointsToSpend = this.NUMBER_OF_VARIABLES * this.VARIABLE_RANGE;
     var bitsPerVar    = this.NUMBER_OF_GENES / this.NUMBER_OF_VARIABLES;
     var decoded       = [];
 
@@ -136,8 +135,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
         var startVar = (i-1) * bitsPerVar;
         decoded[i-1] += individual[startVar + l - 1] * Math.pow(2, -l);
       }
-      // reserved point + [0, range]
-      decoded[i-1] = 1 + pointsToSpend * decoded[i-1]/(1 - Math.pow(2,-bitsPerVar));
+      decoded[i-1] = pointsToSpend * decoded[i-1]/(1 - Math.pow(2,-bitsPerVar));
       if(pointsToSpend > 0){
         pointsToSpend -= decoded[i-1];
       }

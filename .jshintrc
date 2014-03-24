@@ -10,7 +10,6 @@
   "newcap": true,
   "noarg": true,
   "nonew": false,
-  "quotmark": "single",
   "undef": true,
   "unused": true,
   "devel": true,
@@ -18,7 +17,7 @@
   "browser": true,
   "sub": true,
   "debug": true,
-  "globalstrict": true, 
+  "globalstrict": true,
   "globals": {
     "Phaser": false,
     "EasyStar": false,

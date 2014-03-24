@@ -172,7 +172,7 @@ Darwinator.GameState.prototype = {
 
     updateTimer: function () { // Callback to update time remaining display every second
         this.roundSecondsRemaining--;
-        this.secondsRemaining.content = 'Seconds remaining: ' + this.roundSecondsRemaining;
+        this.secondsRemaining.text = 'Seconds remaining: ' + this.roundSecondsRemaining;
     },
 
     bulletCollisionHandler: function (bullet, target) {

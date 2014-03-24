@@ -54,7 +54,12 @@ Darwinator.GameState.prototype = {
     this.game.player.weapon = new Darwinator.Bow(this.game,
     Darwinator.PLAYER_RANGE_WEAPON_BASE_COOLDOWN, 500, this.bullets, 10, this.game.player);
 
-    console.log(this.game.player.weapon);
+    for (var i = 0; i < this.game.enemies.length; i++) {
+      var enemy = this.game.enemies.getAt(i);
+      var weapon = new Darwinator.Bow(this.game,
+      Darwinator.PLAYER_RANGE_WEAPON_BASE_COOLDOWN, 500, this.bullets, 10, enemy);
+      enemy.arm(weapon);
+    }
 
     this.displayGUI();
 
@@ -141,6 +146,7 @@ Darwinator.GameState.prototype = {
     for (var i = 0; i < this.bullets.length; i++) {
       var bulletGroup = this.bullets.getAt(i);
       this.game.physics.arcade.collide(bulletGroup, this.game.enemies, this.bulletCollisionHandler, null, this);
+      this.game.physics.arcade.collide(bulletGroup, this.game.player, this.bulletCollisionHandler, null, this);
       this.game.physics.arcade.collide(bulletGroup, this.layer, this.bulletCollisionHandler, null, this);
     }
     this.game.physics.arcade.collide(this.game.player, this.layer);
@@ -160,10 +166,24 @@ Darwinator.GameState.prototype = {
   },
 
   bulletCollisionHandler: function (bullet, target) {
-    if (target instanceof Darwinator.Enemy) {
-      target.takeDamage(this.game.player.damage);
+    /* It seems Phaser is a bit inconsistent with which parameter is sent first */
+    if (bullet instanceof Darwinator.Entity) {
+      var tmp = bullet;
+      bullet = target;
+      target = tmp;
     }
-    bullet.kill();
+    /* Only do deal damage and remove bullet if the target was a entity of another type than the owner
+    of the bullet */
+    if (target instanceof Darwinator.Player && bullet.owner instanceof Darwinator.Player ||
+        target instanceof Darwinator.Enemy && bullet.owner instanceof Darwinator.Enemy) {
+        return;
+      }
+    if (target instanceof Darwinator.Entity) {
+      target.takeDamage(bullet.owner.damage);
+    }
+    if (!(bullet instanceof Darwinator.Entity)) {
+      bullet.kill();
+    }
   },
 
   togglePause: function() {

@@ -18,6 +18,9 @@ Darwinator.GameState = function() {
 
     this.spawnPositions        = [];
     this.roundLengthSeconds    = 60;
+
+    this.cheatKey              = Phaser.Keyboard.E;
+    this.pauseKey              = Phaser.Keyboard.P;
 };
 
 Darwinator.GameState.prototype = {
@@ -25,27 +28,36 @@ Darwinator.GameState.prototype = {
     init: function (doReset) {
         if (doReset) {
             this.reset();
+        } else {
+            this.cursors  = this.game.input.keyboard.createCursorKeys();
+            this.cheatKey = this.game.input.keyboard.addKey(Phaser.Keyboard.E);
+            this.pauseKey = this.game.input.keyboard.addKey(Phaser.Keyboard.P);
+
+            this.game.time.advancedTiming = true;
         }
+
+        this.cheatKey.onDown.add(this.endRound, this);
+        this.pauseKey.onDown.add(this.togglePause, this);
+
+        // Since states by default lack a callback for the resume event
+        this.game.onResume.add(this.resumed, this);
     },
 
     reset: function () {
         console.log("reset");
     },
 
+    beforeSwitch: function () {
+        this.game.world.remove(this.game.player);
+        this.game.world.remove(this.game.enemies);
+        this.cheatKey.onDown.remove(this.endRound, this);
+        this.pauseKey.onDown.remove(this.togglePause, this);
+        this.game.onResume.remove(this.resumed, this);
+
+        this.stopTimers();
+    },
+
     create: function () {
-        this.cursors = this.game.input.keyboard.createCursorKeys();
-
-        var cheatKey = this.game.input.keyboard.addKey(Phaser.Keyboard.E);
-        cheatKey.onDown.add(this.endRound, this);
-
-        // Toggle pause with space
-        var key = this.game.input.keyboard.addKey(Phaser.Keyboard.P);
-        key.onDown.add(this.togglePause, this);
-
-        this.initPauseOverlay();
-
-        // Since states by default lack a callback for the resume event
-        this.game.onResume.add(this.resumed, this);
 
         // Initiate level & spawn enemies and player
         // TODO group these to make the order constant.
@@ -64,19 +76,9 @@ Darwinator.GameState.prototype = {
         this.game.player.weapon = new Darwinator.Bow(this.game, Darwinator.PLAYER_RANGE_WEAPON_BASE_COOLDOWN, 500, this.bullets, 10, this.game.player);
 
         this.displayGUI();
+        this.initPauseOverlay();
 
-        this.game.time.advancedTiming = true;
         this.startTimers();
-    },
-
-    clear: function () {
-        console.log("clean");
-        this.game.world.remove(this.game.player);
-    },
-
-    displayTimer: function () { // Callback to update time remaining display every second
-        this.roundSecondsRemaining--;
-        this.secondsRemaining.content = 'Seconds remaining: ' + this.roundSecondsRemaining;
     },
 
     displayGUI: function () {
@@ -108,7 +110,7 @@ Darwinator.GameState.prototype = {
         this.endRoundTimer = this.game.time.events.add(Phaser.Timer.SECOND * this.roundLengthSeconds, this.endRound, this);
         // Display seconds remaining until round ends
         this.roundSecondsRemaining = this.roundLengthSeconds;
-        this.displayTimeLeftTimer = this.game.time.events.repeat(Phaser.Timer.SECOND, this.roundLengthSeconds, this.displayTimer, this);
+        this.displayTimeLeftTimer = this.game.time.events.repeat(Phaser.Timer.SECOND, this.roundLengthSeconds, this.updateTimer, this);
     },
 
     stopTimers: function () {
@@ -121,13 +123,8 @@ Darwinator.GameState.prototype = {
         if (!this.game.player) {
             this.game.player = new Darwinator.Player(this.game, x, y, this.cursors);
         } else {
-            // this.game.player.reset(x, y, Darwinator.PLAYER_BASE_HEALTH);
-            this.game.player.bringToTop();
+            this.game.player.reset(x, y, Darwinator.PLAYER_BASE_HEALTH);
             this.game.player.updateAttributes();
-
-            // TODO Find out why this is neccessary
-            this.game.player.cursors = this.cursors;
-            this.game.player.initKeys(this.game);
         }
 
         // Add player sprite to stage and focus camera
@@ -162,7 +159,7 @@ Darwinator.GameState.prototype = {
         this.updateGUI();
 
         // End round when all enemies are dead
-        if(this.game.enemies.countLiving() === 0){
+        if (this.game.enemies.countLiving() === 0) {
             this.endRound();
         }
     },
@@ -172,8 +169,9 @@ Darwinator.GameState.prototype = {
         this.stats.text = 'Player stamina: ' + Math.round(this.game.player.currBreath) + '/' + Math.round(this.game.player.stamina);
         this.health.text = 'Health: ' + Math.round(this.game.player.health);
         this.enemiesRemaining.text = 'Enemies remaining: ' + this.game.enemies.countLiving();
+    },
 
-        // Callback to update time remaining display every second
+    updateTimer: function () { // Callback to update time remaining display every second
         this.roundSecondsRemaining--;
         this.secondsRemaining.content = 'Seconds remaining: ' + this.roundSecondsRemaining;
     },
@@ -185,14 +183,13 @@ Darwinator.GameState.prototype = {
         bullet.kill();
     },
 
-    togglePause: function() {
-        this.game.paused = !this.game.paused;
+    endRound: function() {
+        this.beforeSwitch();
+        this.game.state.start('resultScreen');
     },
 
-    endRound: function() {
-        this.stopTimers();
-        this.clear();
-        this.game.state.start('resultScreen', false);
+    togglePause: function() {
+        this.game.paused = !this.game.paused;
     },
 
     paused: function () {

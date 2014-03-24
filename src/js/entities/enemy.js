@@ -57,7 +57,7 @@ Darwinator.Enemy.prototype.update = function() {
   }
 
   switch(this.category) {
-  case 'enemy':
+  case 'enemy_intellect':
     if (this.path.length && Darwinator.Helpers.calculateDistance(targetTile, currTile) > 10) {
       this.followPath();
     } else {
@@ -69,6 +69,9 @@ Darwinator.Enemy.prototype.update = function() {
        obsticles*/
     if (this.path.length) {
       this.followPath();
+      if (Math.random() > 0.99) {
+        this.weapon.fire(this.target.body.x, this.target.body.y);
+      }
     } else {
       this.game.physics.arcade.moveToXY(this, this.target.body.x, this.target.body.y, this.speed);
     }

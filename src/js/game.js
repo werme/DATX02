@@ -21,8 +21,8 @@ Darwinator.GameState = function() {
 
     this.roundLengthSeconds    = 60;
 
-    this.cheatKey              = Phaser.Keyboard.E;
-    this.pauseKey              = Phaser.Keyboard.P;
+    this.cheatKey              = null;
+    this.pauseKey              = null;
 };
 
 Darwinator.GameState.prototype = {
@@ -60,7 +60,6 @@ Darwinator.GameState.prototype = {
     create: function () {
 
         this.spawnPlayer(160, 620);
-
         this.game.enemies = this.level.spawnEnemies();
 
         // TODO Find the right way to do this

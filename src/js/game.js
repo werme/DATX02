@@ -74,6 +74,13 @@ Darwinator.GameState.prototype = {
 
         this.bullets = this.game.add.group();
 
+        for (var i = 0; i < this.game.enemies.length; i++) {
+            var enemy = this.game.enemies.getAt(i);
+            var weapon = new Darwinator.Bow(this.game,
+            Darwinator.PLAYER_RANGE_WEAPON_BASE_COOLDOWN, 500, this.bullets, 10, enemy);
+            enemy.arm(weapon);
+        }
+
         this.game.player.weapon = new Darwinator.Bow(this.game, Darwinator.PLAYER_RANGE_WEAPON_BASE_COOLDOWN, 500, this.bullets, 10, this.game.player);
 
         this.initGUI();
@@ -167,12 +174,29 @@ Darwinator.GameState.prototype = {
         this.secondsRemaining.content = 'Seconds remaining: ' + this.roundSecondsRemaining;
     },
 
-    bulletCollisionHandler: function (bullet, target) {
-        if (target instanceof Darwinator.Enemy) {
-            target.takeDamage(this.game.player.damage);
-        }
-        bullet.kill();
-    },
+bulletCollisionHandler: function (bullet, target) {
+  /* It seems Phaser is a bit inconsistent with which parameter is sent first */
+  if (bullet instanceof Darwinator.Entity) {
+      var tmp = bullet;
+      bullet = target;
+      target = tmp;
+  }
+  /* Only do deal damage and remove bullet if the target was a entity of another type than the owner
+  of the bullet */
+  if (target instanceof Darwinator.Player && bullet.owner instanceof Darwinator.Player ||
+      target instanceof Darwinator.Enemy && bullet.owner instanceof Darwinator.Enemy) {
+      if (!(bullet instanceof Darwinator.Entity)) {
+          bullet.kill();
+      }
+      return;
+    }
+  if (target instanceof Darwinator.Entity) {
+      target.takeDamage(bullet.owner.damage);
+  }
+  if (!(bullet instanceof Darwinator.Entity)) {
+      bullet.kill();
+  }
+},
 
     endRound: function() {
         this.beforeSwitch();

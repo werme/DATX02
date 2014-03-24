@@ -1,16 +1,16 @@
 'use strict';
 
 Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intellect) {
-
   if (strength > intellect && strength > agility) {
-    Darwinator.Entity.call(this, game, x, y, 'enemy_strength',/* [],*/ health, strength, agility, intellect);
+    this.category = 'enemy_strength';
   } else if (agility > intellect && agility > strength) {
-    Darwinator.Entity.call(this, game, x, y, 'enemy_agility',/* [],*/ health, strength, agility, intellect);
+    this.category = 'enemy_agility';
   } else if (intellect > strength && intellect > agility) {
-    Darwinator.Entity.call(this, game, x, y, 'enemy_intellect',/* [],*/ health, strength, agility, intellect);
+    this.category = 'enemy_intellect';
   } else {
-    Darwinator.Entity.call(this, game, x, y, 'enemy',/* [],*/ health, strength, agility, intellect);
+    this.category = 'enemy';
   }
+  Darwinator.Entity.call(this, game, x, y, this.category,/* [],*/ health, strength, agility, intellect);
 
   this.scale.setTo(0.25,0.25);
   this.target = target;
@@ -32,13 +32,23 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
 
 Darwinator.Enemy.prototype = Object.create(Darwinator.Entity.prototype);
 
+Darwinator.Enemy.prototype.arm = function(weapon) {
+  this.weapon = weapon;
+};
+
 Darwinator.Enemy.prototype.update = function() {
+  if (!this.alive) {
+    return;
+  }
+  this.body.velocity.setTo(0,0);
   var currTile = Darwinator.Helpers.pixelsToTile(this.body.x, this.body.y);
   var targetTile = Darwinator.Helpers.pixelsToTile(this.target.body.x, this.target.body.y);
 
   var pathLength = this.path.length;
-  if(!(pathLength &&  this.path[pathLength - 1].x === targetTile.x &&
-                      this.path[pathLength - 1].y === targetTile.y)) {
+  if(!(pathLength && this.path[pathLength - 1].x === targetTile.x &&
+                     this.path[pathLength - 1].y === targetTile.y &&
+                     this.path[0].x === currTile.x &&
+                     this.path[0].y === currTile.y)) {
     if (Darwinator.Helpers.calculateDistance(targetTile, currTile) * 5 < this.lastPathUpdate) {
       this.updatePath();
     } else {
@@ -46,12 +56,26 @@ Darwinator.Enemy.prototype.update = function() {
     }
   }
 
-  /* If a path exists - follow it. Else, try to move in the general direction of the player, ignoring
-     obsticles*/
-  if (this.path.length) {
-    this.followPath();
-  } else {
-    this.game.physics.arcade.moveToXY(this, this.target.body.x, this.target.body.y, this.speed);
+  switch(this.category) {
+  case 'enemy_intellect':
+    if (this.path.length && Darwinator.Helpers.calculateDistance(targetTile, currTile) > 10) {
+      this.followPath();
+    } else {
+      this.weapon.fire(this.target.body.x, this.target.body.y);
+    }
+    break;
+  default:
+    /* If a path exists - follow it. Else, try to move in the general direction of the player, ignoring
+       obsticles*/
+    if (this.path.length) {
+      this.followPath();
+      if (Math.random() > 0.99) {
+        this.weapon.fire(this.target.body.x, this.target.body.y);
+      }
+    } else {
+      this.game.physics.arcade.moveToXY(this, this.target.body.x, this.target.body.y, this.speed);
+    }
+    break;
   }
 
   // Target (ie. player) takes damage while the target and enemy overlap.

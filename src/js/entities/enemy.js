@@ -2,13 +2,13 @@
 
 Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intellect) {
   if (strength > intellect && strength > agility) {
-    this.category = 'enemy_strength';
+    this.category = this.categories.STRONG;
   } else if (agility > intellect && agility > strength) {
-    this.category = 'enemy_agility';
+    this.category = this.categories.AGILE;
   } else if (intellect > strength && intellect > agility) {
-    this.category = 'enemy_intellect';
+    this.category = this.categories.INTELLIGENT;
   } else {
-    this.category = 'enemy';
+    this.category = this.categories.DEFAULT;
   }
   Darwinator.Entity.call(this, game, x, y, this.category,/* [],*/ health, strength, agility, intellect);
 
@@ -30,6 +30,14 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
 };
 
 Darwinator.Enemy.prototype = Object.create(Darwinator.Entity.prototype);
+
+// for convenience, categories are represented by image names
+Darwinator.Enemy.prototype.categories = {
+  INTELLIGENT:  'enemy_intellect',
+  AGILE:        'enemy_agility',
+  STRONG:       'enemy_strength',
+  DEFAULT:      'enemy'
+};
 
 Darwinator.Enemy.prototype.arm = function(weapon) {
   this.weapon = weapon;
@@ -56,7 +64,7 @@ Darwinator.Enemy.prototype.update = function() {
   }
 
   switch(this.category) {
-  case 'enemy_intellect':
+  case this.categories.INTELLIGENT:
     if (this.path.length && Darwinator.Helpers.calculateDistance(targetTile, currTile) > 10) {
       this.followPath();
     } else {

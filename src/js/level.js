@@ -7,6 +7,7 @@ Darwinator.Level = function(game) {
   this.enemies 		    = null;
   this.toplayer       = null;
   this.collisionLayer = null;
+  this.objectLayer    = null;
   this.loadLevel();
   this.initSpawnPosition();
   this.game.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -22,7 +23,7 @@ Darwinator.Level.prototype = {
     this.map.createLayer('Water');
     this.map.createLayer('Ground');
     this.collisionLayer = this.map.createLayer('Collision');
-    this.map.createLayer('Objects');
+    this.objectLayer = this.map.createLayer('Objects');
 
     Darwinator.setTileSize(this.map.tileWidth, this.map.tileHeight);
 
@@ -38,7 +39,7 @@ Darwinator.Level.prototype = {
   initPathFinder: function () {
   	Darwinator.Pathfinder = new EasyStar.js();
     // Darwinator.Pathfinder.enableDiagonals();
-    var indexes = Darwinator.Helpers.convertTileMap(this.collisionLayer.map.layers[2].data);
+    var indexes = Darwinator.Helpers.convertTileLayer(this.collisionLayer);
     Darwinator.Pathfinder.setGrid(indexes);
     Darwinator.Pathfinder.setAcceptableTiles([1025]);
   },
@@ -49,7 +50,7 @@ Darwinator.Level.prototype = {
   },
 
   initSpawnPosition: function () {
-    var matrix = Darwinator.Helpers.convertTileMap(this.map.layers[3].data);
+    var matrix = Darwinator.Helpers.convertTileLayer(this.objectLayer);
 
     for (var i = 0; i < matrix.length; i++) {
       for(var j = 0; j < matrix[i].length; j++) {

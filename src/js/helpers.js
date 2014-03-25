@@ -9,13 +9,15 @@ Darwinator.Helpers = {
   * @param {Array} - [layer] The layer to convert
   * @return {Array} - The converted map
   */
-  convertTileMap: function(layer) {
-    var indexes = new Array(layer.length);
+  convertTileLayer: function(tileLayer) {
+
+    var array = tileLayer.layer.data;
+    var indexes = new Array(array.length);
 
     for (var i = 0; i < indexes.length; i++) {
-      indexes[i] = new Array(layer[i].length);
+      indexes[i] = new Array(array[i].length);
       for(var l = 0; l < indexes[i].length; l++) {
-        indexes[i][l] = layer[i][l].index;
+        indexes[i][l] = array[i][l].index;
       }
     }
     return indexes;

@@ -45,6 +45,11 @@ Darwinator.BinaryHeap.prototype = {
     size: function() {
         return this.content.length;
     },
+
+    isEmpty: function() {
+        return this.content.length === 0;
+    },
+
     rescoreElement: function(node) {
         this.sinkDown(this.content.indexOf(node));
     },

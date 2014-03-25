@@ -152,6 +152,7 @@ Darwinator.GameState.prototype = {
             var bulletGroup = this.bullets.getAt(i);
             this.game.physics.arcade.collide(bulletGroup, this.game.enemies, this.bulletCollisionHandler, null, this);
             this.game.physics.arcade.collide(bulletGroup, this.level.objects, this.bulletCollisionHandler, null, this);
+            this.game.physics.arcade.collide(bulletGroup, this.game.player, this.bulletCollisionHandler, null, this);
         }
 
         this.game.physics.arcade.collide(this.game.player, this.level.objects);

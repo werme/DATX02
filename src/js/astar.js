@@ -2,7 +2,6 @@
 
 Darwinator.AStar = function(grid, diagonals)
 {
-
 	// Approx value for square root of 2.
 	this.DIAGONALCOST = 1.41421356;
     /* Cost for turning. Small enough that a shorter path is always prefered, but
@@ -15,7 +14,7 @@ Darwinator.AStar = function(grid, diagonals)
         this.nodes[i] = [];
         for(var l = 0; l < grid[i].length; l++)
         {
-            this.nodes[i][l] = new Darwinator.AStar.Node(i, l, grid[i][l] === 1025);
+            this.nodes[i][l] = new Darwinator.AStar.Node(i, l, grid[i][l] === 0);
         }
     }
 
@@ -52,6 +51,10 @@ Darwinator.AStar.prototype.init = function()
 
 Darwinator.AStar.prototype.findPath = function(start, stop)
 {
+	if (start.x === stop.x && start.y === stop.y)
+	{
+		return [];
+	}
     this.init();
     var open = this.heap();
 
@@ -137,9 +140,10 @@ Darwinator.AStar.Node.prototype.traversePath = function()
 {
     var curr = this;
     var path = [];
+	path.push(curr);
     while(curr.parent)
     {
-        path.push(curr);
+        path.push(curr.parent);
         curr = curr.parent;
     }
     return path.reverse();

@@ -11,11 +11,11 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   CROSSOVER_PROBABILITY:    0.8,
   MUTATION_PROBABILITY:     0.025,
   TOURNAMENT_PARAMETER:     0.75,
-  VARIABLE_RANGE:           100, // should be set to max attribute value
+  VARIABLE_RANGE:           100, // max attribute value is VARIABLE_RANGE * NUMBER_OF_VARIABLES
   NUMBER_OF_GENERATIONS:    100,
   NUMBER_OF_VARIABLES:      3, // set to number of attributes
   TOURNAMENT_SIZE:          4,
-  ELITISM_DEGREE:           1, // should probably be really high
+  ELITISM_DEGREE:           5, // should probably be really high
 
   /**
   * Generates a population of individuals from a given population. The new population is likely to be 
@@ -96,21 +96,31 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     // 4 different enemy initial set of attributes - just an example, not permanent!
     var enemiesPerType = this.POPULATION_SIZE / 5;
     var pos = [];
+    var strength, agility, intellect;
     for(var i = 0; i < this.POPULATION_SIZE; i++){
       pos = spawnPositions[i];
       if(i < enemiesPerType){
-        // smart and quick but weak
-        enemyGroup.add(new Darwinator.Enemy(game, target, pos.x, pos.y, undefined, 1, 15, 14));
+        // smart but slow and weak
+        strength  = 0;
+        agility   = 0;
+        intellect = 30; 
       }else if(i < enemiesPerType*2){
         // strong but slow and stupid
-        enemyGroup.add(new Darwinator.Enemy(game, target, pos.x, pos.y, undefined, 20, 5, 5));
+        strength  = 30;
+        agility   = 0;
+        intellect = 0;
       }else if(i < enemiesPerType*3){
-        // strong and quick but stupid
-        enemyGroup.add(new Darwinator.Enemy(game, target, pos.x, pos.y, undefined, 15, 15, 0));
+        // fast but weak and stupid
+        strength  = 0;
+        agility   = 30;
+        intellect = 0;
       }else{
         // hybrid
-        enemyGroup.add(new Darwinator.Enemy(game, target, pos.x, pos.y, undefined, 10, 10, 10));
+        strength  = 10;
+        agility   = 10;
+        intellect = 10;
       }
+      enemyGroup.add(new Darwinator.Enemy(game, target, pos.x, pos.y, undefined, strength, agility, intellect));
     }
     return enemyGroup;
   },

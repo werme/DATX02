@@ -80,7 +80,7 @@ Darwinator.GameState.prototype = {
         // TODO Find the right way to do this
         this.game.enemies.setAll('alive', true);
 
-        this.game.world.bringToTop(this.level.overlaps);
+        this.game.world.bringToTop(this.level.toplayer);
 
         for (var i = 0; i < this.game.enemies.length; i++) {
             var enemy = this.game.enemies.getAt(i);
@@ -155,8 +155,8 @@ Darwinator.GameState.prototype = {
             this.game.physics.arcade.collide(bulletGroup, this.game.player, this.bulletCollisionHandler, null, this);
         }
 
-        this.game.physics.arcade.collide(this.game.player, this.level.objects);
-        this.game.physics.arcade.collide(this.game.enemies, this.level.objects);
+        this.game.physics.arcade.collide(this.game.player, this.level.layer);
+        this.game.physics.arcade.collide(this.game.enemies, this.level.layer);
 
         this.updateGUI();
 

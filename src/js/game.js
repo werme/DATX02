@@ -76,7 +76,6 @@ Darwinator.GameState.prototype = {
 
         this.spawnPlayer(160, 620);
         this.game.enemies = this.level.spawnEnemies();
-        console.log(this.game.enemies);
 
         // TODO Find the right way to do this
         this.game.enemies.setAll('alive', true);
@@ -153,6 +152,7 @@ Darwinator.GameState.prototype = {
             var bulletGroup = this.bullets.getAt(i);
             this.game.physics.arcade.collide(bulletGroup, this.game.enemies, this.bulletCollisionHandler, null, this);
             this.game.physics.arcade.collide(bulletGroup, this.level.collisionLayer, this.bulletCollisionHandler, null, this);
+            this.game.physics.arcade.collide(bulletGroup, this.game.player, this.bulletCollisionHandler, null, this);
         }
 
         this.game.physics.arcade.collide(this.game.player, this.level.collisionLayer);

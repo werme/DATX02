@@ -105,7 +105,7 @@ module.exports = (grunt) ->
       options:
         vendor: 'src/js/lib/*'
         specs : 'test/**/*.js'
-      
+
 
   @loadNpmTasks 'grunt-contrib-copy'
   @loadNpmTasks 'grunt-contrib-clean'

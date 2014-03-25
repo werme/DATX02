@@ -256,16 +256,6 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     return score;
   },
 
-  /* Example function for testing and debugging. */
-  /*exampleFunction: function(ind) {
-    var x = ind[0];
-    var y = ind[1];
-    return (1 + Math.pow((x + y + 1), 2) * (19 - 14 * x + 3 *
-            Math.pow(x, 2) - 14 * y + 6 * x * y + 3 * Math.pow(y, 2))) *
-    (30 + Math.pow((2*x - 3*y), 2) * (18 - 32 * x + 12 *
-            Math.pow(x, 2) + 48 * y - 36 * x + 27 * Math.pow(y, 2)));
-  },*/
-
   /**
   *
   * Tranlates the attributes of an enemy to a binary chromosome.

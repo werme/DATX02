@@ -88,10 +88,6 @@ module.exports = (grunt) ->
         options:
           livereload: true
 
-      ts:
-        files: ['<%= SRC_DIR %>/js/**/*.ts']
-        tasks: ['typescript']
-
       all:
         files: [
           '<%= SRC_DIR %>/assets/**/*'
@@ -100,6 +96,17 @@ module.exports = (grunt) ->
         ]
         options:
            livereload: true
+
+    jasmine :
+        src : ['src/js/lib/*',
+               'src/js/lib/*',
+               'src/js/main.js',
+               'src/js/entities/entity.js',
+               'src/js/weapon/weapon.js',
+               'src/js/**/*.js'],
+        options :
+            specs : 'test/**/*.js'
+      
 
   @loadNpmTasks 'grunt-contrib-copy'
   @loadNpmTasks 'grunt-contrib-clean'
@@ -111,9 +118,11 @@ module.exports = (grunt) ->
   @loadNpmTasks 'grunt-contrib-watch'
   @loadNpmTasks 'grunt-curl'
   @loadNpmTasks 'grunt-processhtml'
+  @loadNpmTasks 'grunt-contrib-jasmine'
 
   @registerTask 'dist', ['clean', 'jshint', 'uglify',
                          'cssmin', 'copy', 'processhtml', 'htmlmin']
   @registerTask 'server',  ['jshint', 'connect', 'watch']
+  @registerTask 'test', ['jasmine']
   @registerTask 'update', ['curl-dir']
   @registerTask 'default', ['server']

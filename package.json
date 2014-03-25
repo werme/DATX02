@@ -15,11 +15,11 @@
     "grunt-contrib-htmlmin": "*",
     "grunt-contrib-watch": "*",
     "grunt-curl": "*",
-    "grunt-processhtml": "*"
+    "grunt-processhtml": "*",
+    "grunt-contrib-jasmine": "^0.6.3"
   },
-
   "scripts": {
-    "start":   "node -e \"require('grunt').tasks(['server']);\"",
+    "start": "node -e \"require('grunt').tasks(['server']);\"",
     "install": "node -e \"require('grunt').tasks(['dist']);\""
   }
 }

@@ -31,7 +31,7 @@ Darwinator.Level.prototype = {
     //this.layer.debug = true;
 
     this.map.collisionLayer = this.collisionLayer;
-    this.map.setCollisionByExclusion([1025], true, this.collisionLayer);
+    this.map.setCollisionByExclusion([0], true, this.collisionLayer);
     this.collisionLayer.resizeWorld();
     this.initPathFinder();
   },
@@ -41,7 +41,7 @@ Darwinator.Level.prototype = {
     // Darwinator.Pathfinder.enableDiagonals();
     var indexes = Darwinator.Helpers.convertTileLayer(this.collisionLayer);
     Darwinator.Pathfinder.setGrid(indexes);
-    Darwinator.Pathfinder.setAcceptableTiles([1025]);
+    Darwinator.Pathfinder.setAcceptableTiles([0]);
   },
 
   spawnEnemies: function () {

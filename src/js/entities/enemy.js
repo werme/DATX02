@@ -114,10 +114,7 @@ Darwinator.Enemy.prototype.meleeAttack = function(){ //callback for overlapping 
 Darwinator.Enemy.prototype.updatePath = function() {
   var currTile    = Darwinator.Helpers.pixelsToTile(this.body.x, this.body.y);
   var targetTile  = Darwinator.Helpers.pixelsToTile(this.target.body.x, this.target.body.y);
-
-  Darwinator.Pathfinder.findPath(currTile.x, currTile.y, targetTile.x, targetTile.y, 
-                                    function(path){ this.path = !!path ? path : [];}.bind(this) );
-  Darwinator.Pathfinder.calculate();
+  this.path = Darwinator.Pathfinder.findPath(currTile, targetTile);
   this.lastPathUpdate = 0;
 };
 

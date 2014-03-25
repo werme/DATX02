@@ -97,15 +97,14 @@ module.exports = (grunt) ->
         options:
            livereload: true
 
-    jasmine :
-        src : ['src/js/lib/*',
-               'src/js/lib/*',
-               'src/js/main.js',
-               'src/js/entities/entity.js',
-               'src/js/weapon/weapon.js',
-               'src/js/**/*.js'],
-        options :
-            specs : 'test/**/*.js'
+    jasmine:
+      src: ['src/js/main.js',
+            'src/js/entities/entity.js',
+            'src/js/weapon/weapon.js',
+            'src/js/**/*.js']
+      options:
+        vendor: 'src/js/lib/*'
+        specs : 'test/**/*.js'
       
 
   @loadNpmTasks 'grunt-contrib-copy'

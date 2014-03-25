@@ -38,7 +38,7 @@ Darwinator.Level.prototype = {
 
   initPathFinder: function () {
     var indexes = Darwinator.Helpers.convertTileLayer(this.collisionLayer);
-    Darwinator.Pathfinder = new Darwinator.AStar(indexes);
+    Darwinator.Pathfinder = new Darwinator.AStar(indexes, true);
   },
 
   spawnEnemies: function () {

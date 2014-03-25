@@ -2,187 +2,227 @@
 
 Darwinator.GameState = function() {
 
-  this.bullets               = null;
-  this.cursors               = null;
-  this.tileset               = null;
-  this.layer                 = null;
-  this.fps                   = null;
-  this.stats                 = null;
-  this.health                = null;
-  this.secondsRemaining      = null;
-  this.enemiesRemaining      = null;
-  this.pauseText             = null;
-  this.roundSecondsRemaining = null;
-  this.endRoundTimer         = null;
-  this.displayTimeLeftTimer  = null;
+    // Input
+    this.cursors               = null;
+    this.cheatKey              = null;
+    this.pauseKey              = null;
 
-  this.spawnPositions        = [];
-  this.roundLengthSeconds    = 60;
+    // Groups
+    this.bullets               = null;
+    this.gui                   = null;
+
+    // Displayables
+    this.fps                   = null;
+    this.stats                 = null;
+    this.health                = null;
+    this.secondsRemaining      = null;
+    this.enemiesRemaining      = null;
+    this.pauseText             = null;
+    this.roundSecondsRemaining = null;
+    this.endRoundTimer         = null;
+    this.displayTimeLeftTimer  = null;
+
 };
 
 Darwinator.GameState.prototype = {
 
-  create: function () {
-    this.cursors = this.game.input.keyboard.createCursorKeys();
+    init: function (reset) {
+        if (!reset) {
+            // Input
+            this.cursors        = this.game.input.keyboard.createCursorKeys();
+            this.cheatKey       = this.game.input.keyboard.addKey(Phaser.Keyboard.E);
+            this.pauseKey       = this.game.input.keyboard.addKey(Phaser.Keyboard.P);
+            this.fullScreenKey  = this.game.input.keyboard.addKey(Phaser.Keyboard.F);
 
-    var cheatKey = this.game.input.keyboard.addKey(Phaser.Keyboard.E);
-    cheatKey.onDown.add(this.endRound, this);
+            // Map
+            this.level = new Darwinator.Level(this.game);
+            this.level.addTopLayer();
 
-    // Toggle pause with space
-    var key = this.game.input.keyboard.addKey(Phaser.Keyboard.P);
-    key.onDown.add(this.togglePause, this);
+            // Containers
+            this.bullets = this.game.add.group();
+            this.gui     = this.initGUI();
 
-    this.initPauseOverlay();
+            // Misc
+            this.game.time.advancedTiming = true;
+            this.gui.fixedToCamera        = true;
+        }
 
-    // Since states by default lack a callback for the resume event
-    this.game.onResume.add(this.resumed, this);
+        this.game.add.existing(this.gui);
+        this.game.add.existing(this.bullets);
 
-    // Initiate level & spawn enemies and player
-    // TODO group these to make the order constant.
-    this.level = new Darwinator.Level(this.game);
-    this.layer = this.level.layer;
-    this.spawnPlayer(160, 620);
-    this.level.spawnEnemies();
-    this.game.enemies = this.level.enemies;
-    this.game.enemies.setAll('alive', true);
+        this.cheatKey.onDown.add(this.endRound, this);
+        this.pauseKey.onDown.add(this.togglePause, this);
+        this.game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
+        this.fullScreenKey.onDown.add(this.goFullScreen, this);
 
-    // Renders the non-collidable top layer on top of player and enemies
-    this.level.addTopLayer();
+        // Since states lack a callback for the resume event
+        this.game.onResume.add(this.resumed, this);
+    },
 
-    this.bullets = this.game.add.group();
+    beforeSwitch: function () {
+        this.game.world.remove(this.game.player);
+        this.game.world.remove(this.game.enemies);
+        this.game.world.remove(this.gui);
+        this.game.world.remove(this.bullets);
 
-    this.game.player.weapon = new Darwinator.Bow(this.game,
-    Darwinator.PLAYER_RANGE_WEAPON_BASE_COOLDOWN, 500, this.bullets, 10, this.game.player);
+        this.cheatKey.onDown.remove(this.endRound, this);
+        this.pauseKey.onDown.remove(this.togglePause, this);
+        this.game.onResume.remove(this.resumed, this);
 
-    console.log(this.game.player.weapon);
+        this.stopTimers();
+    },
 
-    this.displayGUI();
+    create: function () {
 
-    this.game.time.advancedTiming = true;
-    this.startTimers();
-  },
+        this.spawnPlayer(160, 620);
+        this.game.enemies = this.level.spawnEnemies();
+        console.log(this.game.enemies);
 
-  displayTimer: function () { // Callback to update time remaining display every second
-    this.roundSecondsRemaining--;
-    this.secondsRemaining.content = 'Seconds remaining: ' + this.roundSecondsRemaining;
-  },
+        // TODO Find the right way to do this
+        this.game.enemies.setAll('alive', true);
 
-  displayGUI: function () {
+        this.game.world.bringToTop(this.level.toplayer);
 
-    // For development only
-    var style = { font: '16px monospace', fill: '#fff' };
-    this.fps = this.game.add.text(16, 16, 'FPS: 0', style);
-    this.fps.fixedToCamera = true;
+        for (var i = 0; i < this.game.enemies.length; i++) {
+            var enemy = this.game.enemies.getAt(i);
+            var weapon = new Darwinator.Cannon(this.game, enemy, this.bullets);
+            enemy.arm(weapon);
+        }
 
-    this.stats = this.game.add.text(16, 36, '', style);
-    this.stats.fixedToCamera = true;
+        this.game.player.weapon = new Darwinator.Bow(this.game, this.game.player, this.bullets);
 
-    this.health = this.game.add.text(16, 56, '', style);
-    this.health.fixedToCamera = true;
+        this.game.world.bringToTop(this.gui);
 
-    this.secondsRemaining = this.game.add.text(16, 76, 'Seconds remaining: ' + this.roundLengthSeconds, style);
-    this.secondsRemaining.fixedToCamera = true;
+        this.startTimers();
+    },
 
-    // For debugging - easier to check if a round ended too early
-    this.enemiesRemaining = this.game.add.text(16, 96, 'Enemies remaining: ', style);
-    this.enemiesRemaining.fixedToCamera = true;
+    initGUI: function () {
+        var gui   = this.game.add.group(),
+            style = { font: '16px monospace', fill: '#fff' },
+            x     = this.game.width  / 2,
+            y     = this.game.height / 2;
 
-    this.gameOver = this.game.add.text(this.game.width / 2, this.game.height / 2, '', {fontSize: '48px', fill:'#F08'});
-    this.gameOver.fixedToCamera = true;
-  },
+        this.fps              = gui.add(new Phaser.Text(this.game, 16, 16, 'FPS: 0', style));
+        this.stats            = gui.add(new Phaser.Text(this.game, 16, 36, '', style));
+        this.health           = gui.add(new Phaser.Text(this.game, 16, 56, '', style));
+        this.secondsRemaining = gui.add(new Phaser.Text(this.game, 16, 76, 'Seconds remaining: ' + Darwinator.ROUND_LENGTH_SECONDS, style));
+        this.enemiesRemaining = gui.add(new Phaser.Text(this.game, 16, 96, 'Enemies remaining: ', style));
+        this.pauseText        = gui.add(new Phaser.Text(this.game, x, y, 'Game paused', style));
+        this.gameOver         = gui.add(new Phaser.Text(this.game, x, y, 'Game Over', {fontSize: '24px monospace', fill:'#FFF'}));
 
-  startTimers: function () {
-    // End round when the time limit is reached
-    this.endRoundTimer = this.game.time.events.add(Phaser.Timer.SECOND * this.roundLengthSeconds, this.endRound, this);
-    // Display seconds remaining until round ends
-    this.roundSecondsRemaining = this.roundLengthSeconds;
-    this.displayTimeLeftTimer = this.game.time.events.repeat(Phaser.Timer.SECOND, this.roundLengthSeconds, this.displayTimer, this);
-  },
+        this.pauseText.anchor.setTo(0.5, 0.5);
+        this.gameOver.anchor.setTo(0.5, 0.5);
 
-  stopTimers: function () {
-    this.game.time.events.remove(this.endRoundTimer);
-    this.game.time.events.remove(this.displayTimeLeftTimer);
-  },
+        // Should be hidden by default
+        this.pauseText.visible = false;
+        this.gameOver.visible  = false;
 
-  spawnPlayer: function (x, y) {
-    // Instanciate new player or reset existing
-    if (!this.game.player) {
-      this.game.player = new Darwinator.Player(this.game, x, y, this.cursors);
-    } else {
-    //   this.game.player.reset(x, y, Darwinator.PLAYER_BASE_HEALTH);
-      this.game.player.bringToTop();
-      this.game.player.updateAttributes();
+        return gui;
+    },
 
-      // TODO Find out why this is neccessary
-      this.game.player.cursors = this.cursors;
-      this.game.player.initKeys(this.game);
-    }
+    startTimers: function () {
+        // End round when the time limit is reached
+        this.endRoundTimer = this.game.time.events.add(Phaser.Timer.SECOND * Darwinator.ROUND_LENGTH_SECONDS, this.endRound, this);
+        // Display seconds remaining until round ends
+        this.roundSecondsRemaining = Darwinator.ROUND_LENGTH_SECONDS;
+        this.displayTimeLeftTimer = this.game.time.events.repeat(Phaser.Timer.SECOND, Darwinator.ROUND_LENGTH_SECONDS, this.updateTimer, this);
+    },
 
-    // Add player sprite to stage and focus camera
-    this.game.add.existing(this.game.player);
-    this.game.camera.follow(this.game.player);
-  },
+    stopTimers: function () {
+        this.game.time.events.remove(this.endRoundTimer);
+        this.game.time.events.remove(this.displayTimeLeftTimer);
+        this.secondsRemaining.text = 'Seconds remaining: ' + Darwinator.ROUND_LENGTH_SECONDS;
+    },
 
-  initPauseOverlay: function () {
-    var styling = { fontSize: '16px', fill: '#fff', align: 'center' },
-        x       = this.game.width  / 2,
-        y       = this.game.height / 2;
+    spawnPlayer: function (x, y) {
+        // Instanciate new player or reset existing
+        if (!this.game.player) {
+            this.game.player = new Darwinator.Player(this.game, x, y, this.cursors);
+        } else {
+            this.game.player.reset(x, y, Darwinator.PLAYER_BASE_HEALTH);
+            this.game.player.updateAttributes();
+        }
 
-    // Render text centered and fixed to camera
-    this.pauseText = this.game.add.text(x, y, 'Game paused', styling);
-    this.pauseText.anchor.setTo(0.5, 0.5);
-    this.pauseText.fixedToCamera = true;
+        // Add player sprite to stage and focus camera
+        this.game.add.existing(this.game.player);
+        this.game.camera.follow(this.game.player);
+    },
 
-    // Should be hidden by default
-    this.pauseText.visible = false;
-  },
+    update: function () {
+        for (var i = 0; i < this.bullets.length; i++) {
+            var bulletGroup = this.bullets.getAt(i);
+            this.game.physics.arcade.collide(bulletGroup, this.game.enemies, this.bulletCollisionHandler, null, this);
+            this.game.physics.arcade.collide(bulletGroup, this.level.layer, this.bulletCollisionHandler, null, this);
+        }
 
-  update: function () {
-    for (var i = 0; i < this.bullets.length; i++) {
-      var bulletGroup = this.bullets.getAt(i);
-      this.game.physics.arcade.collide(bulletGroup, this.game.enemies, this.bulletCollisionHandler, null, this);
-      this.game.physics.arcade.collide(bulletGroup, this.layer, this.bulletCollisionHandler, null, this);
-    }
-    this.game.physics.arcade.collide(this.game.player, this.layer);
-    this.game.physics.arcade.collide(this.game.enemies, this.layer);
+        this.game.physics.arcade.collide(this.game.player, this.level.layer);
+        this.game.physics.arcade.collide(this.game.enemies, this.level.layer);
 
+        this.updateGUI();
 
-    // For development only
-    this.fps.text = 'FPS: ' + this.game.time.fps;
-    this.stats.text = 'Player stamina: ' + Math.round(this.game.player.currBreath) + '/' + Math.round(this.game.player.stamina);
-    this.health.text = 'Health: ' + Math.round(this.game.player.health);
-    this.enemiesRemaining.text = 'Enemies remaining: ' + this.game.enemies.countLiving();
+        // End round when all enemies are dead
+        if (this.game.enemies.countLiving() === 0) {
+            this.endRound();
+        }
+    },
 
-    // End round when all enemies are dead
-    if(this.game.enemies.countLiving() === 0){
-      this.endRound();
-    }
-  },
+    updateGUI: function () {
+        this.fps.text = 'FPS: ' + this.game.time.fps;
+        this.stats.text = 'Player stamina: ' + Math.round(this.game.player.currBreath) + '/' + Math.round(this.game.player.stamina);
+        this.health.text = 'Health: ' + Math.round(this.game.player.health);
+        this.enemiesRemaining.text = 'Enemies remaining: ' + this.game.enemies.countLiving();
+    },
 
-  bulletCollisionHandler: function (bullet, target) {
-    if (target instanceof Darwinator.Enemy) {
-      target.takeDamage(this.game.player.damage);
-    }
-    bullet.kill();
-  },
+    updateTimer: function () { // Callback to update time remaining display every second
+        this.roundSecondsRemaining--;
+        this.secondsRemaining.text = 'Seconds remaining: ' + this.roundSecondsRemaining;
+    },
 
-  togglePause: function() {
-    this.game.paused = !this.game.paused;
-  },
+    bulletCollisionHandler: function (bullet, target) {
+        /* It seems Phaser is a bit inconsistent with which parameter is sent first */
+        if (bullet instanceof Darwinator.Entity) {
+            var tmp = bullet;
+            bullet = target;
+            target = tmp;
+        }
+        /* Only do deal damage and remove bullet if the target was a entity of another type than the owner
+        of the bullet */
+        if (target instanceof Darwinator.Player && bullet.owner instanceof Darwinator.Player ||
+            target instanceof Darwinator.Enemy && bullet.owner instanceof Darwinator.Enemy) {
+            if (!(bullet instanceof Darwinator.Entity)) {
+                bullet.kill();
+            }
+            return;
+        }
+        if (target instanceof Darwinator.Entity) {
+            target.takeDamage(bullet.owner.damage);
+        }
+        if (!(bullet instanceof Darwinator.Entity)) {
+            bullet.kill();
+        }
+    },
 
-  endRound: function() {
-    this.stopTimers();
-    this.game.state.start('resultScreen', true);
-  },
+    endRound: function() {
+        this.beforeSwitch();
+        this.game.state.start('resultScreen', false);
+    },
 
-  paused: function () {
-    this.pauseText.visible = true;
-    console.log('Paused game.');
-  },
+    togglePause: function() {
+        this.game.paused = !this.game.paused;
+    },
 
-  resumed: function() {
-    this.pauseText.visible = false;
-    console.log('Resumed game.');
-  }
+    paused: function () {
+        this.pauseText.visible = true;
+        console.log('Paused game.');
+    },
+
+    resumed: function() {
+        this.pauseText.visible = false;
+        console.log('Resumed game.');
+    },
+
+    goFullScreen: function(){
+      this.game.scale.startFullScreen();
+    },
 
 };

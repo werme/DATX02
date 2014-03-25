@@ -1,11 +1,12 @@
 'use strict';
 
 Darwinator.Level = function(game) {
-  this.game 			= game;
+  this.game 			    = game;
   this.spawnPositions = [];
-  this.map      		= null;
-  this.enemies 		= null;
-  this.toplayer = null;
+  this.map      		  = null;
+  this.enemies 		    = null;
+  this.toplayer       = null;
+  this.collisionLayer = null;
   this.loadLevel();
   this.initSpawnPosition();
   this.game.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -20,7 +21,7 @@ Darwinator.Level.prototype = {
     this.map.addTilesetImage('WaterTiles', 'WaterTiles');
     this.map.createLayer('Water');
     this.map.createLayer('Ground');
-    this.layer = this.map.createLayer('Collision');
+    this.collisionLayer = this.map.createLayer('Collision');
     this.map.createLayer('Objects');
 
     Darwinator.setTileSize(this.map.tileWidth, this.map.tileHeight);
@@ -28,16 +29,16 @@ Darwinator.Level.prototype = {
     // TODO For debug only
     //this.layer.debug = true;
 
-    this.map.collisionLayer = this.layer;
-    this.map.setCollisionByExclusion([1025], true, this.layer);
-    this.layer.resizeWorld();
+    this.map.collisionLayer = this.collisionLayer;
+    this.map.setCollisionByExclusion([1025], true, this.collisionLayer);
+    this.collisionLayer.resizeWorld();
     this.initPathFinder();
   },
 
   initPathFinder: function () {
   	Darwinator.Pathfinder = new EasyStar.js();
     // Darwinator.Pathfinder.enableDiagonals();
-    var indexes = Darwinator.Helpers.convertTileMap(this.layer.map.layers[2].data);
+    var indexes = Darwinator.Helpers.convertTileMap(this.collisionLayer.map.layers[2].data);
     Darwinator.Pathfinder.setGrid(indexes);
     Darwinator.Pathfinder.setAcceptableTiles([1025]);
   },

@@ -100,19 +100,19 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     for(var i = 0; i < this.POPULATION_SIZE; i++){
       pos = spawnPositions[i];
       if(i < enemiesPerType){
-        // smart and quick but weak
-        strength  = 1;
-        agility   = 15;
-        intellect = 14; 
+        // smart but slow and weak
+        strength  = 0;
+        agility   = 0;
+        intellect = 30; 
       }else if(i < enemiesPerType*2){
         // strong but slow and stupid
-        strength  = 20;
-        agility   = 5;
-        intellect = 5;
+        strength  = 30;
+        agility   = 0;
+        intellect = 0;
       }else if(i < enemiesPerType*3){
-        // strong and quick but stupid
-        strength  = 15;
-        agility   = 15;
+        // fast but weak and stupid
+        strength  = 0;
+        agility   = 30;
         intellect = 0;
       }else{
         // hybrid

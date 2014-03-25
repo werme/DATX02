@@ -11,7 +11,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   CROSSOVER_PROBABILITY:    0.8,
   MUTATION_PROBABILITY:     0.025,
   TOURNAMENT_PARAMETER:     0.75,
-  VARIABLE_RANGE:           100, // should be set to max attribute value
+  VARIABLE_RANGE:           100, // max attribute value is VARIABLE_RANGE * NUMBER_OF_VARIABLES
   NUMBER_OF_GENERATIONS:    100,
   NUMBER_OF_VARIABLES:      3, // set to number of attributes
   TOURNAMENT_SIZE:          4,

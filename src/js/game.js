@@ -21,7 +21,7 @@ Darwinator.GameState = function() {
     this.roundSecondsRemaining = null;
     this.endRoundTimer         = null;
     this.displayTimeLeftTimer  = null;
-    
+
 };
 
 Darwinator.GameState.prototype = {
@@ -84,11 +84,11 @@ Darwinator.GameState.prototype = {
 
         for (var i = 0; i < this.game.enemies.length; i++) {
             var enemy = this.game.enemies.getAt(i);
-            var weapon = new Darwinator.Bow(this.game, Darwinator.ENEMY_RANGE_WEAPON_BASE_COOLDOWN, Darwinator.ENEMY_RANGE_WEAPON_BASE_BULLETSPEED, Darwinator.ENEMY_RANGE_WEAPON_BASE_DAMAGE, enemy, this.bullets);
+            var weapon = new Darwinator.Cannon(this.game, enemy, this.bullets);
             enemy.arm(weapon);
         }
 
-        this.game.player.weapon = new Darwinator.Bow(this.game, Darwinator.PLAYER_RANGE_WEAPON_BASE_COOLDOWN, Darwinator.PLAYER_RANGE_WEAPON_BASE_BULLETSPEED, Darwinator.PLAYER_BASE_DAMAGE, this.game.player, this.bullets);
+        this.game.player.weapon = new Darwinator.Bow(this.game, this.game.player, this.bullets);
 
         this.game.world.bringToTop(this.gui);
 

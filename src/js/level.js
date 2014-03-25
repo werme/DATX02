@@ -37,11 +37,8 @@ Darwinator.Level.prototype = {
   },
 
   initPathFinder: function () {
-  	Darwinator.Pathfinder = new EasyStar.js();
-    // Darwinator.Pathfinder.enableDiagonals();
     var indexes = Darwinator.Helpers.convertTileLayer(this.collisionLayer);
-    Darwinator.Pathfinder.setGrid(indexes);
-    Darwinator.Pathfinder.setAcceptableTiles([0]);
+    Darwinator.Pathfinder = new Darwinator.AStar(indexes);
   },
 
   spawnEnemies: function () {

@@ -14,7 +14,7 @@ Darwinator.AStar = function(grid, diagonals)
         this.nodes[i] = [];
         for(var l = 0; l < grid[i].length; l++)
         {
-            this.nodes[i][l] = new Darwinator.AStar.Node(i, l, grid[i][l] === 0);
+            this.nodes[i][l] = new Darwinator.AStar.Node(i, l, grid[i][l]);
         }
     }
 
@@ -24,7 +24,7 @@ Darwinator.AStar = function(grid, diagonals)
     {
         for(l = 0; l < this.nodes[i].length; l++)
         {
-            if(this.nodes[i][l].walkable)
+            if(this.nodes[i][l].walkable())
             {
                 this.nodes[i][l].findNeighbors(this.nodes, diagonals);
             }
@@ -87,7 +87,7 @@ Darwinator.AStar.prototype.findPath = function(start, stop)
                 continue;
             }
 
-            var cost = current.totalCost + current.isDiagonal(neighbor) ? 1 : this.DIAGONALCOST;
+            var cost = current.totalCost + current.isDiagonal(neighbor) ? this.DIAGONALCOST : 1;
             var visited = neighbor.open;
 
             /* Found new optimal path to the neighbor */
@@ -95,7 +95,7 @@ Darwinator.AStar.prototype.findPath = function(start, stop)
             {
                 neighbor.open = true;
                 neighbor.parent = current;
-                neighbor.estimate = neighbor.h || Darwinator.Helpers.calculateDistance(neighbor, stop);
+                neighbor.estimate = neighbor.estimate || Darwinator.Helpers.calculateDistance(neighbor, stop);
                 neighbor.totalCost = cost;
                 neighbor.score = neighbor.totalCost + neighbor.estimate;
             }
@@ -122,18 +122,23 @@ Darwinator.AStar.prototype.heap = function()
     });
 };
 
-Darwinator.AStar.Node = function(x, y, walkable)
+Darwinator.AStar.Node = function(x, y, index)
 {
     this.x = x;
     this.y = y;
     this.closed = false;
     this.open   = false;
     this.neighbors = [];
-    this.walkable = walkable;
+    this.index = index;
     this.parent = null;
     this.totalCost = 0;
     this.estimate  = 0;
     this.score     = 0;
+};
+
+Darwinator.AStar.Node.prototype.walkable = function()
+{
+	return this.index === 0;
 };
 
 Darwinator.AStar.Node.prototype.traversePath = function()
@@ -149,11 +154,6 @@ Darwinator.AStar.Node.prototype.traversePath = function()
     return path.reverse();
 };
 
-Darwinator.AStar.Node.prototype.isNeighbor = function(node)
-{
-    return (this.neighbors.indexOf(node) != -1);
-};
-
 Darwinator.AStar.Node.prototype.isDiagonal = function(node)
 {
     return (this.x !== node.x && this.y !== node.y);
@@ -166,10 +166,10 @@ Darwinator.AStar.Node.prototype.addNeighbor = function(node)
 
 Darwinator.AStar.Node.prototype.isReachable = function(grid, considered)
 {
-    if (!(considered.walkable))
+    if (!considered.walkable())
         return false;
 
-	return (grid[this.x][considered.y].walkable && grid[considered.x][this.y].walkable);
+	return (grid[this.x][considered.y].walkable() && grid[considered.x][this.y].walkable());
 };
 
 Darwinator.AStar.Node.prototype.findNeighbors = function(grid, diagonals)
@@ -178,25 +178,25 @@ Darwinator.AStar.Node.prototype.findNeighbors = function(grid, diagonals)
     var y = this.y;
 
     // West
-    if(grid[x - 1] && grid[x - 1][y] && grid[x - 1][y].walkable)
+    if(grid[x - 1] && grid[x - 1][y] && grid[x - 1][y].walkable())
     {
         this.neighbors.push(grid[x - 1][y]);
     }
 
     // East
-    if(grid[x+1] && grid[x + 1][y] && grid[x + 1][y].walkable)
+    if(grid[x + 1] && grid[x + 1][y] && grid[x + 1][y].walkable())
     {
         this.neighbors.push(grid[x + 1][y]);
     }
 
     // South
-    if(grid[x] && grid[x][y - 1] && grid[x][y - 1].walkable)
+    if(grid[x] && grid[x][y - 1] && grid[x][y - 1].walkable())
     {
         this.neighbors.push(grid[x][y - 1]);
     }
 
     // North
-    if(grid[x] && grid[x][y + 1] && grid[x][y + 1].walkable)
+    if(grid[x] && grid[x][y + 1] && grid[x][y + 1].walkable())
     {
         this.neighbors.push(grid[x][y + 1]);
     }
@@ -204,25 +204,25 @@ Darwinator.AStar.Node.prototype.findNeighbors = function(grid, diagonals)
     if(diagonals)
     {
         // Southwest
-        if(grid[x - 1] && grid[x - 1][y - 1] && this.isReachable(grid[x - 1][y - 1]))
+        if((grid[x - 1] && grid[x - 1][y - 1]) && this.isReachable(grid, grid[x - 1][y - 1]))
         {
             this.neighbors.push(grid[x - 1][y - 1]);
         }
 
         // Southeast
-        if(grid[x + 1] && grid[x + 1][y - 1] && this.isReachable(grid[x + 1][y - 1]))
+        if((grid[x + 1] && grid[x + 1][y - 1]) && this.isReachable(grid, grid[x + 1][y - 1]))
         {
             this.neighbors.push(grid[x + 1][y - 1]);
         }
 
         // Northwest
-        if(grid[x - 1] && grid[x - 1][y + 1] && this.isReachable(grid[x - 1][y + 1]))
+        if((grid[x - 1] && grid[x - 1][y + 1]) && this.isReachable(grid, grid[x - 1][y + 1]))
         {
             this.neighbors.push(grid[x - 1][y + 1]);
         }
 
         // Northeast
-        if(grid[x + 1] && grid[x + 1][y + 1] && this.isReachable(grid[x + 1][y + 1]))
+        if((grid[x + 1] && grid[x + 1][y + 1]) && this.isReachable(grid, grid[x + 1][y + 1]))
         {
             this.neighbors.push(grid[x + 1][y + 1]);
         }

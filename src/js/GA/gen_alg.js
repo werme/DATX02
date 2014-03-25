@@ -96,21 +96,31 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     // 4 different enemy initial set of attributes - just an example, not permanent!
     var enemiesPerType = this.POPULATION_SIZE / 5;
     var pos = [];
+    var strength, agility, intellect;
     for(var i = 0; i < this.POPULATION_SIZE; i++){
       pos = spawnPositions[i];
       if(i < enemiesPerType){
         // smart and quick but weak
-        enemyGroup.add(new Darwinator.Enemy(game, target, pos.x, pos.y, undefined, 1, 15, 14));
+        strength  = 1;
+        agility   = 15;
+        intellect = 14; 
       }else if(i < enemiesPerType*2){
         // strong but slow and stupid
-        enemyGroup.add(new Darwinator.Enemy(game, target, pos.x, pos.y, undefined, 20, 5, 5));
+        strength  = 20;
+        agility   = 5;
+        intellect = 5;
       }else if(i < enemiesPerType*3){
         // strong and quick but stupid
-        enemyGroup.add(new Darwinator.Enemy(game, target, pos.x, pos.y, undefined, 15, 15, 0));
+        strength  = 15;
+        agility   = 15;
+        intellect = 0;
       }else{
         // hybrid
-        enemyGroup.add(new Darwinator.Enemy(game, target, pos.x, pos.y, undefined, 10, 10, 10));
+        strength  = 10;
+        agility   = 10;
+        intellect = 10;
       }
+      enemyGroup.add(new Darwinator.Enemy(game, target, pos.x, pos.y, undefined, strength, agility, intellect));
     }
     return enemyGroup;
   },

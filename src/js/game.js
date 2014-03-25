@@ -21,7 +21,7 @@ Darwinator.GameState = function() {
     this.roundSecondsRemaining = null;
     this.endRoundTimer         = null;
     this.displayTimeLeftTimer  = null;
-    
+
 };
 
 Darwinator.GameState.prototype = {
@@ -29,9 +29,10 @@ Darwinator.GameState.prototype = {
     init: function (reset) {
         if (!reset) {
             // Input
-            this.cursors  = this.game.input.keyboard.createCursorKeys();
-            this.cheatKey = this.game.input.keyboard.addKey(Phaser.Keyboard.E);
-            this.pauseKey = this.game.input.keyboard.addKey(Phaser.Keyboard.P);
+            this.cursors        = this.game.input.keyboard.createCursorKeys();
+            this.cheatKey       = this.game.input.keyboard.addKey(Phaser.Keyboard.E);
+            this.pauseKey       = this.game.input.keyboard.addKey(Phaser.Keyboard.P);
+            this.fullScreenKey  = this.game.input.keyboard.addKey(Phaser.Keyboard.F);
 
             // Map
             this.level = new Darwinator.Level(this.game);
@@ -51,6 +52,8 @@ Darwinator.GameState.prototype = {
 
         this.cheatKey.onDown.add(this.endRound, this);
         this.pauseKey.onDown.add(this.togglePause, this);
+        this.game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
+        this.fullScreenKey.onDown.add(this.goFullScreen, this);
 
         // Since states lack a callback for the resume event
         this.game.onResume.add(this.resumed, this);
@@ -77,15 +80,15 @@ Darwinator.GameState.prototype = {
         // TODO Find the right way to do this
         this.game.enemies.setAll('alive', true);
 
-        this.game.world.bringToTop(this.level.overlaps);
+        this.game.world.bringToTop(this.level.toplayer);
 
         for (var i = 0; i < this.game.enemies.length; i++) {
             var enemy = this.game.enemies.getAt(i);
-            var weapon = new Darwinator.Bow(this.game, Darwinator.ENEMY_RANGE_WEAPON_BASE_COOLDOWN, Darwinator.ENEMY_RANGE_WEAPON_BASE_BULLETSPEED, Darwinator.ENEMY_RANGE_WEAPON_BASE_DAMAGE, enemy, this.bullets);
+            var weapon = new Darwinator.Cannon(this.game, enemy, this.bullets);
             enemy.arm(weapon);
         }
 
-        this.game.player.weapon = new Darwinator.Bow(this.game, Darwinator.PLAYER_RANGE_WEAPON_BASE_COOLDOWN, Darwinator.PLAYER_RANGE_WEAPON_BASE_BULLETSPEED, Darwinator.PLAYER_BASE_DAMAGE, this.game.player, this.bullets);
+        this.game.player.weapon = new Darwinator.Bow(this.game, this.game.player, this.bullets);
 
         this.game.world.bringToTop(this.gui);
 
@@ -148,11 +151,12 @@ Darwinator.GameState.prototype = {
         for (var i = 0; i < this.bullets.length; i++) {
             var bulletGroup = this.bullets.getAt(i);
             this.game.physics.arcade.collide(bulletGroup, this.game.enemies, this.bulletCollisionHandler, null, this);
-            this.game.physics.arcade.collide(bulletGroup, this.level.objects, this.bulletCollisionHandler, null, this);
+            this.game.physics.arcade.collide(bulletGroup, this.level.collisionLayer, this.bulletCollisionHandler, null, this);
+            this.game.physics.arcade.collide(bulletGroup, this.game.player, this.bulletCollisionHandler, null, this);
         }
 
-        this.game.physics.arcade.collide(this.game.player, this.level.objects);
-        this.game.physics.arcade.collide(this.game.enemies, this.level.objects);
+        this.game.physics.arcade.collide(this.game.player, this.level.collisionLayer);
+        this.game.physics.arcade.collide(this.game.enemies, this.level.collisionLayer);
 
         this.updateGUI();
 
@@ -215,6 +219,10 @@ Darwinator.GameState.prototype = {
     resumed: function() {
         this.pauseText.visible = false;
         console.log('Resumed game.');
-    }
+    },
+
+    goFullScreen: function(){
+      this.game.scale.startFullScreen();
+    },
 
 };

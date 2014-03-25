@@ -1,7 +1,8 @@
 'use strict';
 
-Darwinator.Bow = function(game, coolDown, bulletSpeed, damage, owner, bulletsContainer) {
-    Darwinator.Weapon.call(this, game, coolDown, bulletSpeed, damage, owner);
+Darwinator.Bow = function(game, owner, bulletsContainer) {
+    Darwinator.Weapon.call(this, game, Darwinator.BOW_COOLDOWN,
+            Darwinator.BOW_BULLET_SPEED, Darwinator.BOW_DAMAGE, owner);
 
     this.bullets.createMultiple(30, 'arrow');
     this.bullets.setAll('anchor.x', 0.5);

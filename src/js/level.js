@@ -37,9 +37,9 @@ Darwinator.Level.prototype = {
   initPathFinder: function () {
   	Darwinator.Pathfinder = new EasyStar.js();
     // Darwinator.Pathfinder.enableDiagonals();
-    var indexes = Darwinator.Helpers.convertTileMap(this.layer.map.layers[0].data);
+    var indexes = Darwinator.Helpers.convertTileMap(this.layer.map.layers[2].data);
     Darwinator.Pathfinder.setGrid(indexes);
-    Darwinator.Pathfinder.setAcceptableTiles([1192]);
+    Darwinator.Pathfinder.setAcceptableTiles([1025]);
   },
 
   spawnEnemies: function () {

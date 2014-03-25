@@ -15,7 +15,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   NUMBER_OF_GENERATIONS:    100,
   NUMBER_OF_VARIABLES:      3, // set to number of attributes
   TOURNAMENT_SIZE:          4,
-  ELITISM_DEGREE:           1, // should probably be really high
+  ELITISM_DEGREE:           5, // should probably be really high
 
   /**
   * Generates a population of individuals from a given population. The new population is likely to be 

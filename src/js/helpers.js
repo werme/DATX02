@@ -17,7 +17,7 @@ Darwinator.Helpers = {
     for (var i = 0; i < indexes.length; i++) {
       indexes[i] = new Array(array[i].length);
       for(var l = 0; l < indexes[i].length; l++) {
-        indexes[i][l] = !!array[i][l] ? array[i][l].index : 0;
+        indexes[i][l] = !!array[l][i] ? array[l][i].index : 0;
       }
     }
     return indexes;

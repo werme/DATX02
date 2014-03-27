@@ -27,6 +27,11 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
   // melee cooldown
   this.lastMeleeTimestamp = 0;
   this.cooldownMs         = 250;
+
+  // reduce fire rate for 'stupid' enemies
+  this.fireProbability    = 0.01;
+  this.lastFireTimeStamp  = 0;
+  this.fireCooldownMs     = 10000;
 };
 
 Darwinator.Enemy.prototype = Object.create(Darwinator.Entity.prototype);
@@ -76,8 +81,10 @@ Darwinator.Enemy.prototype.update = function() {
        obsticles*/
     if (this.path.length) {
       this.followPath();
-      if (Math.random() > 0.99) {
+      var onCooldown = (Date.now() - this.lastFireTimeStamp) < this.fireCooldownMs;
+      if (!onCooldown && Math.random() < this.fireProbability) {
         this.weapon.fire(this.target.body.x, this.target.body.y);
+        this.lastFireTimeStamp = Date.now();
       }
     } else {
       this.game.physics.arcade.moveToXY(this, this.target.body.x, this.target.body.y, this.speed);

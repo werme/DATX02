@@ -7,15 +7,18 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * NUMBER_OF_GENES is divisible by NUMBER_OF_VARIABLES
   */
   POPULATION_SIZE:          10,
-  NUMBER_OF_GENES:          60, // NOTE with real-valued genes (number of genes)  = (number of variables)
   CROSSOVER_PROBABILITY:    0.8,
   MUTATION_PROBABILITY:     0.025,
   TOURNAMENT_PARAMETER:     0.75,
-  VARIABLE_RANGE:           100, // max attribute value is VARIABLE_RANGE * NUMBER_OF_VARIABLES
   NUMBER_OF_GENERATIONS:    100,
-  NUMBER_OF_VARIABLES:      3, // set to number of attributes
+  NUMBER_OF_VARIABLES:      3,
   TOURNAMENT_SIZE:          4,
-  ELITISM_DEGREE:           5, // should probably be really high
+  ELITISM_DEGREE:           5,
+
+  // depends on player attributes
+  NUMBER_OF_GENES:          undefined,
+  VARIABLE_RANGE:           undefined, 
+  PLAYER_ADVANTAGE:         5,//used to set range
 
   /**
   * Generates a population of individuals from a given population. The new population is likely to be 
@@ -30,6 +33,10 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @return {Array} The last population generated.
   */
   generatePopulation: function(game, target, enemyGroup, singleGeneration, spawnPositions) {
+    // initialized here but regarded as constants during the GA run
+    this.VARIABLE_RANGE   = this.getRange(target.attributes);
+    this.NUMBER_OF_GENES  = this.getNumGenes();
+
     if(!enemyGroup){
       enemyGroup = game.add.group();
       console.log('GA: Enemy group not provided. Initializing with default values.');
@@ -82,6 +89,17 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     return nextGeneration;
   },
 
+  getRange: function(attributes){
+    // naive balancing formula
+    return attributes.strength + attributes.agility + attributes.intellect - this.PLAYER_ADVANTAGE*this.NUMBER_OF_VARIABLES;
+  },
+
+  getNumGenes: function(){
+    var binaryStr       = new Number(this.VARIABLE_RANGE).toString(2);
+    var rangeNbrOfBits  = binaryStr.length;
+    return rangeNbrOfBits * this.NUMBER_OF_VARIABLES;
+  },
+
   /**
   * Generates a group of enemy sprites with some default values.
   *
@@ -94,7 +112,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   */
   initPopulation: function(enemyGroup, game, target, spawnPositions) {
     // 4 different enemy initial set of attributes - just an example, not permanent!
-    var enemiesPerType = this.POPULATION_SIZE / 5;
+    var enemiesPerType  = this.POPULATION_SIZE / 5;
     var pos = [];
     var strength, agility, intellect;
     for(var i = 0; i < this.POPULATION_SIZE; i++){
@@ -103,22 +121,20 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
         // smart but slow and weak
         strength  = 0;
         agility   = 0;
-        intellect = 30; 
+        intellect = this.VARIABLE_RANGE; 
       }else if(i < enemiesPerType*2){
         // strong but slow and stupid
-        strength  = 30;
+        strength  = this.VARIABLE_RANGE;
         agility   = 0;
         intellect = 0;
       }else if(i < enemiesPerType*3){
         // fast but weak and stupid
         strength  = 0;
-        agility   = 30;
+        agility   = this.VARIABLE_RANGE;
         intellect = 0;
       }else{
         // hybrid
-        strength  = 10;
-        agility   = 10;
-        intellect = 10;
+        strength  = agility = intellect = this.VARIABLE_RANGE / 3;
       }
       enemyGroup.add(new Darwinator.Enemy(game, target, pos.x, pos.y, undefined, strength, agility, intellect));
     }

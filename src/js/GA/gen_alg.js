@@ -127,7 +127,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   initPopulation: function(enemyGroup, game, target, spawnPositions) {
     // 4 different enemy initial set of attributes - just an example, not permanent!
     var enemiesPerType  = this.POPULATION_SIZE / 5;
-    var pos = [];
+    var pos;
     var strength, agility, intellect;
     for(var i = 0; i < this.POPULATION_SIZE; i++){
       pos = spawnPositions[i];

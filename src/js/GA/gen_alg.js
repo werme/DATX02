@@ -16,9 +16,10 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   ELITISM_DEGREE:           5,
 
   // depends on player attributes
-  NUMBER_OF_GENES:          undefined,
-  VARIABLE_RANGE:           undefined, 
-  PLAYER_ADVANTAGE:         5, // used to set range
+  NUMBER_OF_GENES:          undefined, 
+  MAX_ATTRIBUTE_SUM:        undefined, // force the sum of enemy attributes depend on the sum of the player attributes
+  VARIABLE_RANGE:           undefined,
+  //PLAYER_ADVANTAGE:         5, // used to set range
 
   // depends on population success
   MUTATION_RATE:            undefined,
@@ -37,10 +38,8 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @return {Array} The last population generated.
   */
   generatePopulation: function(game, target, enemyGroup, singleGeneration, spawnPositions) {
-    // initialized here but regarded as constants during the GA run
-    this.VARIABLE_RANGE   = this.getRange(target.attributes);
-    this.NUMBER_OF_GENES  = this.getNumGenes();
-    this.MUTATION_RATE    = 1;
+    // some of the constants depend on the current attributes of the player and are set here
+    this.initRanges(target.attributes);
 
     if(!enemyGroup){
       enemyGroup = game.add.group();
@@ -55,8 +54,11 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     var bestIndex         = translatedEnemies[2];
     var bestIndividual    = population[bestIndex];
     console.log('Best fitness: ' + fitnessLevels[bestIndex]);
+    // to eliminate weak populations
     if(fitnessLevels[bestIndex] <= this.POOR_MAX_FITNESS){
       this.MUTATION_RATE = 20;
+    }else{
+      this.MUTATION_RATE = 1;
     }
 
     console.log('Mutation probability: ' + (this.MUTATION_PROBABILITY*this.MUTATION_RATE));
@@ -99,15 +101,19 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     return nextGeneration;
   },
 
-  getRange: function(attributes){
-    // naive balancing formula
-    return attributes.strength + attributes.agility + attributes.intellect - this.PLAYER_ADVANTAGE*this.NUMBER_OF_VARIABLES;
+  initRanges: function(attributes){
+    this.MAX_ATTRIBUTE_SUM  = attributes.strength + attributes.agility + attributes.intellect;
+    this.VARIABLE_RANGE     = this.maxOf(attributes.strength, attributes.agility, attributes.intellect);
+    this.NUMBER_OF_GENES    = new Number(this.VARIABLE_RANGE).toString(2).length * this.NUMBER_OF_VARIABLES;
   },
 
-  getNumGenes: function(){
-    var binaryStr       = new Number(this.VARIABLE_RANGE).toString(2);
-    var rangeNbrOfBits  = binaryStr.length;
-    return rangeNbrOfBits * this.NUMBER_OF_VARIABLES;
+  maxOf: function(x, y, z){
+    var max = x;
+    if(y > max)
+      max = y;
+    if(z > max)
+      max = z;
+    return max;
   },
 
   /**
@@ -160,7 +166,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @return {Array} The decoded individual. Will have a length of this.NUMBER_OF_VARIABLES
   */
   decodeIndividual: function(individual) {
-    var pointsToSpend = this.NUMBER_OF_VARIABLES * this.VARIABLE_RANGE;
+    var pointsToSpend = this.MAX_ATTRIBUTE_SUM;
     var bitsPerVar    = this.NUMBER_OF_GENES / this.NUMBER_OF_VARIABLES;
     var decoded       = new Array(this.NUMBER_OF_VARIABLES);
 
@@ -176,6 +182,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
         pointsToSpend -= decoded[i];
       }
     }
+    console.log('decoded: ' + decoded);
     return decoded;
   },
 

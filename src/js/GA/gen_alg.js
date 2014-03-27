@@ -53,15 +53,13 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     var fitnessLevels     = translatedEnemies[1];
     var bestIndex         = translatedEnemies[2];
     var bestIndividual    = population[bestIndex];
-    console.log('Best fitness: ' + fitnessLevels[bestIndex]);
+    
     // to eliminate weak populations
     if(fitnessLevels[bestIndex] <= this.POOR_MAX_FITNESS){
       this.MUTATION_RATE = 20;
     }else{
       this.MUTATION_RATE = 1;
     }
-
-    console.log('Mutation probability: ' + (this.MUTATION_PROBABILITY*this.MUTATION_RATE));
 
     // algorithm main loop
     for (var i = 0; i < (singleGeneration ? 1 : this.NUMBER_OF_GENERATIONS); i++) {
@@ -182,7 +180,6 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
         pointsToSpend -= decoded[i];
       }
     }
-    console.log('decoded: ' + decoded);
     return decoded;
   },
 

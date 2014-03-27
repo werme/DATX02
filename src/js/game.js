@@ -195,7 +195,12 @@ Darwinator.GameState.prototype = {
             return;
         }
         if (target instanceof Darwinator.Entity) {
-            target.takeDamage(bullet.owner.damage);
+            var dmg = bullet.owner.damage;
+            target.takeDamage(dmg);
+            if(target instanceof Darwinator.Player){
+              var enemy = bullet.owner;
+              enemy.damageDone += dmg;
+            }
         }
         if (!(bullet instanceof Darwinator.Entity)) {
             bullet.kill();

@@ -18,7 +18,11 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   // depends on player attributes
   NUMBER_OF_GENES:          undefined,
   VARIABLE_RANGE:           undefined, 
-  PLAYER_ADVANTAGE:         5,//used to set range
+  PLAYER_ADVANTAGE:         5, // used to set range
+
+  // depends on population success
+  MUTATION_RATE:            undefined,
+  POOR_MAX_FITNESS:         0.1,  // used to set mutation rate
 
   /**
   * Generates a population of individuals from a given population. The new population is likely to be 
@@ -36,6 +40,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     // initialized here but regarded as constants during the GA run
     this.VARIABLE_RANGE   = this.getRange(target.attributes);
     this.NUMBER_OF_GENES  = this.getNumGenes();
+    this.MUTATION_RATE    = 1;
 
     if(!enemyGroup){
       enemyGroup = game.add.group();
@@ -49,7 +54,12 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     var fitnessLevels     = translatedEnemies[1];
     var bestIndex         = translatedEnemies[2];
     var bestIndividual    = population[bestIndex];
-    console.log('Best fitness: ' +  fitnessLevels[bestIndex]);
+    console.log('Best fitness: ' + fitnessLevels[bestIndex]);
+    if(fitnessLevels[bestIndex] <= this.POOR_MAX_FITNESS){
+      this.MUTATION_RATE = 20;
+    }
+
+    console.log('Mutation probability: ' + (this.MUTATION_PROBABILITY*this.MUTATION_RATE));
 
     // algorithm main loop
     for (var i = 0; i < (singleGeneration ? 1 : this.NUMBER_OF_GENERATIONS); i++) {
@@ -241,7 +251,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   */
   mutate: function(individual) {
     for (var i = 0; i < this.NUMBER_OF_GENES; i++) {
-      if (Math.random() < this.MUTATION_PROBABILITY) {
+      if (Math.random() < this.MUTATION_PROBABILITY * this.MUTATION_RATE) {
         individual[i] = 1 - individual[i];
       }
     }

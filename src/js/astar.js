@@ -174,57 +174,25 @@ Darwinator.AStar.Node.prototype.isReachable = function(grid, considered)
 
 Darwinator.AStar.Node.prototype.findNeighbors = function(grid, diagonals)
 {
-    var x = this.x;
-    var y = this.y;
+	var x = this.x;
+	var y = this.y;
+	var xi = 0;
+	var yi = 0;
 
-    // West
-    if(grid[x - 1] && grid[x - 1][y] && grid[x - 1][y].walkable())
-    {
-        this.neighbors.push(grid[x - 1][y]);
-    }
-
-    // East
-    if(grid[x + 1] && grid[x + 1][y] && grid[x + 1][y].walkable())
-    {
-        this.neighbors.push(grid[x + 1][y]);
-    }
-
-    // South
-    if(grid[x] && grid[x][y - 1] && grid[x][y - 1].walkable())
-    {
-        this.neighbors.push(grid[x][y - 1]);
-    }
-
-    // North
-    if(grid[x] && grid[x][y + 1] && grid[x][y + 1].walkable())
-    {
-        this.neighbors.push(grid[x][y + 1]);
-    }
-
-    if(diagonals)
-    {
-        // Southwest
-        if((grid[x - 1] && grid[x - 1][y - 1]) && this.isReachable(grid, grid[x - 1][y - 1]))
-        {
-            this.neighbors.push(grid[x - 1][y - 1]);
-        }
-
-        // Southeast
-        if((grid[x + 1] && grid[x + 1][y - 1]) && this.isReachable(grid, grid[x + 1][y - 1]))
-        {
-            this.neighbors.push(grid[x + 1][y - 1]);
-        }
-
-        // Northwest
-        if((grid[x - 1] && grid[x - 1][y + 1]) && this.isReachable(grid, grid[x - 1][y + 1]))
-        {
-            this.neighbors.push(grid[x - 1][y + 1]);
-        }
-
-        // Northeast
-        if((grid[x + 1] && grid[x + 1][y + 1]) && this.isReachable(grid, grid[x + 1][y + 1]))
-        {
-            this.neighbors.push(grid[x + 1][y + 1]);
-        }
-    }
+	for(var i = 0; i < 9; i++)
+	{
+		xi = (i % 3) - 1;
+		yi = Math.round((i / 3)) - 1;
+		var badDiagonal = x + xi !== x && y + yi !== y && !diagonals;
+		var outOfBounds = !grid[x + xi] || !grid[x + xi][y + yi];
+		if (badDiagonal || outOfBounds)
+		{
+			continue;
+		}
+		var node = grid[x + xi][y + yi];
+		if (node.isReachable(grid, this))
+		{
+			this.addNeighbor(node);
+		}
+	}
 };

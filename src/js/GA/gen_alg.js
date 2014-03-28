@@ -16,8 +16,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   ELITISM_DEGREE:           5,
 
   // depends on player attributes
-  NUMBER_OF_GENES:          undefined, 
-  MAX_ATTRIBUTE_SUM:        undefined, // force the sum of enemy attributes depend on the sum of the player attributes
+  NUMBER_OF_GENES:          undefined,
   VARIABLE_RANGE:           undefined,
   //PLAYER_ADVANTAGE:         5, // used to set range
 
@@ -100,8 +99,8 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   },
 
   initRanges: function(attributes){
-    this.MAX_ATTRIBUTE_SUM  = attributes.strength + attributes.agility + attributes.intellect;
-    this.VARIABLE_RANGE     = this.maxOf(attributes.strength, attributes.agility, attributes.intellect);
+    this.VARIABLE_RANGE     = attributes.strength + attributes.agility + attributes.intellect;
+    var maxAttr             = this.maxOf(attributes.strength, attributes.agility, attributes.intellect);
     this.NUMBER_OF_GENES    = new Number(this.VARIABLE_RANGE).toString(2).length * this.NUMBER_OF_VARIABLES;
   },
 
@@ -164,7 +163,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @return {Array} The decoded individual. Will have a length of this.NUMBER_OF_VARIABLES
   */
   decodeIndividual: function(individual) {
-    var pointsToSpend = this.MAX_ATTRIBUTE_SUM;
+    var pointsToSpend = this.VARIABLE_RANGE;
     var bitsPerVar    = this.NUMBER_OF_GENES / this.NUMBER_OF_VARIABLES;
     var decoded       = new Array(this.NUMBER_OF_VARIABLES);
 

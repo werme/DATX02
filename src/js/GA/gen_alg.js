@@ -17,7 +17,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
 
   // depends on player attributes
   NUMBER_OF_GENES:          undefined,
-  VARIABLE_RANGE:           undefined,
+  VARIABLE_RANGE:           undefined, // max sum of enemy attributes
   //PLAYER_ADVANTAGE:         5, // used to set range
 
   // depends on population success
@@ -145,8 +145,8 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   },
 
   /**
-  * Decodes a individual from binary encoding to real numbers. The values of each
-  * variable will lie in the range [0, this.VARIABLE_RANGE].
+  * Decodes a individual from binary encoding to real numbers. 
+  * The sum of the the decoded variables will be equal to this.VARIABLE_RANGE.
   *
   * @method Darwinator.GeneticAlgorithm#decodeIndividual
   * @param {Array} [individual] - The binary encoded individual to be decoded
@@ -168,6 +168,10 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
       if(pointsToSpend > 0){
         pointsToSpend -= decoded[i];
       }
+    }
+    // distribute the remaining points
+    while(pointsToSpend-- > 0 ){
+        decoded[i++ % this.NUMBER_OF_VARIABLES]++;
     }
     console.log(decoded);
     return decoded;

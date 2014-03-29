@@ -84,9 +84,11 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
         tmpPopulation[l+1]  = this.mutate(tmpPopulation[l+1]);
       }
 
-      // elitism
-      for(l = 0; l < this.ELITISM_DEGREE; l++) {
-        tmpPopulation[l] = bestIndividual;
+      if(fitnessLevels[bestIndex] > this.POOR_MAX_FITNESS){
+        // elitism
+        for(l = 0; l < this.ELITISM_DEGREE; l++) {
+          tmpPopulation[l] = bestIndividual;
+        }
       }
 
       // replace old population

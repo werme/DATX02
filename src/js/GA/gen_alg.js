@@ -100,17 +100,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
 
   initRanges: function(attributes){
     this.VARIABLE_RANGE     = attributes.strength + attributes.agility + attributes.intellect;
-    var maxAttr             = this.maxOf(attributes.strength, attributes.agility, attributes.intellect);
     this.NUMBER_OF_GENES    = new Number(this.VARIABLE_RANGE).toString(2).length * this.NUMBER_OF_VARIABLES;
-  },
-
-  maxOf: function(x, y, z){
-    var max = x;
-    if(y > max)
-      max = y;
-    if(z > max)
-      max = z;
-    return max;
   },
 
   /**

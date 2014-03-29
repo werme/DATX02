@@ -164,11 +164,12 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
         var startVar = i * bitsPerVar;
         decoded[i] += individual[startVar + l] * Math.pow(2, -(l+1));
       }
-      decoded[i] = pointsToSpend * decoded[i]/(1 - Math.pow(2,-bitsPerVar));
+      decoded[i] = Math.round(pointsToSpend * decoded[i]/(1 - Math.pow(2,-bitsPerVar)));
       if(pointsToSpend > 0){
         pointsToSpend -= decoded[i];
       }
     }
+    console.log(decoded);
     return decoded;
   },
 

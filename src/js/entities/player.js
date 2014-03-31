@@ -195,4 +195,11 @@ Darwinator.Player.prototype.initAnimations = function () {
 
 Darwinator.Player.prototype.isDashing = function () {
   return this.dashCounter > 0;
-}
+};
+
+Darwinator.Player.prototype.reset = function() {
+  this.attributes.strength  = Darwinator.PLAYER_BASE_STRENGTH;
+  this.attributes.agility   = Darwinator.PLAYER_BASE_AGILITY;
+  this.attributes.intellect = Darwinator.PLAYER_BASE_INTELLECT;
+  this.updateAttributes();
+};

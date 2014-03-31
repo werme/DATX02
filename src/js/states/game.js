@@ -135,7 +135,7 @@ Darwinator.GameState.prototype = {
 
     spawnPlayer: function (x, y) {
         // Instanciate new player or reset existing
-        if (!this.game.player) {
+        if (!this.game.player || !this.game.player.alive) {
             this.game.player = new Darwinator.Player(this.game, x, y, this.cursors);
         } else {
             this.game.player.reset(x, y, Darwinator.PLAYER_BASE_HEALTH);
@@ -170,7 +170,7 @@ Darwinator.GameState.prototype = {
               this.game.player.health = 100;
             } else {
               this.game.player.kill();
-              console.log('Game over!');
+              // this.game.player.reset();
               this.gameover();
             }
         }

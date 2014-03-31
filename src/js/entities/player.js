@@ -18,7 +18,7 @@ Darwinator.Player = function(game, x, y, cursors) {
   this.dashCounter = 0;
 
   // for development only
-  this.immortal = true;
+  this.immortal = false;
 }
 
 Darwinator.Player.prototype = Object.create(Darwinator.Entity.prototype);
@@ -106,14 +106,6 @@ Darwinator.Player.prototype.update = function () {
     this.currBreath += 0.2;
   }
 
-  if (this.health <= 0) {
-    if(this.immortal){
-      this.health = 100;
-    }else{
-      this.kill();
-      console.log('Game over!');
-    }
-  }
 };
 
 Darwinator.Player.prototype.initKeys = function (game) {

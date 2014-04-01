@@ -164,6 +164,16 @@ Darwinator.GameState.prototype = {
         if (this.game.enemies.countLiving() === 0) {
             this.endRound();
         }
+
+        if (this.game.player.health <= 0) {
+            if (this.game.player.immortal) {
+              this.game.player.health = 100;
+            } else {
+              this.game.player.kill();
+              console.log('Game over!');
+              this.gameover();
+            }
+        }
     },
 
     updateGUI: function () {
@@ -209,7 +219,12 @@ Darwinator.GameState.prototype = {
 
     endRound: function() {
         this.beforeSwitch();
-        this.game.state.start('resultScreen', false);
+        this.game.state.start('result', false);
+    },
+
+    gameover: function() {
+        this.beforeSwitch()
+        this.game.state.start('gameover', false);
     },
 
     togglePause: function() {

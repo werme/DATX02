@@ -17,7 +17,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
 
   // depends on player attributes
   NUMBER_OF_GENES:          undefined,
-  VARIABLE_RANGE:           undefined,
+  VARIABLE_RANGE:           undefined, // max sum of enemy attributes
   //PLAYER_ADVANTAGE:         5, // used to set range
 
   // depends on population success
@@ -84,9 +84,11 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
         tmpPopulation[l+1]  = this.mutate(tmpPopulation[l+1]);
       }
 
-      // elitism
-      for(l = 0; l < this.ELITISM_DEGREE; l++) {
-        tmpPopulation[l] = bestIndividual;
+      if(fitnessLevels[bestIndex] > this.POOR_MAX_FITNESS){
+        // elitism
+        for(l = 0; l < this.ELITISM_DEGREE; l++) {
+          tmpPopulation[l] = bestIndividual;
+        }
       }
 
       // replace old population
@@ -100,17 +102,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
 
   initRanges: function(attributes){
     this.VARIABLE_RANGE     = attributes.strength + attributes.agility + attributes.intellect;
-    var maxAttr             = this.maxOf(attributes.strength, attributes.agility, attributes.intellect);
     this.NUMBER_OF_GENES    = new Number(this.VARIABLE_RANGE).toString(2).length * this.NUMBER_OF_VARIABLES;
-  },
-
-  maxOf: function(x, y, z){
-    var max = x;
-    if(y > max)
-      max = y;
-    if(z > max)
-      max = z;
-    return max;
   },
 
   /**
@@ -155,8 +147,8 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   },
 
   /**
-  * Decodes a individual from binary encoding to real numbers. The values of each
-  * variable will lie in the range [0, this.VARIABLE_RANGE].
+  * Decodes a individual from binary encoding to real numbers. 
+  * The sum of the the decoded variables will be equal to this.VARIABLE_RANGE.
   *
   * @method Darwinator.GeneticAlgorithm#decodeIndividual
   * @param {Array} [individual] - The binary encoded individual to be decoded
@@ -174,11 +166,16 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
         var startVar = i * bitsPerVar;
         decoded[i] += individual[startVar + l] * Math.pow(2, -(l+1));
       }
-      decoded[i] = pointsToSpend * decoded[i]/(1 - Math.pow(2,-bitsPerVar));
+      decoded[i] = Math.round(pointsToSpend * decoded[i]/(1 - Math.pow(2,-bitsPerVar)));
       if(pointsToSpend > 0){
         pointsToSpend -= decoded[i];
       }
     }
+    // distribute the remaining points
+    while(pointsToSpend-- > 0 ){
+        decoded[i++ % this.NUMBER_OF_VARIABLES]++;
+    }
+    console.log(decoded);
     return decoded;
   },
 

@@ -187,7 +187,7 @@ Darwinator.AStar.Node.prototype =
 		for(var i = 0; i < 9; i++)
 		{
 			xi = (i % 3) - 1;
-			yi = Math.round((i / 3)) - 1;
+			yi = Math.round(i / 3) - 1;
 			var badDiagonal = x + xi !== x && y + yi !== y && !diagonals;
 			var outOfBounds = !grid[x + xi] || !grid[x + xi][y + yi];
 			if (badDiagonal || outOfBounds)

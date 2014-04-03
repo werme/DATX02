@@ -32,94 +32,97 @@ Darwinator.AStar = function(grid, diagonals)
     }
 };
 
-Darwinator.AStar.prototype.init = function()
+Darwinator.AStar.prototype =
 {
-    for(var i = 0; i < this.nodes.length; i++)
-    {
-        for(var l = 0; l < this.nodes[i].length; l++)
-        {
-            var node = this.nodes[i][l];
-            node.closed    = false;
-            node.open      = false;
-            node.parent    = null;
-            node.totalCost = 0;
-            node.estimate  = 0;
-            node.score     = 0;
-        }
-    }
-};
-
-Darwinator.AStar.prototype.findPath = function(start, stop)
-{
-	if (start.x === stop.x && start.y === stop.y)
+	init: function()
 	{
-		return [];
+	    for(var i = 0; i < this.nodes.length; i++)
+	    {
+	        for(var l = 0; l < this.nodes[i].length; l++)
+	        {
+	            var node = this.nodes[i][l];
+	            node.closed    = false;
+	            node.open      = false;
+	            node.parent    = null;
+	            node.totalCost = 0;
+	            node.estimate  = 0;
+	            node.score     = 0;
+	        }
+	    }
+	},
+
+	findPath: function(start, stop)
+	{
+		if (start.x === stop.x && start.y === stop.y)
+		{
+			return [];
+		}
+	    this.init();
+	    var open = this.heap();
+
+	    var current = this.nodes[start.x][start.y];
+	    var end = this.nodes[stop.x][stop.y];
+	    current.estimate = Darwinator.Helpers.calculateDistance(current, stop);
+
+	    open.push(current);
+
+	    while(!open.isEmpty())
+	    {
+	        /* Try the node with the lowest found score */
+	        current = open.pop();
+	        /* Check if stop is found */
+	        if(current === end)
+	        {
+	            return current.traversePath();
+	        }
+
+	        /* Mark current as closed, add currents neighbors list of candidates */
+	        current.closed = true;
+	        var neighbors = current.neighbors;
+
+	        for(var i = 0; i < neighbors.length; i++)
+	        {
+	            var neighbor = neighbors[i];
+	            /* If neighbor is already checked, skip it */
+	            if(neighbor.closed)
+	            {
+	                continue;
+	            }
+
+	            var cost = current.totalCost + current.isDiagonal(neighbor) ? this.DIAGONALCOST : 1;
+	            var visited = neighbor.open;
+
+	            /* Found new optimal path to the neighbor */
+	            if (!visited || cost < neighbor.totalCost)
+	            {
+	                neighbor.open = true;
+	                neighbor.parent = current;
+	                neighbor.estimate = neighbor.estimate || Darwinator.Helpers.calculateDistance(neighbor, stop);
+	                neighbor.totalCost = cost;
+	                neighbor.score = neighbor.totalCost + neighbor.estimate;
+	            }
+	            /* If node had not been visited, add it to candidates. */
+	            if (!visited)
+	            {
+	                open.push(neighbor);
+	            }
+	            /* If node had not been visited, its score needs to be updated for new path */
+	            else
+	            {
+	                open.rescoreElement(neighbor);
+	            }
+	        }
+	    }
+	    /* No path was found */
+	    return [];
+	},
+
+	heap: function()
+	{
+	    return new Darwinator.BinaryHeap(function(node) {
+	        return node.score;
+	    });
 	}
-    this.init();
-    var open = this.heap();
-
-    var current = this.nodes[start.x][start.y];
-    var end = this.nodes[stop.x][stop.y];
-    current.estimate = Darwinator.Helpers.calculateDistance(current, stop);
-
-    open.push(current);
-
-    while(!open.isEmpty())
-    {
-        /* Try the node with the lowest found score */
-        current = open.pop();
-        /* Check if stop is found */
-        if(current === end)
-        {
-            return current.traversePath();
-        }
-
-        /* Mark current as closed, add currents neighbors list of candidates */
-        current.closed = true;
-        var neighbors = current.neighbors;
-
-        for(var i = 0; i < neighbors.length; i++)
-        {
-            var neighbor = neighbors[i];
-            /* If neighbor is already checked, skip it */
-            if(neighbor.closed)
-            {
-                continue;
-            }
-
-            var cost = current.totalCost + current.isDiagonal(neighbor) ? this.DIAGONALCOST : 1;
-            var visited = neighbor.open;
-
-            /* Found new optimal path to the neighbor */
-            if (!visited || cost < neighbor.totalCost)
-            {
-                neighbor.open = true;
-                neighbor.parent = current;
-                neighbor.estimate = neighbor.estimate || Darwinator.Helpers.calculateDistance(neighbor, stop);
-                neighbor.totalCost = cost;
-                neighbor.score = neighbor.totalCost + neighbor.estimate;
-            }
-            /* If node had not been visited, add it to candidates. */
-            if (!visited)
-            {
-                open.push(neighbor);
-            }
-            /* If node had not been visited, its score needs to be updated for new path */
-            else
-            {
-                open.rescoreElement(neighbor);
-            }
-        }
-    }
-    /* No path was found */
-    return [];
-};
-
-Darwinator.AStar.prototype.heap = function()
-{
-    return new Darwinator.BinaryHeap(function(node) {
-        return node.score;
-    });
 };
 
 Darwinator.AStar.Node = function(x, y, index)
@@ -136,95 +139,66 @@ Darwinator.AStar.Node = function(x, y, index)
     this.score     = 0;
 };
 
-Darwinator.AStar.Node.prototype.walkable = function()
+Darwinator.AStar.Node.prototype =
 {
-	return this.index === 0;
-};
+	walkable: function()
+	{
+		return this.index === 0;
+	},
 
-Darwinator.AStar.Node.prototype.traversePath = function()
-{
-    var curr = this;
-    var path = [];
-	path.push(curr);
-    while(curr.parent)
-    {
-        path.push(curr.parent);
-        curr = curr.parent;
-    }
-    return path.reverse();
-};
+	traversePath: function()
+	{
+	    var curr = this;
+	    var path = [];
+		path.push(curr);
+	    while(curr.parent)
+	    {
+	        path.push(curr.parent);
+	        curr = curr.parent;
+	    }
+	    return path.reverse();
+	},
 
-Darwinator.AStar.Node.prototype.isDiagonal = function(node)
-{
-    return (this.x !== node.x && this.y !== node.y);
-};
+	isDiagonal: function(node)
+	{
+	    return (this.x !== node.x && this.y !== node.y);
+	},
 
-Darwinator.AStar.Node.prototype.addNeighbor = function(node)
-{
-    this.neighbors.push(node);
-};
+	addNeighbor: function(node)
+	{
+	    this.neighbors.push(node);
+	},
 
-Darwinator.AStar.Node.prototype.isReachable = function(grid, considered)
-{
-    if (!considered.walkable())
-        return false;
+	isReachable: function(grid, considered)
+	{
+	    if (!considered.walkable())
+	        return false;
 
-	return (grid[this.x][considered.y].walkable() && grid[considered.x][this.y].walkable());
-};
+		return (grid[this.x][considered.y].walkable() && grid[considered.x][this.y].walkable());
+	},
 
-Darwinator.AStar.Node.prototype.findNeighbors = function(grid, diagonals)
-{
-    var x = this.x;
-    var y = this.y;
+	findNeighbors: function(grid, diagonals)
+	{
+		var x = this.x;
+		var y = this.y;
+		var xi = 0;
+		var yi = 0;
 
-    // West
-    if(grid[x - 1] && grid[x - 1][y] && grid[x - 1][y].walkable())
-    {
-        this.neighbors.push(grid[x - 1][y]);
-    }
-
-    // East
-    if(grid[x + 1] && grid[x + 1][y] && grid[x + 1][y].walkable())
-    {
-        this.neighbors.push(grid[x + 1][y]);
-    }
-
-    // South
-    if(grid[x] && grid[x][y - 1] && grid[x][y - 1].walkable())
-    {
-        this.neighbors.push(grid[x][y - 1]);
-    }
-
-    // North
-    if(grid[x] && grid[x][y + 1] && grid[x][y + 1].walkable())
-    {
-        this.neighbors.push(grid[x][y + 1]);
-    }
-
-    if(diagonals)
-    {
-        // Southwest
-        if((grid[x - 1] && grid[x - 1][y - 1]) && this.isReachable(grid, grid[x - 1][y - 1]))
-        {
-            this.neighbors.push(grid[x - 1][y - 1]);
-        }
-
-        // Southeast
-        if((grid[x + 1] && grid[x + 1][y - 1]) && this.isReachable(grid, grid[x + 1][y - 1]))
-        {
-            this.neighbors.push(grid[x + 1][y - 1]);
-        }
-
-        // Northwest
-        if((grid[x - 1] && grid[x - 1][y + 1]) && this.isReachable(grid, grid[x - 1][y + 1]))
-        {
-            this.neighbors.push(grid[x - 1][y + 1]);
-        }
-
-        // Northeast
-        if((grid[x + 1] && grid[x + 1][y + 1]) && this.isReachable(grid, grid[x + 1][y + 1]))
-        {
-            this.neighbors.push(grid[x + 1][y + 1]);
-        }
-    }
+		for(var i = 0; i < 9; i++)
+		{
+			xi = (i % 3) - 1;
+			yi = Math.round(i / 3) - 1;
+			var badDiagonal = x + xi !== x && y + yi !== y && !diagonals;
+			var outOfBounds = !grid[x + xi] || !grid[x + xi][y + yi];
+			if (badDiagonal || outOfBounds)
+			{
+				continue;
+			}
+			var node = grid[x + xi][y + yi];
+			if (node.isReachable(grid, this))
+			{
+				this.addNeighbor(node);
+			}
+		}
+	}
 };

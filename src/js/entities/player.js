@@ -36,8 +36,24 @@ Darwinator.Player.prototype.update = function () {
    *  dash is completed, return to normal controls.
    */
   if (this.isDashing()) {
-    this.dashCounter--;
-    this.game.physics.arcade.velocityFromAngle(this.direction, this.currentSpeed, this.body.velocity);
+      this.dashCounter--;
+      this.game.physics.arcade.velocityFromAngle(this.direction, this.currentSpeed, this.body.velocity);
+
+      // Make a fake-dash, and check if colliding. Always reset after, but end dash if collision
+      // would occour.
+      var preX = this.body.x,
+          preY = this.body.y,
+          realVelX = this.body.x + this.body.velocity.x * this.game.time.physicsElapsed,
+          realVelY = this.body.y + this.body.velocity.y * this.game.time.physicsElapsed;
+      this.body.x = realVelX;
+      this.body.y = realVelY;
+      var dashCollide = this.game.physics.arcade.overlap(this, this.game.level.collisionLayer)
+      this.body.x = preX;
+      this.body.y = preY;
+      if(dashCollide) {
+        this.body.velocity.setTo(0,0);
+        this.dashCounter = 0;
+      }
   } else {
     this.currentSpeed = this.speed;
     this.body.velocity.setTo(0,0);

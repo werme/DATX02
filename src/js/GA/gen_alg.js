@@ -120,6 +120,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     var enemiesPerType  = this.POPULATION_SIZE / 5;
     var pos;
     var strength, agility, intellect;
+    spawnPositions = this.shuffle(spawnPositions);
     for(var i = 0; i < this.POPULATION_SIZE; i++){
       pos = spawnPositions[i];
       if(i < enemiesPerType){
@@ -144,6 +145,16 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
       enemyGroup.add(new Darwinator.Enemy(game, target, pos.x, pos.y, undefined, strength, agility, intellect));
     }
     return enemyGroup;
+  },
+
+  // returns a shuffled version of the given array
+  shuffle: function(array){
+    array = array.slice(0);
+    var shuff = [];
+
+    while(array.length > 0)
+      shuff = shuff.concat(array.splice(Math.round(Math.random() * array.length-1), 1));
+    return shuff;
   },
 
   /**
@@ -342,7 +353,8 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   translatePopulation: function(population, enemyGroup, game, target, spawnPositions){
     // FIXME possible memory leak, should call destroy but it crashes for some reason..
     //game.enemies.destroy(true);
-    enemyGroup = game.add.group();
+    enemyGroup      = game.add.group();
+    spawnPositions  = this.shuffle(spawnPositions);
     for(var i = 0; i < population.length; i++){
       var pos         = spawnPositions[i];
       var attributes  = this.decodeIndividual(population[i]);

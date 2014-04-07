@@ -93,6 +93,8 @@ Darwinator.GameState.prototype = {
         this.game.world.bringToTop(this.gui);
 
         this.startTimers();
+
+        this.game.level = this.level;
     },
 
     initGUI: function () {

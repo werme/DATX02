@@ -140,7 +140,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
         intellect = 0;
       }else{
         // hybrid
-        strength  = agility = intellect = this.VARIABLE_RANGE / 3;
+        strength  = agility = intellect = Math.round(this.VARIABLE_RANGE / 3);
       }
       enemyGroup.add(new Darwinator.Enemy(game, target, pos.x, pos.y, undefined, strength, agility, intellect));
     }
@@ -153,7 +153,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     var shuff = [];
 
     while(array.length > 0)
-      shuff = shuff.concat(array.splice(Math.round(Math.random() * array.length-1), 1));
+      shuff = shuff.concat(array.splice(Math.round(Math.random() * (array.length-1)), 1));
     return shuff;
   },
 
@@ -199,13 +199,15 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @return {Array} - A touple containing the two new individuals.
   */
   cross: function(firstInd, secondInd) {
-    console.log('Crossing ' + firstInd + ' and ' + secondInd)
-    var crossPoint1 = Math.round(Math.random()*this.NUMBER_OF_GENES - 1);
-    var crossPoint2 = Math.round(Math.random()*this.NUMBER_OF_GENES - 1);
+    console.log('Crossing ' + firstInd + ' and ' + secondInd);
+    var crossPoint1 = Math.round(Math.random()*(this.NUMBER_OF_GENES - 1));
+    var crossPoint2 = Math.round(Math.random()*(this.NUMBER_OF_GENES - 1));
 
     var tradeOff = Math.random();
     var tradeOffAmount1 = Math.round(tradeOff * firstInd[crossPoint1]);
     var tradeOffAmount2 = Math.round(tradeOff * secondInd[crossPoint2]);
+
+    console.log('Amount 1: ' + tradeOffAmount1 + ', Amount 2:' + tradeOffAmount2);
 
     var newInd1 = firstInd.slice(0);//new Array(this.NUMBER_OF_GENES);
     var newInd2 = secondInd.slice(0);//new Array(this.NUMBER_OF_GENES);
@@ -282,8 +284,8 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
       }
     }*/
     if (Math.random() < this.MUTATION_PROBABILITY * this.MUTATION_RATE) {
-      var gene1 = Math.round(Math.random()*this.NUMBER_OF_GENES - 1);
-      var gene2 = Math.round(Math.random()*this.NUMBER_OF_GENES - 1);
+      var gene1 = Math.round(Math.random()*(this.NUMBER_OF_GENES - 1));
+      var gene2 = Math.round(Math.random()*(this.NUMBER_OF_GENES - 1));
       var tradeOffAmount = Math.round(Math.random() * individual[gene1]);
       individual[gene1] -= tradeOffAmount;
       individual[gene2] += tradeOffAmount;

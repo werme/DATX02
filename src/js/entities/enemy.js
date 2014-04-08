@@ -32,6 +32,8 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
   this.fireProbability    = 0.01;
   this.lastFireTimeStamp  = 0;
   this.fireCooldownMs     = 10000;
+  this.lastAbilityUse     = 0;
+  this.abilityCooldownMs  = 10000;
 };
 
 Darwinator.Enemy.prototype = Object.create(Darwinator.Entity.prototype);
@@ -76,6 +78,17 @@ Darwinator.Enemy.prototype.update = function() {
       this.weapon.fire(this.target.body.x, this.target.body.y);
     }
     break;
+  case this.categories.STRONG:
+    if (this.path.length) {
+      var onCooldown = (Date.now() - this.lastAbilityUse) < this.abilityCooldownMs;
+      if(!onCooldown) {
+        var telRange = Math.min((this.path.length - 1), 5);
+        var targetTile = this.path[telRange];
+        var target = Darwinator.Helpers.tileToPixels(targetTile.x, targetTile.y);
+        this.reset(target.x, target.y, this.health);
+        this.lastAbilityUse = Date.now();
+      }
+    }
   default:
     /* If a path exists - follow it. Else, try to move in the general direction of the player, ignoring
        obsticles*/

@@ -131,6 +131,16 @@ Darwinator.Player.prototype.initKeys = function (game) {
     this.downKey   = game.input.keyboard.addKey(Phaser.Keyboard.S);
     this.rightKey  = game.input.keyboard.addKey(Phaser.Keyboard.D);
     this.sprintKey = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
+    this.telKey    = game.input.keyboard.addKey(Phaser.Keyboard.Q);
+
+    this.telKey.onDown.add(function() {
+        var onCooldown = (Date.now() - this.lastAbilityUse) < this.abilityCooldownMs;
+        if (!onCooldown) {
+            var pointer = this.game.input.activePointer;
+            this.reset(pointer.worldX, pointer.worldY, this.health);
+            this.lastAbilityUse = Date.now();
+        }
+    }, this);
 
     var checkTimer = function (key) {
 

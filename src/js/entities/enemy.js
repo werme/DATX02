@@ -32,8 +32,6 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
   this.fireProbability    = 0.01;
   this.lastFireTimeStamp  = 0;
   this.fireCooldownMs     = 10000;
-  this.lastAbilityUse     = 0;
-  this.abilityCooldownMs  = 10000;
 };
 
 Darwinator.Enemy.prototype = Object.create(Darwinator.Entity.prototype);

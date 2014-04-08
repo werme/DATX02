@@ -35,6 +35,8 @@ Darwinator.Entity = function(game, x, y, key, health, strength, agility, intelle
   this.aim            = this.attributes.intellect; // Intended to define how well the enemy aims. 0 = "shitty" aim, 100 = "perfect" aim
   this.criticalStrike = this.attributes.intellect / 100; // Critical strike percentage
   this.currBreath     = this.stamina;
+  this.lastAbilityUse     = 0;
+  this.abilityCooldownMs  = 10000;
 };
 
 Darwinator.Entity.prototype = Object.create(Phaser.Sprite.prototype);

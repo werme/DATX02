@@ -48,6 +48,7 @@ Darwinator.ResultScreen.prototype = {
     },
 
     beforeSwitch: function () {
+        this.game.player.updateAttributes();
         this.game.world.remove(this.container);
     },
 

@@ -6,11 +6,11 @@ Darwinator.Player = function(game, x, y, cursors) {
     this.anchor.setTo(0.5, 0.5);
     this.initKeys(game);
     this.initAnimations();
-    this.updateAttributes();
 
     this.attributes.strength  = Darwinator.PLAYER_BASE_STRENGTH;
     this.attributes.agility   = Darwinator.PLAYER_BASE_AGILITY;
     this.attributes.intellect = Darwinator.PLAYER_BASE_INTELLECT;
+    this.updateAttributes();
 
     this.weapon      = null;
     this.dashTimer   = null;
@@ -213,9 +213,9 @@ Darwinator.Player.prototype.isDashing = function () {
   return this.dashCounter > 0;
 };
 
-Darwinator.Player.prototype.reset = function() {
-  this.attributes.strength  = Darwinator.PLAYER_BASE_STRENGTH;
-  this.attributes.agility   = Darwinator.PLAYER_BASE_AGILITY;
-  this.attributes.intellect = Darwinator.PLAYER_BASE_INTELLECT;
-  this.updateAttributes();
-};
+Darwinator.Player.prototype.resetAttributes = function () {
+    this.attributes.strength  = Darwinator.PLAYER_BASE_STRENGTH;
+    this.attributes.agility   = Darwinator.PLAYER_BASE_AGILITY;
+    this.attributes.intellect = Darwinator.PLAYER_BASE_INTELLECT;
+    this.updateAttributes();
+}

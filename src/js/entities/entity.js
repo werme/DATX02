@@ -30,8 +30,8 @@ Darwinator.Entity = function(game, x, y, key, health, strength, agility, intelle
 
   this.health         = baseHealth + this.attributes.strength;
   this.damage         = Darwinator.ENTITY_BASE_DAMAGE  + this.attributes.strength / 3;
-  this.speed          = Darwinator.ENTITY_BASE_SPEED   + this.attributes.agility - this.attributes.strength / 8;
-  this.stamina        = Darwinator.ENTITY_BASE_STAMINA + this.attributes.agility * 2 - this.attributes.strength / 5;
+  this.speed          = Darwinator.ENTITY_BASE_SPEED   + this.attributes.agility;
+  this.stamina        = Darwinator.ENTITY_BASE_STAMINA + this.attributes.agility * 2;
   this.aim            = this.attributes.intellect; // Intended to define how well the enemy aims. 0 = "shitty" aim, 100 = "perfect" aim
   this.criticalStrike = this.attributes.intellect / 100; // Critical strike percentage
   this.currBreath     = this.stamina;

@@ -35,6 +35,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   generatePopulation: function(game, target, enemyGroup, singleGeneration, spawnPositions) {
     var attributes = target.attributes;
     this.VARIABLE_RANGE = attributes.strength + attributes.agility + attributes.intellect - this.PLAYER_ADVANTAGE;
+    spawnPositions  = this.shuffle(spawnPositions);
 
     if(!enemyGroup){
       enemyGroup = game.add.group();
@@ -111,7 +112,6 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     var enemiesPerType  = this.POPULATION_SIZE / 5;
     var pos;
     var strength, agility, intellect;
-    spawnPositions = this.shuffle(spawnPositions);
     for(var i = 0; i < this.POPULATION_SIZE; i++){
       pos = spawnPositions[i % spawnPositions.length];
       if(i < enemiesPerType){
@@ -310,7 +310,6 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     // FIXME possible memory leak, should call destroy but it crashes for some reason..
     //game.enemies.destroy(true);
     enemyGroup      = game.add.group();
-    spawnPositions  = this.shuffle(spawnPositions);
     for(var i = 0; i < population.length; i++){
       var pos         = spawnPositions[i % spawnPositions.length];
       var strength    = population[i][0];

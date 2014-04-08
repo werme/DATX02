@@ -122,7 +122,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     var strength, agility, intellect;
     spawnPositions = this.shuffle(spawnPositions);
     for(var i = 0; i < this.POPULATION_SIZE; i++){
-      pos = spawnPositions[i];
+      pos = spawnPositions[i % spawnPositions.length];
       if(i < enemiesPerType){
         // smart but slow and weak
         strength  = 0;
@@ -356,7 +356,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     enemyGroup      = game.add.group();
     spawnPositions  = this.shuffle(spawnPositions);
     for(var i = 0; i < population.length; i++){
-      var pos         = spawnPositions[i];
+      var pos         = spawnPositions[i % spawnPositions.length];
       var attributes  = this.decodeIndividual(population[i]);
       var strength    = attributes[0];
       var agility     = attributes[1];

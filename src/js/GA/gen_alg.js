@@ -18,7 +18,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   // depends on player attributes
   NUMBER_OF_GENES:          undefined,
   VARIABLE_RANGE:           undefined, // max sum of enemy attributes
-  //PLAYER_ADVANTAGE:         5, // used to set range
+  PLAYER_ADVANTAGE:         10, // increase to make enemies weaker
 
   // depends on population success
   MUTATION_RATE:            undefined,
@@ -101,7 +101,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   },
 
   initRanges: function(attributes){
-    this.VARIABLE_RANGE     = attributes.strength + attributes.agility + attributes.intellect;
+    this.VARIABLE_RANGE     = attributes.strength + attributes.agility + attributes.intellect - this.PLAYER_ADVANTAGE;
     this.NUMBER_OF_GENES    = new Number(this.VARIABLE_RANGE).toString(2).length * this.NUMBER_OF_VARIABLES;
   },
 

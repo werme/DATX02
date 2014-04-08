@@ -149,13 +149,17 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   },
 
   /**
-  * Cross two individuals to create two new ones. Will select a crossing point at random,
-  * and swap the binary encoded values between the individuals from the selected point.
+  * Cross two individuals to create two new ones by performing a tradeoff between
+  * two randomly selected genes in each individual.
+  *
+  * Example: Select index of x and y.
+  * First individual: decrease x and increase y
+  * Second individual: decrease y and increase x
   *
   * @method Darwinator.GeneticAlgorithm#cross
   * @param {Array} [firstInd] - The first individual to be crossed
   * @param {Array} [secondInd] - The second individual to be crossed
-  * @return {Array} - A touple containing the two new individuals.
+  * @return {Array} - A tuple containing the two new individuals.
   */
   cross: function(firstInd, secondInd) {
     var crossPoint1 = Math.round(Math.random()*(this.NUMBER_OF_GENES - 1));
@@ -213,8 +217,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   },
 
   /**
-  * Mutate a given individual by swapping some of the binary encoded values at random.
-  * The chance of a value swapping is set by this.MUTATION_PROBABILITY.
+  * Mutate a given individual by performing a tradeoff between two randomly selected genes.
   *
   * @method Darwinator.GeneticAlgorithm#mutate
   * @param {Array} - The individual to be mutated
@@ -257,11 +260,11 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
 
   /**
   *
-  * Tranlates the attributes of an enemy to a binary chromosome.
+  * Use the attributes of an enemy sprite as genes in a real-value chromosome.
   *
   * @method Darwinator.GeneticAlgorithm#enemyToChromosome
   * @param {Phaser.Sprite} - An enemy sprite
-  * @return {Number} - The enemy represented as a binary chromosome
+  * @return {Number} - The enemy represented as a real-value chromosome
   */
   enemyToChromosome: function (enemy){
     return [enemy.attributes.strength, enemy.attributes.agility, enemy.attributes.intellect];

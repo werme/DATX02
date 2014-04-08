@@ -12,11 +12,11 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   TOURNAMENT_PARAMETER:     0.75,
   NUMBER_OF_GENERATIONS:    100,
   NUMBER_OF_VARIABLES:      3,
+  NUMBER_OF_GENES:          3,
   TOURNAMENT_SIZE:          4,
-  ELITISM_DEGREE:           2,
+  ELITISM_DEGREE:           2, 
 
   // depends on player attributes
-  NUMBER_OF_GENES:          undefined,
   VARIABLE_RANGE:           undefined, // max sum of enemy attributes
   PLAYER_ADVANTAGE:         10, // increase to make enemies weaker
 
@@ -102,7 +102,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
 
   initRanges: function(attributes){
     this.VARIABLE_RANGE     = attributes.strength + attributes.agility + attributes.intellect - this.PLAYER_ADVANTAGE;
-    this.NUMBER_OF_GENES    = new Number(this.VARIABLE_RANGE).toString(2).length * this.NUMBER_OF_VARIABLES;
+   // this.NUMBER_OF_GENES    = new Number(this.VARIABLE_RANGE).toString(2).length * this.NUMBER_OF_VARIABLES;
   },
 
   /**
@@ -165,7 +165,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @param {Array} [individual] - The binary encoded individual to be decoded
   * @return {Array} The decoded individual. Will have a length of this.NUMBER_OF_VARIABLES
   */
-  decodeIndividual: function(individual) {
+  /*decodeIndividual: function(individual) {
     var pointsToSpend = this.VARIABLE_RANGE;
     var bitsPerVar    = this.NUMBER_OF_GENES / this.NUMBER_OF_VARIABLES;
     var decoded       = new Array(this.NUMBER_OF_VARIABLES);
@@ -187,7 +187,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
         decoded[i++ % this.NUMBER_OF_VARIABLES]++;
     }
     return decoded;
-  },
+  },*/
 
   /**
   * Cross two individuals to create two new ones. Will select a crossing point at random,
@@ -199,10 +199,25 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @return {Array} - A touple containing the two new individuals.
   */
   cross: function(firstInd, secondInd) {
-    var crossPoint = Math.round(Math.random()*this.NUMBER_OF_GENES - 1);
-    var newInd1 = new Array(this.NUMBER_OF_GENES);
-    var newInd2 = new Array(this.NUMBER_OF_GENES);
+    console.log('Crossing ' + firstInd + ' and ' + secondInd)
+    var crossPoint1 = Math.round(Math.random()*this.NUMBER_OF_GENES - 1);
+    var crossPoint2 = Math.round(Math.random()*this.NUMBER_OF_GENES - 1);
 
+    var tradeOff = Math.random();
+    var tradeOffAmount1 = Math.round(tradeOff * firstInd[crossPoint1]);
+    var tradeOffAmount2 = Math.round(tradeOff * secondInd[crossPoint2]);
+
+    var newInd1 = firstInd.slice(0);//new Array(this.NUMBER_OF_GENES);
+    var newInd2 = secondInd.slice(0);//new Array(this.NUMBER_OF_GENES);
+
+    newInd1[crossPoint1] -= tradeOffAmount1;
+    newInd1[crossPoint2] += tradeOffAmount1;
+
+    newInd2[crossPoint2] -= tradeOffAmount2;
+    newInd2[crossPoint1] += tradeOffAmount2;
+
+
+    /*
     for(var i = 0; i < this.NUMBER_OF_GENES; i++) {
       if (i < crossPoint) {
         newInd1[i] = firstInd[i];
@@ -212,7 +227,8 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
         newInd1[i] = secondInd[i];
       }
     }
-
+    */
+    console.log('Offspring: ' + newInd1 + ' and ' + newInd2);
     return [newInd1, newInd2];
   },
 
@@ -260,10 +276,17 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @return {Array} - The mutated individual.
   */
   mutate: function(individual) {
-    for (var i = 0; i < this.NUMBER_OF_GENES; i++) {
+    /*for (var i = 0; i < this.NUMBER_OF_GENES; i++) {
       if (Math.random() < this.MUTATION_PROBABILITY * this.MUTATION_RATE) {
         individual[i] = 1 - individual[i];
       }
+    }*/
+    if (Math.random() < this.MUTATION_PROBABILITY * this.MUTATION_RATE) {
+      var gene1 = Math.round(Math.random()*this.NUMBER_OF_GENES - 1);
+      var gene2 = Math.round(Math.random()*this.NUMBER_OF_GENES - 1);
+      var tradeOffAmount = Math.round(Math.random() * individual[gene1]);
+      individual[gene1] -= tradeOffAmount;
+      individual[gene2] += tradeOffAmount;
     }
     return individual;
   },
@@ -302,15 +325,17 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   */
   enemyToChromosome: function (enemy){
     // concatenate the translation of all attributes - NOTE: order matters!
-    var chrom = this.attrToGenes(enemy.attributes.strength)
+    var chrom = [enemy.attributes.strength, enemy.attributes.agility, enemy.attributes.intellect];
+    /*this.attrToGenes(enemy.attributes.strength)
                   .concat(this.attrToGenes(enemy.attributes.agility))
-                  .concat(this.attrToGenes(enemy.attributes.intellect));
-
+                  .concat(this.attrToGenes(enemy.attributes.intellect));*/
+    /*
     if(chrom.length !== this.NUMBER_OF_GENES){
       console.log('Illegal length of chromosome: ' + chrom.length);
     }else{
       return chrom;
-    }
+    }*/
+    return chrom;
   },
 
   /**
@@ -356,10 +381,10 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     spawnPositions  = this.shuffle(spawnPositions);
     for(var i = 0; i < population.length; i++){
       var pos         = spawnPositions[i % spawnPositions.length];
-      var attributes  = this.decodeIndividual(population[i]);
-      var strength    = attributes[0];
-      var agility     = attributes[1];
-      var intellect   = attributes[2];
+      //var attributes  = this.decodeIndividual(population[i]);
+      var strength    = population[i][0];//attributes[0];
+      var agility     = population[i][1];//attributes[1];
+      var intellect   = population[i][2];//attributes[2];
       var enemy       = new Darwinator.Enemy(game, target, pos.x, pos.y, undefined, strength, agility, intellect);
       enemyGroup.add(enemy);
     }
@@ -373,7 +398,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @param {Number} - An enemy attribute.
   * @return {Array} - A binary string representation of the enemy attribute.
   */
-  attrToGenes: function(attr) {
+  /*attrToGenes: function(attr) {
       // binary conversion
       var base = 2;
       var binaryString = Number(attr).toString(base).split('').
@@ -394,6 +419,6 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
         binaryString = binaryString.slice(-bitsPerVar);
       }
       return binaryString;
-  }
+  }*/
 
 };

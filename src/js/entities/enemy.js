@@ -29,9 +29,9 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
   this.cooldownMs         = 250;
 
   // reduce fire rate for 'stupid' enemies
-  this.fireProbability    = 0.01;
+  /*this.fireProbability    = 0.01;
   this.lastFireTimeStamp  = 0;
-  this.fireCooldownMs     = 10000;
+  this.fireCooldownMs     = 10000;*/
 };
 
 Darwinator.Enemy.prototype = Object.create(Darwinator.Entity.prototype);
@@ -89,16 +89,19 @@ Darwinator.Enemy.prototype.update = function() {
         this.lastAbilityUse = Date.now();
       }
     }
+  case this.categories.AGILE:
+    if(this.health < this.initialHealth)
+      this.dodge();
   default:
     /* If a path exists - follow it. Else, try to move in the general direction of the player, ignoring
        obsticles*/
     if (this.path.length) {
       this.followPath();
-      var onCooldown = (Date.now() - this.lastFireTimeStamp) < this.fireCooldownMs;
+      /*var onCooldown = (Date.now() - this.lastFireTimeStamp) < this.fireCooldownMs;
       if (!onCooldown && Math.random() < this.fireProbability) {
         this.weapon.fire(this.target.body.x, this.target.body.y);
         this.lastFireTimeStamp = Date.now();
-      }
+      }*/
     } else {
       this.game.physics.arcade.moveToXY(this, this.target.body.x, this.target.body.y, this.speed);
     }

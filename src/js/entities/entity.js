@@ -40,6 +40,7 @@ Darwinator.Entity = function(game, x, y, key, health, strength, agility, intelle
   this.dodging              = false;
   this.dodgeDurationSeconds = 2;
   this.dodgeTimer           = null;
+  this.initialHealth = this.health;
 };
 
 Darwinator.Entity.prototype = Object.create(Phaser.Sprite.prototype);

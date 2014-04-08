@@ -186,7 +186,6 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     while(pointsToSpend-- > 0 ){
         decoded[i++ % this.NUMBER_OF_VARIABLES]++;
     }
-    console.log(decoded);
     return decoded;
   },
 
@@ -392,7 +391,6 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
         binaryString = zeros.concat(binaryString);
       }else if(binaryString.length > bitsPerVar){
         // keep the last bitsPerVar bits if the binary string was too long
-        // happens if 2^bitsPerVar - 1 < this.VARIABLE_RANGE
         binaryString = binaryString.slice(-bitsPerVar);
       }
       return binaryString;

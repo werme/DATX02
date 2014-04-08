@@ -26,6 +26,9 @@ Darwinator.GameOverScreen.prototype = {
         text.position.y = this.game.height / 2;
         text.position.x = this.game.width / 2 - text.textWidth / 2,
 
+        //Display cursor
+        this.game.canvas.style.cursor = "inherit";
+
         // restart on click
         this.input.onDown.add(this.restart, this);
     },

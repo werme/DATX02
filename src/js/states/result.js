@@ -45,6 +45,10 @@ Darwinator.ResultScreen.prototype = {
 
         var buttonText = this.container.add(new Phaser.BitmapText(this.game, 0, this.game.height - 107, 'minecraftia', 'CONTINUE GAME', 20));
         buttonText.position.x = this.game.width  / 2 - buttonText.textWidth / 2;
+
+        //Display cursor
+        this.game.canvas.style.cursor = "inherit";
+
     },
 
     beforeSwitch: function () {

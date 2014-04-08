@@ -28,6 +28,7 @@ Darwinator.Preloader.prototype = {
     this.load.spritesheet('player', 'assets/darwin.png', 32, 32, 16);
     this.game.load.image('plus-button', 'assets/plus-button.png');
     this.load.spritesheet('continue-game-button', 'assets/continue-game-button.png', 248, 58, 2);
+    this.game.load.image('crosshair', 'assets/crosshair.png');
   },
 
   create: function () {

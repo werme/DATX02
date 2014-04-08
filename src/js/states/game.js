@@ -21,6 +21,7 @@ Darwinator.GameState = function() {
     this.roundSecondsRemaining = null;
     this.endRoundTimer         = null;
     this.displayTimeLeftTimer  = null;
+    this.crosshair             = null;
 
 };
 
@@ -95,6 +96,9 @@ Darwinator.GameState.prototype = {
         this.startTimers();
 
         this.game.level = this.level;
+
+        // Hide the cursor
+        this.game.canvas.style.cursor = "none";
     },
 
     initGUI: function () {
@@ -118,6 +122,9 @@ Darwinator.GameState.prototype = {
         this.pauseText.visible = false;
         this.gameOver.visible  = false;
 
+        this.crosshair = gui.add(this.game.add.sprite(this.game.input.activePointer.x, this.game.input.activePointer.y, 'crosshair'));
+        this.crosshair.scale.setTo(1.5, 1.5);
+        this.crosshair.anchor.setTo(0.5, 0.5);
         return gui;
     },
 
@@ -150,6 +157,7 @@ Darwinator.GameState.prototype = {
     },
 
     update: function () {
+        console.log(this.crosshair);
         for (var i = 0; i < this.bullets.length; i++) {
             var bulletGroup = this.bullets.getAt(i);
             this.game.physics.arcade.collide(bulletGroup, this.game.enemies, this.bulletCollisionHandler, null, this);
@@ -183,6 +191,10 @@ Darwinator.GameState.prototype = {
         this.stats.text = 'Player stamina: ' + Math.round(this.game.player.currBreath) + '/' + Math.round(this.game.player.stamina);
         this.health.text = 'Health: ' + Math.round(this.game.player.health);
         this.enemiesRemaining.text = 'Enemies remaining: ' + this.game.enemies.countLiving();
+
+        var pointer = this.game.input.activePointer;
+        this.crosshair.x = pointer.x;
+        this.crosshair.y = pointer.y;
     },
 
     updateTimer: function () { // Callback to update time remaining display every second

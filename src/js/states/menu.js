@@ -14,6 +14,9 @@ Darwinator.Menu.prototype = {
     
     this.game.add.existing(this.text);
 
+    this.game.canvas.style.cursor = "inherit";
+
+
     this.input.onDown.add(this.onDown, this);
   },
 

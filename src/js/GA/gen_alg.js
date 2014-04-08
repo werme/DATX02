@@ -258,7 +258,15 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @return {Number} - The enemy represented as a real-value chromosome
   */
   enemyToChromosome: function (enemy){
-    return [enemy.attributes.strength, enemy.attributes.agility, enemy.attributes.intellect];
+    var attrSum = enemy.attributes.strength + enemy.attributes.agility + enemy.attributes.intellect;
+    var chrom = [enemy.attributes.strength, enemy.attributes.agility, enemy.attributes.intellect];
+    
+    // distribute remaining points
+    var i = 0;
+    while(attrSum++ < this.VARIABLE_RANGE)
+      chrom[i++ % this.NUMBER_OF_GENES]++;
+
+    return chrom;
   },
 
   /**

@@ -33,9 +33,9 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @return {Array} The last population generated.
   */
   generatePopulation: function(game, target, enemyGroup, singleGeneration, spawnPositions) {
-    var attributes = target.attributes;
+    var attributes      = target.attributes;
     this.VARIABLE_RANGE = attributes.strength + attributes.agility + attributes.intellect - this.PLAYER_ADVANTAGE;
-    spawnPositions  = Darwinator.Helpers.shuffle(spawnPositions);
+    spawnPositions      = Darwinator.Helpers.shuffle(spawnPositions);
 
     if(!enemyGroup){
       enemyGroup = game.add.group();
@@ -155,7 +155,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     var crossPoint1 = Math.round(Math.random()*(this.NUMBER_OF_GENES - 1));
     var crossPoint2 = Math.round(Math.random()*(this.NUMBER_OF_GENES - 1));
 
-    var tradeOff = Math.random();
+    var tradeOff        = Math.random();
     var tradeOffAmount1 = Math.round(tradeOff * firstInd[crossPoint1]);
     var tradeOffAmount2 = Math.round(tradeOff * secondInd[crossPoint2]);
 
@@ -218,6 +218,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
       var gene1 = Math.round(Math.random()*(this.NUMBER_OF_GENES - 1));
       var gene2 = Math.round(Math.random()*(this.NUMBER_OF_GENES - 1));
       var tradeOffAmount = Math.round(Math.random() * individual[gene1]);
+
       individual[gene1] -= tradeOffAmount;
       individual[gene2] += tradeOffAmount;
     }
@@ -299,7 +300,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   translatePopulation: function(population, enemyGroup, game, target, spawnPositions){
     // FIXME possible memory leak, should call destroy but it crashes for some reason..
     //game.enemies.destroy(true);
-    enemyGroup      = game.add.group();
+    enemyGroup = game.add.group();
     for(var i = 0; i < population.length; i++){
       var pos         = spawnPositions[i % spawnPositions.length];
       var strength    = population[i][0];

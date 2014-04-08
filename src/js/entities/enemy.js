@@ -112,6 +112,7 @@ Darwinator.Enemy.prototype.update = function() {
   this.game.physics.arcade.overlap(this, this.target, this.meleeAttack, null, this);
 
   if (this.health <= 0 && this.alive){
+    this.game.time.events.remove(this.dodgeTimer);
     console.log('%c Enemy killed by player! ', 'background: black; color: orange');
     this.kill();
   }

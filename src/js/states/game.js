@@ -71,6 +71,8 @@ Darwinator.GameState.prototype = {
         this.game.onResume.remove(this.resumed, this);
 
         this.stopTimers();
+        this.game.time.events.remove(this.game.player.dodgeTimer);
+        this.game.player.alpha = 1;
     },
 
     create: function () {

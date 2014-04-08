@@ -13,7 +13,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   NUMBER_OF_GENERATIONS:    100,
   NUMBER_OF_VARIABLES:      3,
   TOURNAMENT_SIZE:          4,
-  ELITISM_DEGREE:           5,
+  ELITISM_DEGREE:           2,
 
   // depends on player attributes
   NUMBER_OF_GENES:          undefined,

@@ -132,6 +132,7 @@ Darwinator.Player.prototype.initKeys = function (game) {
     this.rightKey  = game.input.keyboard.addKey(Phaser.Keyboard.D);
     this.sprintKey = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
     this.telKey    = game.input.keyboard.addKey(Phaser.Keyboard.Q);
+    this.dodgeKey  = game.input.keyboard.addKey(Phaser.Keyboard.R);
 
     this.telKey.onDown.add(function() {
         var onCooldown = (Date.now() - this.lastAbilityUse) < this.abilityCooldownMs;
@@ -141,6 +142,8 @@ Darwinator.Player.prototype.initKeys = function (game) {
             this.lastAbilityUse = Date.now();
         }
     }, this);
+
+    this.dodgeKey.onDown.add(this.dodge, this);
 
     var checkTimer = function (key) {
 
@@ -228,4 +231,4 @@ Darwinator.Player.prototype.resetAttributes = function () {
     this.attributes.agility   = Darwinator.PLAYER_BASE_AGILITY;
     this.attributes.intellect = Darwinator.PLAYER_BASE_INTELLECT;
     this.updateAttributes();
-}
+};

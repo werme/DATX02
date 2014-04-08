@@ -157,7 +157,7 @@ Darwinator.GameState.prototype = {
     },
 
     update: function () {
-        console.log(this.crosshair);
+        //console.log(this.crosshair);
         for (var i = 0; i < this.bullets.length; i++) {
             var bulletGroup = this.bullets.getAt(i);
             this.game.physics.arcade.collide(bulletGroup, this.game.enemies, this.bulletCollisionHandler, null, this);
@@ -218,7 +218,7 @@ Darwinator.GameState.prototype = {
             }
             return;
         }
-        if (target instanceof Darwinator.Entity) {
+        if (target instanceof Darwinator.Entity && !target.dodging) {
             var dmg = bullet.owner.damage;
             target.takeDamage(dmg);
             if(target instanceof Darwinator.Player){

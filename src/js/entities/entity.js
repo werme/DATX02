@@ -37,6 +37,9 @@ Darwinator.Entity = function(game, x, y, key, health, strength, agility, intelle
   this.currBreath     = this.stamina;
   this.lastAbilityUse     = 0;
   this.abilityCooldownMs  = 10000;
+  this.dodging              = false;
+  this.dodgeDurationSeconds = 2;
+  this.dodgeTimer           = null;
 };
 
 Darwinator.Entity.prototype = Object.create(Phaser.Sprite.prototype);
@@ -55,5 +58,15 @@ Darwinator.Entity.prototype.setAnimations = function(anims) {
       var tmp = anims[i];
       this.animations.add.apply(this.animations, tmp);
     }
+  }
+};
+
+Darwinator.Entity.prototype.dodge = function() {
+  if((Date.now() - this.lastAbilityUse) >= this.abilityCooldownMs){
+    this.dodging = true;
+    this.alpha = 0.5;
+    this.lastAbilityUse = Date.now();
+    var dodgeCallback = function() {this.dodging = false; this.alpha = 1; };
+    this.dodgeTimer = this.game.time.events.add(Phaser.Timer.SECOND * this.dodgeDurationSeconds, dodgeCallback, this);
   }
 };

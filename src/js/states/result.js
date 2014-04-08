@@ -15,7 +15,7 @@ Darwinator.ResultScreen.prototype = {
         this.container.fixedToCamera = true;
         this.game.add.existing(this.container);
 
-        this.unspentPoints = 3;
+        this.unspentPoints = Darwinator.PLAYER_POINTS_PER_LEVEL;
 
         // Unfollow player and position camera in top left corner of world.
         this.game.camera.target = null;

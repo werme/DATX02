@@ -28,6 +28,8 @@ window.Darwinator = window.Darwinator || {
   PLAYER_BASE_AGILITY   : 10,
   PLAYER_BASE_INTELLECT : 100,
 
+  PLAYER_POINTS_PER_LEVEL: 3,
+
   BOW_COOLDOWN      : 800,
   BOW_DAMAGE        : 10,
   BOW_BULLET_SPEED  : 500,

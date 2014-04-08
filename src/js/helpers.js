@@ -67,7 +67,7 @@ Darwinator.Helpers = {
   * Calculates distance between two points. Works for both distance in pixels and distance in tiles.
   * @method Darwinator.Helpers#calculateDistance
   * @param {Array/Tuple} - [pos1] The first point, given as [x,y] or as an object with properties x,y
-  * @param {Array/Tple} - [pos2] The second point, given as [x,y] or as an object with properties x,y
+  * @param {Array/Tuple} - [pos2] The second point, given as [x,y] or as an object with properties x,y
   * @return {Number} The distance between the two points.
   */
   calculateDistance: function(pos1, pos2) {
@@ -78,5 +78,19 @@ Darwinator.Helpers = {
     var dx = x1 - x2;
     var dy = y1 - y2;
     return Math.sqrt(dx*dx + dy*dy);
+  },
+
+  /**
+  * @method Darwinator.Helpers#shuffle
+  * @param {Array} - [array] The array to shuffle
+  * @return {Number} A shuffled clone of the given array
+  */
+  shuffle: function(array){
+    array = array.slice(0);
+    var shuff = [];
+
+    while(array.length > 0)
+      shuff = shuff.concat(array.splice(Math.round(Math.random() * (array.length-1)), 1));
+    return shuff;
   }
 };

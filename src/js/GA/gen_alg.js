@@ -35,7 +35,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   generatePopulation: function(game, target, enemyGroup, singleGeneration, spawnPositions) {
     var attributes = target.attributes;
     this.VARIABLE_RANGE = attributes.strength + attributes.agility + attributes.intellect - this.PLAYER_ADVANTAGE;
-    spawnPositions  = this.shuffle(spawnPositions);
+    spawnPositions  = Darwinator.Helpers.shuffle(spawnPositions);
 
     if(!enemyGroup){
       enemyGroup = game.add.group();
@@ -136,16 +136,6 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
       enemyGroup.add(new Darwinator.Enemy(game, target, pos.x, pos.y, undefined, strength, agility, intellect));
     }
     return enemyGroup;
-  },
-
-  // returns a shuffled version of the given array
-  shuffle: function(array){
-    array = array.slice(0);
-    var shuff = [];
-
-    while(array.length > 0)
-      shuff = shuff.concat(array.splice(Math.round(Math.random() * (array.length-1)), 1));
-    return shuff;
   },
 
   /**

@@ -53,10 +53,11 @@ Darwinator.Level.prototype = {
     for (var i = 0; i < matrix.length; i++) {
       for(var j = 0; j < matrix[i].length; j++) {
         if (matrix[i][j] === this.spawnTiles){
-          this.spawnPositions.push(Darwinator.Helpers.tileToPixels(j,i));
+          this.spawnPositions.push(Darwinator.Helpers.tileToPixels(i,j));
         }
       }
     }
+    console.log(this.spawnPositions);
   },
 
   addTopLayer: function() {

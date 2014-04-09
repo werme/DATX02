@@ -8,6 +8,7 @@ Darwinator.Level = function(game) {
   this.toplayer       = null;
   this.collisionLayer = null;
   this.objectLayer    = null;
+  this.spawnTiles     = 1192; // Tile ID from tilemap where we want enemies to spawn.
   this.loadLevel();
   this.initSpawnPosition();
   this.game.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -28,7 +29,7 @@ Darwinator.Level.prototype = {
     Darwinator.setTileSize(this.map.tileWidth, this.map.tileHeight);
 
     // TODO For debug only
-    //this.layer.debug = true;
+    //this.collisionLayer.debug = true;
 
     this.map.collisionLayer = this.collisionLayer;
     this.map.setCollisionByExclusion([0], true, this.collisionLayer);
@@ -51,7 +52,7 @@ Darwinator.Level.prototype = {
 
     for (var i = 0; i < matrix.length; i++) {
       for(var j = 0; j < matrix[i].length; j++) {
-        if (matrix[i][j] === 1192){
+        if (matrix[i][j] === this.spawnTiles){
           this.spawnPositions.push(Darwinator.Helpers.tileToPixels(j,i));
         }
       }

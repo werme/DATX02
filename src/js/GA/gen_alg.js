@@ -30,7 +30,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @param {Phaser.Group} [enemyGroup] - Optional. If not provided, a group with default values will be set.
   * @param {Boolean} [singleGeneration] - If true, only one iteration will be run, else, this.NUMBER_OF_GENERATIONS is used.
   * @param {Array} [spawnPositions] - The positions on which the enemies are allowed to spawn.
-  * @return {Array} The last population generated.
+  * @return {Phaser.Group} The new wave of enemies
   */
   generatePopulation: function(game, target, enemyGroup, singleGeneration, spawnPositions) {
     var attributes      = target.attributes;
@@ -255,7 +255,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   *
   * @method Darwinator.GeneticAlgorithm#enemyToChromosome
   * @param {Phaser.Sprite} - An enemy sprite
-  * @return {Number} - The enemy represented as a real-value chromosome
+  * @return {Array} - The enemy represented as a real-value chromosome
   */
   enemyToChromosome: function (enemy){
     var attrSum = enemy.attributes.strength + enemy.attributes.agility + enemy.attributes.intellect;

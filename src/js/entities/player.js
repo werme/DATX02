@@ -189,7 +189,7 @@ Darwinator.Player.prototype.initKeys = function (game) {
 
 };
 
-Darwinator.Entity.prototype.updateAttributes = function () {
+Darwinator.Player.prototype.updateAttributes = function () {
 
     this.health         = Darwinator.PLAYER_BASE_HEALTH  + this.attributes.strength;
     this.damage         = Darwinator.PLAYER_BASE_DAMAGE  + this.attributes.strength;

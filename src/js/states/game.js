@@ -71,9 +71,15 @@ Darwinator.GameState.prototype = {
         this.game.onResume.remove(this.resumed, this);
 
         this.stopTimers();
+
         this.game.time.events.remove(this.game.player.dodgeTimer);
         this.game.player.alpha = 1;
         this.game.player.dodging = false;
+
+        for(var i = 0; i < this.bullets.length; i++){
+            var bulletGroup = this.bullets.getAt(i);
+            bulletGroup.forEachAlive(function(bullet){bullet.kill();}, this);
+        }
     },
 
     create: function () {

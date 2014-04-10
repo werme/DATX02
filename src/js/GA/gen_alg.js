@@ -35,7 +35,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   generatePopulation: function(game, target, enemyGroup, singleGeneration, spawnPositions) {
     var attributes      = target.attributes;
     this.VARIABLE_RANGE = attributes.strength + attributes.agility + attributes.intellect - this.PLAYER_ADVANTAGE;
-    spawnPositions      = Darwinator.Helpers.shuffle(spawnPositions);
+    spawnPositions      = Phaser.Math.shuffleArray(spawnPositions.slice(0));
 
     if(!enemyGroup){
       enemyGroup = game.add.group();

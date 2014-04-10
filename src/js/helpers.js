@@ -78,19 +78,6 @@ Darwinator.Helpers = {
     var dx = x1 - x2;
     var dy = y1 - y2;
     return Math.sqrt(dx*dx + dy*dy);
-  },
-
-  /**
-  * @method Darwinator.Helpers#shuffle
-  * @param {Array} - [array] The array to shuffle
-  * @return {Number} A shuffled clone of the given array
-  */
-  shuffle: function(array){
-    array = array.slice(0);
-    var shuff = [];
-
-    while(array.length > 0)
-      shuff = shuff.concat(array.splice(Math.round(Math.random() * (array.length-1)), 1));
-    return shuff;
   }
+
 };

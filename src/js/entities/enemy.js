@@ -58,12 +58,17 @@ Darwinator.Enemy.prototype.update = function() {
     case this.categories.INTELLIGENT:
       var currentTile = Darwinator.Helpers.pixelsToTile(this.body.x, this.body.y);
       var targetTile  = Darwinator.Helpers.pixelsToTile(this.target.body.x, this.target.body.y);
+      var distance    = Darwinator.Helpers.calculateDistance(targetTile, currentTile);
 
-      if (Darwinator.Helpers.calculateDistance(targetTile, currentTile) > 10) {
+      if (distance > 12) {
         this.doMove();
       } else {
         this.weapon.fire(this.target.body.x, this.target.body.y);
-      }
+        if (distance < 6) {
+          this.flee();
+        }
+      } 
+
       break;
 
     case this.categories.STRONG:
@@ -180,4 +185,9 @@ Darwinator.Enemy.prototype.followPath = function() {
   } else if (this.currBreath < this.stamina) {
     this.currBreath += 0.2;
   }
+};
+
+Darwinator.Enemy.prototype.flee = function() {
+  var angleFromTarget = this.game.physics.arcade.angleBetween(this, this.target) + Math.PI;
+  this.game.physics.arcade.velocityFromRotation(angleFromTarget, this.speed, this.body.velocity);
 };

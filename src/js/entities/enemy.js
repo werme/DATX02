@@ -131,9 +131,13 @@ Darwinator.Enemy.prototype.meleeAttack = function(){ //callback for overlapping 
 Darwinator.Enemy.prototype.doMove = function() {
   if (this.shouldUpdatePath()) {
     this.updatePath();
-    this.followPath();
   } else {
     this.lastPathUpdate++;
+  }
+  
+  if(!!this.path.length) {
+    this.followPath();
+  } else {
     this.game.physics.arcade.moveToXY(this, this.target.body.x, this.target.body.y, this.speed);
   }
 };

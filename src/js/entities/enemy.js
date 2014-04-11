@@ -53,24 +53,18 @@ Darwinator.Enemy.prototype.update = function() {
     return;
   }
   this.body.velocity.setTo(0,0);
-  var currTile    = Darwinator.Helpers.pixelsToTile(this.body.x, this.body.y);
-  var targetTile  = Darwinator.Helpers.pixelsToTile(this.target.body.x, this.target.body.y);
 
-  var pathLength = this.path.length;
-  if(!(pathLength && this.path[pathLength - 1].x === targetTile.x &&
-                     this.path[pathLength - 1].y === targetTile.y &&
-                     this.path[0].x === currTile.x &&
-                     this.path[0].y === currTile.y)) {
-    if (Darwinator.Helpers.calculateDistance(targetTile, currTile) * 5 < this.lastPathUpdate) {
-      this.updatePath();
-    } else {
-      this.lastPathUpdate++;
-    }
+  if (this.shouldUpdatePath) {
+    this.updatePath();
+  } else {
+    this.lastPathUpdate++;
   }
 
   switch(this.category) {
   case this.categories.INTELLIGENT:
-    if (this.path.length && Darwinator.Helpers.calculateDistance(targetTile, currTile) > 10) {
+  var currentTile = Darwinator.Helpers.pixelsToTile(this.body.x, this.body.y);
+  var targetTile  = Darwinator.Helpers.pixelsToTile(this.target.x, this.target.y);
+    if (this.path.length && Darwinator.Helpers.calculateDistance(targetTile, currentTile) > 10) {
       this.followPath();
     } else {
       this.weapon.fire(this.target.body.x, this.target.body.y);
@@ -135,6 +129,20 @@ Darwinator.Enemy.prototype.meleeAttack = function(){ //callback for overlapping 
     this.damageDone += dmg;
     this.lastMeleeTimestamp = Date.now();
   }
+};
+
+Darwinator.Enemy.prototype.shouldUpdatePath = function() {
+  var currTile    = Darwinator.Helpers.pixelsToTile(this.body.x, this.body.y);
+  var targetTile  = Darwinator.Helpers.pixelsToTile(this.target.body.x, this.target.body.y);
+
+  var undefinedPath  = !this.path.length;
+  var newTargetTile  = this.path[this.path.length - 1].x !== targetTile.x || this.path[this.path.length - 1].y !== targetTile.y;
+  var newStartTile   = this.path[0].x !== currTile.x || this.path[0].y !== currTile.y;
+  var notOnCooldown  = !Darwinator.Helpers.calculateDistance(targetTile, currTile) * 5 < this.lastPathUpdate;
+
+  // Path can only be updated when not on cooldown. Path should only try to update if it doesn't exist, 
+  // if target has moved, or if the entity has somehow changed its position.
+  return (undefinedPath || newTargetTile || newStartTile) && notOnCooldown;
 };
 
 Darwinator.Enemy.prototype.updatePath = function() {

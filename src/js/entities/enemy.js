@@ -53,60 +53,51 @@ Darwinator.Enemy.prototype.update = function() {
     return;
   }
   this.body.velocity.setTo(0,0);
-  var currTile    = Darwinator.Helpers.pixelsToTile(this.body.x, this.body.y);
-  var targetTile  = Darwinator.Helpers.pixelsToTile(this.target.body.x, this.target.body.y);
-
-  var pathLength = this.path.length;
-  if(!(pathLength && this.path[pathLength - 1].x === targetTile.x &&
-                     this.path[pathLength - 1].y === targetTile.y &&
-                     this.path[0].x === currTile.x &&
-                     this.path[0].y === currTile.y)) {
-    if (Darwinator.Helpers.calculateDistance(targetTile, currTile) * 5 < this.lastPathUpdate) {
-      this.updatePath();
-    } else {
-      this.lastPathUpdate++;
-    }
-  }
 
   switch(this.category) {
-  case this.categories.INTELLIGENT:
-    if (this.path.length && Darwinator.Helpers.calculateDistance(targetTile, currTile) > 10) {
-      this.followPath();
-    } else {
-      this.weapon.fire(this.target.body.x, this.target.body.y);
-    }
-    break;
-  case this.categories.STRONG:
-    if (this.path.length) {
-      var onCooldown = (Date.now() - this.lastAbilityUse) < this.abilityCooldownMs;
-      if(!onCooldown) {
-        var telRange = Math.min((this.path.length - 1), 5);
-        var targetTile = this.path[telRange];
-        var target = Darwinator.Helpers.tileToPixels(targetTile.x, targetTile.y);
-        target.x   = Math.round(target.x - this.body.width / 2);
-        target.y   = Math.round(target.y - this.body.height / 2);
-        this.reset(target.x, target.y, this.health);
-        this.lastAbilityUse = Date.now();
-      }
-    }
-  case this.categories.AGILE:
-    if(this.health < this.initialHealth)
-      this.dodge();
-  default:
-    /* If a path exists - follow it. Else, try to move in the general direction of the player, ignoring
-       obsticles*/
-    if (this.path.length) {
-      this.followPath();
-      /*var onCooldown = (Date.now() - this.lastFireTimeStamp) < this.fireCooldownMs;
-      if (!onCooldown && Math.random() < this.fireProbability) {
+    case this.categories.INTELLIGENT:
+      var currentTile = Darwinator.Helpers.pixelsToTile(this.body.x, this.body.y);
+      var targetTile  = Darwinator.Helpers.pixelsToTile(this.target.body.x, this.target.body.y);
+      var distance    = Darwinator.Helpers.calculateDistance(targetTile, currentTile);
+
+      if (distance > 12) {
+        this.doMove();
+      } else {
         this.weapon.fire(this.target.body.x, this.target.body.y);
-        this.lastFireTimeStamp = Date.now();
-      }*/
-    } else {
-      this.game.physics.arcade.moveToXY(this, this.target.body.x, this.target.body.y, this.speed);
-    }
-    break;
-  }
+        if (distance < 6) {
+          this.flee();
+        }
+      } 
+
+      break;
+
+    case this.categories.STRONG:
+      this.doMove();
+      if (this.path.length) {
+        var onCooldown = (Date.now() - this.lastAbilityUse) < this.abilityCooldownMs;
+        if(!onCooldown) {
+          var telRange = Math.min((this.path.length - 1), 5);
+          var targetTile = this.path[telRange];
+          var target = Darwinator.Helpers.tileToPixels(targetTile.x, targetTile.y);
+          target.x   = Math.round(target.x - this.body.width / 2);
+          target.y   = Math.round(target.y - this.body.height / 2);
+          this.reset(target.x, target.y, this.health);
+          this.lastAbilityUse = Date.now();
+        }
+      }
+      break;
+
+    case this.categories.AGILE:
+      this.doMove();
+      if(this.health < this.initialHealth) {
+        this.dodge();
+      }
+      break;
+
+    default:
+      this.doMove();
+      break;
+  } 
   // Target (ie. player) takes damage while the target and enemy overlap.
   // If they continuously overlap the target will take damage every 0.25 seconds
   this.game.physics.arcade.overlap(this, this.target, this.meleeAttack, null, this);
@@ -137,6 +128,32 @@ Darwinator.Enemy.prototype.meleeAttack = function(){ //callback for overlapping 
   }
 };
 
+Darwinator.Enemy.prototype.doMove = function() {
+  if (this.shouldUpdatePath()) {
+    this.updatePath();
+    this.followPath();
+  } else {
+    this.lastPathUpdate++;
+    this.game.physics.arcade.moveToXY(this, this.target.body.x, this.target.body.y, this.speed);
+  }
+};
+
+Darwinator.Enemy.prototype.shouldUpdatePath = function() {
+  var currTile    = Darwinator.Helpers.pixelsToTile(this.body.x, this.body.y);
+  var targetTile  = Darwinator.Helpers.pixelsToTile(this.target.body.x, this.target.body.y);
+
+  if (!this.path.length) {
+    return true;
+  }
+  var newTargetTile  = this.path[this.path.length - 1].x !== targetTile.x || this.path[this.path.length - 1].y !== targetTile.y;
+  var newStartTile   = this.path[0].x !== currTile.x || this.path[0].y !== currTile.y;
+  var notOnCooldown  = !Darwinator.Helpers.calculateDistance(targetTile, currTile) * 5 < this.lastPathUpdate;
+
+  // Path can only be updated when not on cooldown. Path should only try to update if it doesn't exist, 
+  // if target has moved, or if the entity has somehow changed its position.
+  return (newTargetTile || newStartTile) && notOnCooldown;
+};
+
 Darwinator.Enemy.prototype.updatePath = function() {
   var currTile    = Darwinator.Helpers.pixelsToTile(this.body.x, this.body.y);
   var targetTile  = Darwinator.Helpers.pixelsToTile(this.target.body.x, this.target.body.y);
@@ -145,6 +162,10 @@ Darwinator.Enemy.prototype.updatePath = function() {
 };
 
 Darwinator.Enemy.prototype.followPath = function() {
+  if (!this.path.length) {
+    return;
+  }
+
   var targetPos = Darwinator.Helpers.tileToPixels(this.path[1].x, this.path[1].y);
   targetPos.x   = Math.round(targetPos.x - this.body.width / 2);
   targetPos.y   = Math.round(targetPos.y - this.body.height / 2);
@@ -164,4 +185,9 @@ Darwinator.Enemy.prototype.followPath = function() {
   } else if (this.currBreath < this.stamina) {
     this.currBreath += 0.2;
   }
+};
+
+Darwinator.Enemy.prototype.flee = function() {
+  var angleFromTarget = this.game.physics.arcade.angleBetween(this, this.target) + Math.PI;
+  this.game.physics.arcade.velocityFromRotation(angleFromTarget, this.speed, this.body.velocity);
 };

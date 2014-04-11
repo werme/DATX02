@@ -19,6 +19,9 @@ window.Darwinator = window.Darwinator || {
     game.state.start('boot');
   },
 
+  /*
+  * Player Stats 
+  */
   PLAYER_BASE_HEALTH  : 1000,
   PLAYER_BASE_STAMINA : 50,
   PLAYER_BASE_DAMAGE  : 15,
@@ -30,6 +33,9 @@ window.Darwinator = window.Darwinator || {
 
   PLAYER_POINTS_PER_LEVEL: 3,
 
+  /*
+  * Weapon Stats 
+  */
   BOW_COOLDOWN      : 800,
   BOW_DAMAGE        : 10,
   BOW_BULLET_SPEED  : 500,
@@ -38,11 +44,24 @@ window.Darwinator = window.Darwinator || {
   CANNON_COOLDOWN      : 1200,
   CANNON_BULLET_SPEED  : 300,
 
+  /*
+  * Entity Stats 
+  */
+
   ENTITY_BASE_HEALTH  : 50,
   ENTITY_BASE_STAMINA : 50,
   ENTITY_BASE_DAMAGE  : 5,
   ENTITY_BASE_SPEED   : 75,
 
+  /*
+  * Enemy Stats 
+  */
+
+  AI_PATH_UPDATE_FREQUENCY : 5,
+
+  /*
+  * Other Stats 
+  */
   ROUND_LENGTH_SECONDS: 60,
 
   TILE_WIDTH: 0,

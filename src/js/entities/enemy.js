@@ -54,53 +54,44 @@ Darwinator.Enemy.prototype.update = function() {
   }
   this.body.velocity.setTo(0,0);
 
-  if (this.shouldUpdatePath) {
-    this.updatePath();
-  } else {
-    this.lastPathUpdate++;
-  }
-
   switch(this.category) {
-  case this.categories.INTELLIGENT:
-  var currentTile = Darwinator.Helpers.pixelsToTile(this.body.x, this.body.y);
-  var targetTile  = Darwinator.Helpers.pixelsToTile(this.target.x, this.target.y);
-    if (this.path.length && Darwinator.Helpers.calculateDistance(targetTile, currentTile) > 10) {
-      this.followPath();
-    } else {
-      this.weapon.fire(this.target.body.x, this.target.body.y);
-    }
-    break;
-  case this.categories.STRONG:
-    if (this.path.length) {
-      var onCooldown = (Date.now() - this.lastAbilityUse) < this.abilityCooldownMs;
-      if(!onCooldown) {
-        var telRange = Math.min((this.path.length - 1), 5);
-        var targetTile = this.path[telRange];
-        var target = Darwinator.Helpers.tileToPixels(targetTile.x, targetTile.y);
-        target.x   = Math.round(target.x - this.body.width / 2);
-        target.y   = Math.round(target.y - this.body.height / 2);
-        this.reset(target.x, target.y, this.health);
-        this.lastAbilityUse = Date.now();
-      }
-    }
-  case this.categories.AGILE:
-    if(this.health < this.initialHealth)
-      this.dodge();
-  default:
-    /* If a path exists - follow it. Else, try to move in the general direction of the player, ignoring
-       obsticles*/
-    if (this.path.length) {
-      this.followPath();
-      /*var onCooldown = (Date.now() - this.lastFireTimeStamp) < this.fireCooldownMs;
-      if (!onCooldown && Math.random() < this.fireProbability) {
+    case this.categories.INTELLIGENT:
+      var currentTile = Darwinator.Helpers.pixelsToTile(this.body.x, this.body.y);
+      var targetTile  = Darwinator.Helpers.pixelsToTile(this.target.x, this.target.y);
+
+      if (this.path.length && Darwinator.Helpers.calculateDistance(targetTile, currentTile) > 10) {
+        this.doMove();
+      } else {
         this.weapon.fire(this.target.body.x, this.target.body.y);
-        this.lastFireTimeStamp = Date.now();
-      }*/
-    } else {
-      this.game.physics.arcade.moveToXY(this, this.target.body.x, this.target.body.y, this.speed);
-    }
-    break;
-  }
+      }
+      break;
+
+    case this.categories.STRONG:
+      if (this.path.length) {
+        var onCooldown = (Date.now() - this.lastAbilityUse) < this.abilityCooldownMs;
+        if(!onCooldown) {
+          var telRange = Math.min((this.path.length - 1), 5);
+          var targetTile = this.path[telRange];
+          var target = Darwinator.Helpers.tileToPixels(targetTile.x, targetTile.y);
+          target.x   = Math.round(target.x - this.body.width / 2);
+          target.y   = Math.round(target.y - this.body.height / 2);
+          this.reset(target.x, target.y, this.health);
+          this.lastAbilityUse = Date.now();
+        }
+      }
+      break;
+
+    case this.categories.AGILE:
+      this.doMove();
+      if(this.health < this.initialHealth) {
+        this.dodge();
+      }
+      break;
+
+    default:
+      this.doMove();
+      break;
+  } 
   // Target (ie. player) takes damage while the target and enemy overlap.
   // If they continuously overlap the target will take damage every 0.25 seconds
   this.game.physics.arcade.overlap(this, this.target, this.meleeAttack, null, this);
@@ -128,6 +119,16 @@ Darwinator.Enemy.prototype.meleeAttack = function(){ //callback for overlapping 
     this.target.takeDamage(dmg);
     this.damageDone += dmg;
     this.lastMeleeTimestamp = Date.now();
+  }
+};
+
+Darwinator.Enemy.prototype.doMove = function() {
+  if (this.shouldUpdatePath()) {
+    this.updatePath();
+    this.followPath();
+  } else {
+    this.lastPathUpdate++;
+    this.game.physics.arcade.moveToXY(this, this.target.body.x, this.target.body.y, this.speed);
   }
 };
 

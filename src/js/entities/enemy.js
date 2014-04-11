@@ -89,8 +89,8 @@ Darwinator.Enemy.prototype.update = function() {
 
     case this.categories.AGILE:
       this.doMove();
-      if(this.health < this.initialHealth) {
-        this.dodge();
+      if(this.underAttack) {
+        this.tryDodge();
       }
       break;
 

@@ -143,7 +143,7 @@ Darwinator.Player.prototype.initKeys = function (game) {
         }
     }, this);
 
-    this.dodgeKey.onDown.add(this.dodge, this);
+    this.dodgeKey.onDown.add(this.tryDodge, this);
 
     var checkTimer = function (key) {
 

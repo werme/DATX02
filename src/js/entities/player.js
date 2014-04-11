@@ -16,19 +16,21 @@ Darwinator.Player = function(game, x, y, cursors) {
     this.dashTimer   = null;
     this.direction   = 90;
     this.dashCounter = 0;
+    this.useRandomInput = true;
+    this.lastRandomInput = Date.now();
+    this.lastDirection = [0,0];
 
     // for development only
-    this.immortal = false;
+    this.immortal = true;
 }
 
 Darwinator.Player.prototype = Object.create(Darwinator.Entity.prototype);
 
 Darwinator.Player.prototype.update = function () {
-
     var pointer = this.game.input.activePointer;
     if (pointer.isDown){
-    this.weapon.fire(pointer.worldX, pointer.worldY);
-}
+        this.weapon.fire(pointer.worldX, pointer.worldY);
+    }
 
     /*
     *  If dashing, override manual controls and
@@ -59,25 +61,37 @@ Darwinator.Player.prototype.update = function () {
         this.body.velocity.setTo(0,0);
         var dir = [0,0];
         var moving = false;
-
-        if (this.cursors.left.isDown || this.leftKey.isDown) {
-          dir[0] = -1;
-          moving = true;
-        } else if (this.cursors.right.isDown || this.rightKey.isDown) {
-          dir[0] = 1;
-          moving = true;
+        if (this.useRandomInput) {
+            if ((Date.now() - this.lastRandomInput) > 750) {
+                dir = this.randomInput();
+                moving = true;
+            } else {
+                dir = this.lastDirection;
+                moving = true;
+                if (this.body.blocked.left || this.body.blocked.right || 
+                    this.body.blocked.up ||this.body.blocked.down ) {
+                    dir = this.randomInput();
+                }
+            }   
+        } else {
+            if (this.cursors.left.isDown || this.leftKey.isDown) {
+              dir[0] = -1;
+              moving = true;
+            } else if (this.cursors.right.isDown || this.rightKey.isDown) {
+              dir[0] = 1;
+              moving = true;
+            }
+            if (this.cursors.up.isDown || this.upKey.isDown) {
+              if (this.getBounds().y <= 0 || this.getBounds().y <= 0) { // top right
+                this.body.velocity.y = 0;
+              }
+              dir[1] = 1;
+              moving = true;
+            } else if (this.cursors.down.isDown || this.downKey.isDown) {
+              dir[1] = -1;
+              moving = true;
+            }
         }
-        if (this.cursors.up.isDown || this.upKey.isDown) {
-          if (this.getBounds().y <= 0 || this.getBounds().y <= 0) { // top right
-            this.body.velocity.y = 0;
-          }
-          dir[1] = 1;
-          moving = true;
-        } else if (this.cursors.down.isDown || this.downKey.isDown) {
-          dir[1] = -1;
-          moving = true;
-        }
-
         if (!moving) {
           this.animations.stop();
           this.body.frame = 4;
@@ -232,3 +246,24 @@ Darwinator.Player.prototype.resetAttributes = function () {
     this.attributes.intellect = Darwinator.PLAYER_BASE_INTELLECT;
     this.updateAttributes();
 };
+
+Darwinator.Player.prototype.randomInput = function () {
+    this.lastRandomInput = Date.now();
+    var rand = Math.random();
+    var dir = [0,0];
+    if (rand < 0.25) {
+        //Moving left
+        dir[0] = -1;
+    } else if (rand >= 0.25 && rand < 0.5) {
+        //Moving right
+        dir[0] = 1;
+    } else if (rand >= 0.5 && rand < 0.75) {
+        //Moving up
+        dir[1] = 1;
+    } else {
+        //Moving down
+        dir[1] = -1;
+    }
+    this.lastDirection = dir;
+    return dir;
+}

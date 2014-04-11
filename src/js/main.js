@@ -47,16 +47,15 @@ window.Darwinator = window.Darwinator || {
   /*
   * Entity Stats 
   */
-
-  ENTITY_BASE_HEALTH  : 50,
-  ENTITY_BASE_STAMINA : 50,
-  ENTITY_BASE_DAMAGE  : 5,
-  ENTITY_BASE_SPEED   : 75,
+  ENTITY_BASE_HEALTH      : 50,
+  ENTITY_BASE_STAMINA     : 50,
+  ENTITY_BASE_DAMAGE      : 5,
+  ENTITY_BASE_SPEED       : 75,
+  ENTITY_ABILITY_COOLDOWN : 10000,
 
   /*
   * Enemy Stats 
   */
-
   AI_PATH_UPDATE_FREQUENCY : 5,
 
   /*

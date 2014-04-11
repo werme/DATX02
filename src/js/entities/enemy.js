@@ -57,9 +57,9 @@ Darwinator.Enemy.prototype.update = function() {
   switch(this.category) {
     case this.categories.INTELLIGENT:
       var currentTile = Darwinator.Helpers.pixelsToTile(this.body.x, this.body.y);
-      var targetTile  = Darwinator.Helpers.pixelsToTile(this.target.x, this.target.y);
+      var targetTile  = Darwinator.Helpers.pixelsToTile(this.target.body.x, this.target.body.y);
 
-      if (this.path.length && Darwinator.Helpers.calculateDistance(targetTile, currentTile) > 10) {
+      if (Darwinator.Helpers.calculateDistance(targetTile, currentTile) > 10) {
         this.doMove();
       } else {
         this.weapon.fire(this.target.body.x, this.target.body.y);
@@ -67,6 +67,7 @@ Darwinator.Enemy.prototype.update = function() {
       break;
 
     case this.categories.STRONG:
+      this.doMove();
       if (this.path.length) {
         var onCooldown = (Date.now() - this.lastAbilityUse) < this.abilityCooldownMs;
         if(!onCooldown) {
@@ -136,14 +137,16 @@ Darwinator.Enemy.prototype.shouldUpdatePath = function() {
   var currTile    = Darwinator.Helpers.pixelsToTile(this.body.x, this.body.y);
   var targetTile  = Darwinator.Helpers.pixelsToTile(this.target.body.x, this.target.body.y);
 
-  var undefinedPath  = !this.path.length;
+  if (!this.path.length) {
+    return true;
+  }
   var newTargetTile  = this.path[this.path.length - 1].x !== targetTile.x || this.path[this.path.length - 1].y !== targetTile.y;
   var newStartTile   = this.path[0].x !== currTile.x || this.path[0].y !== currTile.y;
   var notOnCooldown  = !Darwinator.Helpers.calculateDistance(targetTile, currTile) * 5 < this.lastPathUpdate;
 
   // Path can only be updated when not on cooldown. Path should only try to update if it doesn't exist, 
   // if target has moved, or if the entity has somehow changed its position.
-  return (undefinedPath || newTargetTile || newStartTile) && notOnCooldown;
+  return (newTargetTile || newStartTile) && notOnCooldown;
 };
 
 Darwinator.Enemy.prototype.updatePath = function() {
@@ -154,6 +157,10 @@ Darwinator.Enemy.prototype.updatePath = function() {
 };
 
 Darwinator.Enemy.prototype.followPath = function() {
+  if (!this.path.length) {
+    return;
+  }
+
   var targetPos = Darwinator.Helpers.tileToPixels(this.path[1].x, this.path[1].y);
   targetPos.x   = Math.round(targetPos.x - this.body.width / 2);
   targetPos.y   = Math.round(targetPos.y - this.body.height / 2);

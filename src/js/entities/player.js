@@ -27,100 +27,100 @@ Darwinator.Player.prototype.update = function () {
 
     var pointer = this.game.input.activePointer;
     if (pointer.isDown){
-    this.weapon.fire(pointer.worldX, pointer.worldY);
-}
-
-    /*
-    *  If dashing, override manual controls and
-    *  just keep the values assigned in dash. Once
-    *  dash is completed, return to normal controls.
-    */
-    if (this.isDashing()) {
-        this.dashCounter--;
-        this.game.physics.arcade.velocityFromAngle(this.direction, this.currentSpeed, this.body.velocity);
-
-        // Make a fake-dash, and check if colliding. Always reset after, but end dash if collision
-        // would occour.
-        var preX = this.body.x,
-          preY = this.body.y,
-          realVelX = this.body.x + this.body.velocity.x * this.game.time.physicsElapsed,
-          realVelY = this.body.y + this.body.velocity.y * this.game.time.physicsElapsed;
-        this.body.x = realVelX;
-        this.body.y = realVelY;
-        var dashCollide = this.game.physics.arcade.overlap(this, this.game.level.collisionLayer)
-        this.body.x = preX;
-        this.body.y = preY;
-        if(dashCollide) {
-        this.body.velocity.setTo(0,0);
-        this.dashCounter = 0;
-        }
-    } else {
-        this.currentSpeed = this.speed;
-        this.body.velocity.setTo(0,0);
-        var dir = [0,0];
-        var moving = false;
-
-        if (this.cursors.left.isDown || this.leftKey.isDown) {
-          dir[0] = -1;
-          moving = true;
-        } else if (this.cursors.right.isDown || this.rightKey.isDown) {
-          dir[0] = 1;
-          moving = true;
-        }
-        if (this.cursors.up.isDown || this.upKey.isDown) {
-          if (this.getBounds().y <= 0 || this.getBounds().y <= 0) { // top right
-            this.body.velocity.y = 0;
-          }
-          dir[1] = 1;
-          moving = true;
-        } else if (this.cursors.down.isDown || this.downKey.isDown) {
-          dir[1] = -1;
-          moving = true;
-        }
-
-        if (!moving) {
-          this.animations.stop();
-          this.body.frame = 4;
-        } else {
-          //Going upwards
-          if (dir[1] === 1) {
-            this.direction = 270;
-            this.animations.play('walk-up');
-            //Also going right or left
-            if(dir[0] === 1) {
-              this.direction = 315;
-            } else if (dir[0] === -1) {
-              this.direction = 225;
-            }
-          //Going downwards
-          } else if (dir[1] === -1) {
-            this.direction = 90;
-            this.animations.play('walk-down');
-            //Also going right or left
-            if (dir[0] === 1) {
-              this.direction = 45;
-            } else if (dir[0] === -1) {
-              this.direction = 135;
-            }
-            //Going right
-          } else if (dir[0] === 1) {
-            this.direction = 0;
-            this.animations.play('walk-right');
-            //Going left
-          } else if (dir[0] === -1) {
-            this.direction = 180;
-            this.animations.play('walk-left');
-          }
-          // Set speed and angle
-          this.game.physics.arcade.velocityFromAngle(this.direction, this.currentSpeed, this.body.velocity);
-        }
+        this.weapon.fire(pointer.worldX, pointer.worldY);
     }
-    if (this.sprintKey.isDown && this.currBreath > 1 && moving) {
-        this.body.velocity.multiply(2,2);
-        this.currBreath--;
-    } else if (this.currBreath < this.stamina) {
-        this.currBreath += 0.2;
-}
+
+        /*
+        *  If dashing, override manual controls and
+        *  just keep the values assigned in dash. Once
+        *  dash is completed, return to normal controls.
+        */
+        if (this.isDashing()) {
+            this.dashCounter--;
+            this.game.physics.arcade.velocityFromAngle(this.direction, this.currentSpeed, this.body.velocity);
+
+            // Make a fake-dash, and check if colliding. Always reset after, but end dash if collision
+            // would occour.
+            var preX = this.body.x,
+              preY = this.body.y,
+              realVelX = this.body.x + this.body.velocity.x * this.game.time.physicsElapsed,
+              realVelY = this.body.y + this.body.velocity.y * this.game.time.physicsElapsed;
+            this.body.x = realVelX;
+            this.body.y = realVelY;
+            var dashCollide = this.game.physics.arcade.overlap(this, this.game.level.collisionLayer)
+            this.body.x = preX;
+            this.body.y = preY;
+            if(dashCollide) {
+            this.body.velocity.setTo(0,0);
+            this.dashCounter = 0;
+            }
+        } else {
+            this.currentSpeed = this.speed;
+            this.body.velocity.setTo(0,0);
+            var dir = [0,0];
+            var moving = false;
+
+            if (this.cursors.left.isDown || this.leftKey.isDown) {
+              dir[0] = -1;
+              moving = true;
+            } else if (this.cursors.right.isDown || this.rightKey.isDown) {
+              dir[0] = 1;
+              moving = true;
+            }
+            if (this.cursors.up.isDown || this.upKey.isDown) {
+              if (this.getBounds().y <= 0 || this.getBounds().y <= 0) { // top right
+                this.body.velocity.y = 0;
+              }
+              dir[1] = 1;
+              moving = true;
+            } else if (this.cursors.down.isDown || this.downKey.isDown) {
+              dir[1] = -1;
+              moving = true;
+            }
+
+            if (!moving) {
+              this.animations.stop();
+              this.body.frame = 4;
+            } else {
+              //Going upwards
+              if (dir[1] === 1) {
+                this.direction = 270;
+                this.animations.play('walk-up');
+                //Also going right or left
+                if(dir[0] === 1) {
+                  this.direction = 315;
+                } else if (dir[0] === -1) {
+                  this.direction = 225;
+                }
+              //Going downwards
+              } else if (dir[1] === -1) {
+                this.direction = 90;
+                this.animations.play('walk-down');
+                //Also going right or left
+                if (dir[0] === 1) {
+                  this.direction = 45;
+                } else if (dir[0] === -1) {
+                  this.direction = 135;
+                }
+                //Going right
+              } else if (dir[0] === 1) {
+                this.direction = 0;
+                this.animations.play('walk-right');
+                //Going left
+              } else if (dir[0] === -1) {
+                this.direction = 180;
+                this.animations.play('walk-left');
+              }
+              // Set speed and angle
+              this.game.physics.arcade.velocityFromAngle(this.direction, this.currentSpeed, this.body.velocity);
+            }
+        }
+        if (this.sprintKey.isDown && this.currBreath > 1 && moving) {
+            this.body.velocity.multiply(2,2);
+            this.currBreath--;
+        } else if (this.currBreath < this.stamina) {
+            this.currBreath += 0.2;
+    }
 
 };
 

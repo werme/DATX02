@@ -135,14 +135,12 @@ Darwinator.Player.prototype.initKeys = function (game) {
     this.telKey    = game.input.keyboard.addKey(Phaser.Keyboard.Q);
     this.dodgeKey  = game.input.keyboard.addKey(Phaser.Keyboard.R);
 
-    this.telKey.onDown.add(function() {
-        var onCooldown = (Date.now() - this.lastAbilityUse) < this.abilityCooldownMs;
-        if (!onCooldown) {
+    this.telKey.onDown.add(
+        function() {
             var pointer = this.game.input.activePointer;
-            this.reset(pointer.worldX, pointer.worldY, this.health);
-            this.lastAbilityUse = Date.now();
+            this.tryTeleport(pointer.worldX, pointer.worldY);
         }
-    }, this);
+      , this);
 
     this.dodgeKey.onDown.add(this.tryDodge, this);
 

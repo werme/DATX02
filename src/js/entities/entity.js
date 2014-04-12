@@ -38,6 +38,7 @@ Darwinator.Entity = function(game, x, y, key, health, strength, agility, intelle
   
   this.abilityCooldownMs  = Darwinator.ENTITY_ABILITY_COOLDOWN;
   this.lastAbilityUse     = 0;
+
   this.dodging              = false;
   this.dodgeDurationSeconds = 2;
   this.dodgeTimer           = null;
@@ -80,6 +81,18 @@ Darwinator.Entity.prototype.tryDodge = function() {
     this.lastAbilityUse = Date.now();
     var dodgeCallback = function() {this.dodging = false; this.alpha = 1; };
     this.dodgeTimer = this.game.time.events.add(Phaser.Timer.SECOND * this.dodgeDurationSeconds, dodgeCallback, this);
+  }
+};
+
+Darwinator.Entity.prototype.tryTeleport = function(x, y, posFunction) {
+  if((Date.now() - this.lastAbilityUse) >= this.abilityCooldownMs){
+    if(posFunction){
+      var pos = posFunction();
+      x = pos.x;
+      y = pos.y;
+    }
+    this.reset(x, y, this.health);
+    this.lastAbilityUse = Date.now();
   }
 };
 

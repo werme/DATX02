@@ -71,16 +71,15 @@ Darwinator.Enemy.prototype.update = function() {
     case this.categories.STRONG:
       this.doMove();
       if (this.path.length) {
-        var onCooldown = (Date.now() - this.lastAbilityUse) < this.abilityCooldownMs;
-        if(!onCooldown) {
-          var telRange = Math.min((this.path.length - 1), 5);
-          var targetTile = this.path[telRange];
-          var target = Darwinator.Helpers.tileToPixels(targetTile.x, targetTile.y);
-          target.x   = Math.round(target.x - this.body.width / 2);
-          target.y   = Math.round(target.y - this.body.height / 2);
-          this.reset(target.x, target.y, this.health);
-          this.lastAbilityUse = Date.now();
-        }
+        var calcPos = function() {
+            var telRange = Math.min((this.path.length - 1), 5);
+            var targetTile = this.path[telRange];
+            var target = Darwinator.Helpers.tileToPixels(targetTile.x, targetTile.y);
+            target.x   = Math.round(target.x - this.body.width / 2);
+            target.y   = Math.round(target.y - this.body.height / 2);
+            return target;
+          }.bind(this);
+        this.tryTeleport(undefined, undefined, calcPos);
       }
       break;
 

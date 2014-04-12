@@ -73,6 +73,11 @@ Darwinator.Entity.prototype.setAnimations = function(anims) {
   }
 };
 
+/**
+* Attempt to dodge bullets for this.dodgeDurationSeconds seconds. Does nothing if abilities are on cooldown.
+* 
+* @method Darwinator.Entity#tryDodge
+*/
 Darwinator.Entity.prototype.tryDodge = function() {
   if((Date.now() - this.lastAbilityUse) >= this.abilityCooldownMs){
     this.dodging = true;
@@ -84,6 +89,14 @@ Darwinator.Entity.prototype.tryDodge = function() {
   }
 };
 
+/**
+* Attempt to teleport the entity to a given position. Does nothing if abilities are on cooldown.
+* 
+* @param {Number}     - [x] The x-coordinate.
+* @param {Number}     - [y] The y-coordinate.
+* @param {Function}   - [posFunction] Optional. A function returning an object with x and y properties.
+* @method Darwinator.Entity#tryTeleport
+*/
 Darwinator.Entity.prototype.tryTeleport = function(x, y, posFunction) {
   if((Date.now() - this.lastAbilityUse) >= this.abilityCooldownMs){
     if(posFunction){
@@ -96,6 +109,11 @@ Darwinator.Entity.prototype.tryTeleport = function(x, y, posFunction) {
   }
 };
 
+/**
+* Resets ability effects as well as the ability cooldown.
+*
+* @method Darwinator.Entity#resetAbilities
+*/
 Darwinator.Entity.prototype.resetAbilities = function(){
   this.lastAbilityUse = 0;
 

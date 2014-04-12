@@ -99,16 +99,6 @@ Darwinator.Enemy.prototype.update = function() {
   // Target (ie. player) takes damage while the target and enemy overlap.
   // If they continuously overlap the target will take damage every 0.25 seconds
   this.game.physics.arcade.overlap(this, this.target, this.meleeAttack, null, this);
-
-  /*
-  if (this.health <= 0 && this.alive){
-    this.game.time.events.remove(this.dodgeTimer);
-    this.dodging = false;
-    this.alpa = 1;
-    console.log('%c Enemy killed by player! ', 'background: black; color: orange');
-    this.kill();
-  }*/
-
 };
 
 Darwinator.Enemy.prototype.meleeAttack = function(){ //callback for overlapping with target

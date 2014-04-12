@@ -157,7 +157,7 @@ Darwinator.GameState.prototype = {
             if (this.game.player.health <= 0) {
                 this.game.player.resetAttributes();
             }
-            this.game.player.reset(x, y, Darwinator.PLAYER_BASE_HEALTH);
+            this.game.player.reset(x, y, Darwinator.PLAYER_BASE_HEALTH + this.game.player.attributes.strength);
         } else {
             this.game.player = new Darwinator.Player(this.game, x, y, this.cursors);
         }

@@ -92,8 +92,8 @@ Darwinator.Entity.prototype.tryDodge = function() {
 /**
 * Attempt to teleport the entity to a given position. Does nothing if abilities are on cooldown.
 * 
-* @param {Number}     - [x] The x-coordinate.
-* @param {Number}     - [y] The y-coordinate.
+* @param {Number}     - [x] The x-coordinate. Optional if a function is given.
+* @param {Number}     - [y] The y-coordinate. Optional if a function is given.
 * @param {Function}   - [posFunction] Optional. A function returning an object with x and y properties.
 * @method Darwinator.Entity#tryTeleport
 */

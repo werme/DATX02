@@ -10,7 +10,7 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
   } else {
     this.category = this.categories.DEFAULT;
   }
-  Darwinator.Entity.call(this, game, x, y, this.category,/* [],*/ health, strength, agility, intellect);
+  Darwinator.Entity.call(this, game, x, y, this.category, health, strength, agility, intellect);
 
   this.scale.setTo(0.25,0.25);
   this.target = target;
@@ -27,11 +27,6 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
   // melee cooldown
   this.lastMeleeTimestamp = 0;
   this.cooldownMs         = 250;
-
-  // reduce fire rate for 'stupid' enemies
-  /*this.fireProbability    = 0.01;
-  this.lastFireTimeStamp  = 0;
-  this.fireCooldownMs     = 10000;*/
 };
 
 Darwinator.Enemy.prototype = Object.create(Darwinator.Entity.prototype);

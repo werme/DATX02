@@ -2,6 +2,7 @@
 
 window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
 
+  // GA parameter constants
   POPULATION_SIZE:          10,
   CROSSOVER_PROBABILITY:    0.8,
   MUTATION_PROBABILITY:     0.025,
@@ -10,15 +11,15 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   NUMBER_OF_VARIABLES:      3,
   NUMBER_OF_GENES:          3,
   TOURNAMENT_SIZE:          4,
-  ELITISM_DEGREE:           2, 
-  PLAYER_ADVANTAGE:         10, // increase to make enemies weaker
+  ELITISM_DEGREE:           2,
 
-  // depends on player attributes
-  VARIABLE_RANGE:           undefined, // max sum of enemy attributes
+  // GA parameter variables
+  variableRange:           undefined,
+  mutationRate:            undefined,
 
-  // depends on population success
-  MUTATION_RATE:            undefined,
-  POOR_MAX_FITNESS:         0.1,  // used to set mutation rate
+  // Other constants
+  PLAYER_ADVANTAGE:         10,
+  POOR_MAX_FITNESS:         0.1,
 
   /**
   * Generates a population of individuals from a given population. The new population is likely to be 
@@ -34,7 +35,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   */
   generatePopulation: function(game, target, enemyGroup, singleGeneration, spawnPositions) {
     var attributes      = target.attributes;
-    this.VARIABLE_RANGE = attributes.strength + attributes.agility + attributes.intellect - this.PLAYER_ADVANTAGE;
+    this.variableRange  = attributes.strength + attributes.agility + attributes.intellect - this.PLAYER_ADVANTAGE;
     spawnPositions      = Phaser.Math.shuffleArray(spawnPositions.slice(0));
 
     if(!enemyGroup){
@@ -50,12 +51,8 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     var bestIndex         = translatedEnemies[2];
     var bestIndividual    = population[bestIndex];
     
-    // to eliminate weak populations
-    if(fitnessLevels[bestIndex] <= this.POOR_MAX_FITNESS){
-      this.MUTATION_RATE = 20;
-    }else{
-      this.MUTATION_RATE = 1;
-    }
+    // weak population => more mutation
+    this.mutationRate = fitnessLevels[bestIndex] <= this.POOR_MAX_FITNESS ? 20 : 1;
 
     // algorithm main loop
     for (var i = 0; i < (singleGeneration ? 1 : this.NUMBER_OF_GENERATIONS); i++) {
@@ -90,7 +87,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
 
       // replace old population
       population = tmpPopulation;
-    } //endof algorithm main loop
+    }
 
     var nextGeneration = this.translatePopulation(population, enemyGroup, game, target, spawnPositions);
     console.log('GA: Returning the new generation!');
@@ -118,20 +115,20 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
         // smart but slow and weak
         strength  = 0;
         agility   = 0;
-        intellect = this.VARIABLE_RANGE; 
+        intellect = this.variableRange; 
       }else if(i < enemiesPerType*2){
         // strong but slow and stupid
-        strength  = this.VARIABLE_RANGE;
+        strength  = this.variableRange;
         agility   = 0;
         intellect = 0;
       }else if(i < enemiesPerType*3){
         // fast but weak and stupid
         strength  = 0;
-        agility   = this.VARIABLE_RANGE;
+        agility   = this.variableRange;
         intellect = 0;
       }else{
         // hybrid
-        strength  = agility = intellect = Math.round(this.VARIABLE_RANGE / 3);
+        strength  = agility = intellect = Math.round(this.variableRange / 3);
       }
       enemyGroup.add(new Darwinator.Enemy(game, target, pos.x, pos.y, undefined, strength, agility, intellect));
     }
@@ -214,7 +211,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @return {Array} - The mutated individual.
   */
   mutate: function(individual) {
-    if (Math.random() < this.MUTATION_PROBABILITY * this.MUTATION_RATE) {
+    if (Math.random() < this.MUTATION_PROBABILITY * this.mutationRate) {
       var gene1 = Math.round(Math.random()*(this.NUMBER_OF_GENES - 1));
       var gene2 = Math.round(Math.random()*(this.NUMBER_OF_GENES - 1));
       var tradeOffAmount = Math.round(Math.random() * individual[gene1]);
@@ -263,7 +260,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
     
     // distribute remaining points
     var i = 0;
-    while(attrSum++ < this.VARIABLE_RANGE)
+    while(attrSum++ < this.variableRange)
       chrom[i++ % this.NUMBER_OF_GENES]++;
 
     return chrom;

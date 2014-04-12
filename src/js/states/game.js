@@ -75,6 +75,7 @@ Darwinator.GameState.prototype = {
         this.game.time.events.remove(this.game.player.dodgeTimer);
         this.game.player.alpha = 1;
         this.game.player.dodging = false;
+        this.game.player.dead = false;
 
         for(var i = 0; i < this.bullets.length; i++) {
             var bulletGroup = this.bullets.getAt(i);
@@ -187,13 +188,8 @@ Darwinator.GameState.prototype = {
             this.endRound();
         }
 
-        if (this.game.player.health <= 0) {
-            if (this.game.player.immortal) {
-                this.game.player.health = 100;
-            } else {
-                this.game.player.kill();
-                this.gameover();
-            }
+        if (this.game.player.dead) {
+            this.gameover();
         }
     },
 

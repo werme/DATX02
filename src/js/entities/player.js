@@ -16,14 +16,15 @@ Darwinator.Player = function(game, x, y, cursors) {
     this.dashTimer   = null;
     this.direction   = 90;
     this.dashCounter = 0;
-
-    // for development only
-    this.immortal = false;
 }
 
 Darwinator.Player.prototype = Object.create(Darwinator.Entity.prototype);
 
 Darwinator.Player.prototype.update = function () {
+    Darwinator.Entity.prototype.update.call(this);
+    if(this.dead){
+      return;
+    }
 
     var pointer = this.game.input.activePointer;
     if (pointer.isDown){

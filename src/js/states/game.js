@@ -72,9 +72,7 @@ Darwinator.GameState.prototype = {
 
         this.stopTimers();
 
-        this.game.time.events.remove(this.game.player.dodgeTimer);
-        this.game.player.alpha = 1;
-        this.game.player.dodging = false;
+        this.game.player.resetAbilities();
         this.game.player.dead = false;
 
         for(var i = 0; i < this.bullets.length; i++) {

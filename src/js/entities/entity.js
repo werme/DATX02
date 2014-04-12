@@ -35,12 +35,13 @@ Darwinator.Entity = function(game, x, y, key, health, strength, agility, intelle
   this.aim            = this.attributes.intellect; // Intended to define how well the enemy aims. 0 = "shitty" aim, 100 = "perfect" aim
   this.criticalStrike = this.attributes.intellect / 100; // Critical strike percentage
   this.currBreath     = this.stamina;
-  this.lastAbilityUse     = 0;
+  
   this.abilityCooldownMs  = Darwinator.ENTITY_ABILITY_COOLDOWN;
+  this.lastAbilityUse     = 0;
   this.dodging              = false;
   this.dodgeDurationSeconds = 2;
   this.dodgeTimer           = null;
-  this.underAttack = false;
+  this.underAttack          = false;
 
   // the alive property of Phaser sprites seems to be bugged
   this.dead = false;
@@ -80,4 +81,13 @@ Darwinator.Entity.prototype.tryDodge = function() {
     var dodgeCallback = function() {this.dodging = false; this.alpha = 1; };
     this.dodgeTimer = this.game.time.events.add(Phaser.Timer.SECOND * this.dodgeDurationSeconds, dodgeCallback, this);
   }
+};
+
+Darwinator.Entity.prototype.resetAbilities = function(){
+  this.lastAbilityUse = 0;
+
+  this.game.time.events.remove(this.dodgeTimer);
+  this.alpha        = 1;
+  this.dodging      = false;
+  this.underAttack  = false;
 };

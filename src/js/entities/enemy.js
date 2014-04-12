@@ -71,17 +71,7 @@ Darwinator.Enemy.prototype.update = function() {
     case this.categories.STRONG:
       this.doMove();
       if (this.path.length) {
-        var calcPos = function() {
-            var telRange = Math.min((this.path.length - 1), 5);
-            var targetTile = this.path[telRange];
-            var target = Darwinator.Helpers.tileToPixels(targetTile.x, targetTile.y);
-            var pos = {
-              x: Math.round(target.x - this.body.width  / 2),
-              y: Math.round(target.y - this.body.height / 2)
-            };
-            return pos;
-          }.bind(this);
-        this.tryTeleport(undefined, undefined, calcPos);
+        this.tryTeleport(undefined, undefined, this.telePos.bind(this));
       }
       break;
 
@@ -100,6 +90,16 @@ Darwinator.Enemy.prototype.update = function() {
   // If they continuously overlap the target will take damage every 0.25 seconds
   this.game.physics.arcade.overlap(this, this.target, this.meleeAttack, null, this);
 };
+
+Darwinator.Enemy.prototype.telePos = function() {
+  var telRange = Math.min((this.path.length - 1), 5);
+  var targetTile = this.path[telRange];
+  var target = Darwinator.Helpers.tileToPixels(targetTile.x, targetTile.y);
+  var pos = { 
+    x: Math.round(target.x - this.body.width  / 2),
+    y: Math.round(target.y - this.body.height / 2) };
+  return pos;
+}
 
 Darwinator.Enemy.prototype.meleeAttack = function(){ //callback for overlapping with target
   var onCooldown = (Date.now() - this.lastMeleeTimestamp) < this.cooldownMs;

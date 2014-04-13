@@ -16,7 +16,7 @@ Darwinator.Player = function(game, x, y, cursors) {
     this.dashTimer   = null;
     this.direction   = 90;
     this.dashCounter = 0;
-    this.useRandomInput = true;
+    this.useRandomInput = false;
     this.lastRandomInput = Date.now();
     this.lastDirection = [0,0];
 
@@ -61,6 +61,8 @@ Darwinator.Player.prototype.update = function () {
         this.body.velocity.setTo(0,0);
         var dir = [0,0];
         var moving = false;
+
+        // Random movement and fire at random in random direction.
         if (this.useRandomInput) {
             if ((Date.now() - this.lastRandomInput) > 750) {
                 dir = this.randomInput();

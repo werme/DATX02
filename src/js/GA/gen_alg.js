@@ -245,7 +245,12 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @return {Number} - The score of the enemy for a given game round.
   */
   enemyScore: function(enemy) { 
-    var score = enemy.alive ? enemy.damageDone*2 : enemy.damageDone;
+    var score = undefined;
+    if (enemy.surviveMode) {
+      score = enemy.alive ? enemy.damageDone + enemy.initialHealth*2 - enemy.health : enemy.damageDone; 
+    } else {
+      score = enemy.alive ? enemy.damageDone*2 : enemy.damageDone;
+    }
     return score;
   },
 

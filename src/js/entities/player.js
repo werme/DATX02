@@ -72,6 +72,13 @@ Darwinator.Player.prototype.update = function () {
                     this.body.blocked.up ||this.body.blocked.down ) {
                     dir = this.randomInput();
                 }
+            }
+
+            //Fire at random
+            if (Math.random() >= 0.5) {
+                var x = Math.random() * 1440;
+                var y = Math.random() * 1440;
+                this.weapon.fire(x, y);
             }   
         } else {
             if (this.cursors.left.isDown || this.leftKey.isDown) {

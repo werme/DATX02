@@ -78,6 +78,20 @@ Darwinator.Helpers = {
     var dx = x1 - x2;
     var dy = y1 - y2;
     return Math.sqrt(dx*dx + dy*dy);
+  },
+
+  /**
+  * @method Darwinator.Helpers#calculatePosition
+  * @param {Number} - [x] Current x position
+  * @param {Number} - [y] Current y position
+  * @param {Number} - [distance] Distance to new position
+  * @param {Number} - [angle] Angle between old and new position
+  * @return {Object}  New position as an object with x and y properties
+  */
+  calculatePosition: function(x, y, distance, angle){
+    var xNew = x + distance * Math.cos(angle);
+    var yNew = y + distance * Math.sin(angle);
+    return {x: xNew, y: yNew};
   }
 
 };

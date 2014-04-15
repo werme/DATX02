@@ -167,13 +167,13 @@ Darwinator.GameState.prototype = {
     },
 
     update: function () {
-        var checkDodging = function (bullet, enemy) {return !enemy.dodging;};
+        var checkDodging = function (bullet, entity) {return !entity.dodging;};
         //console.log(this.crosshair);
         for (var i = 0; i < this.bullets.length; i++) {
             var bulletGroup = this.bullets.getAt(i);
             this.game.physics.arcade.collide(bulletGroup, this.game.enemies, this.bulletCollisionHandler, checkDodging, this);
             this.game.physics.arcade.collide(bulletGroup, this.level.collisionLayer, this.bulletCollisionHandler, null, this);
-            this.game.physics.arcade.collide(bulletGroup, this.game.player, this.bulletCollisionHandler, null, this);
+            this.game.physics.arcade.collide(bulletGroup, this.game.player, this.bulletCollisionHandler, checkDodging, this);
         }
 
         this.game.physics.arcade.collide(this.game.player, this.level.collisionLayer);

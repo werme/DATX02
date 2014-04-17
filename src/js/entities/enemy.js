@@ -10,7 +10,7 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
   } else {
     this.category = this.categories.DEFAULT;
   }
-  Darwinator.Entity.call(this, game, x, y, this.category,/* [],*/ health, strength, agility, intellect);
+  Darwinator.Entity.call(this, game, x, y, this.category, health, strength, agility, intellect);
 
   this.scale.setTo(0.25,0.25);
   this.target = target;
@@ -31,11 +31,6 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
   // melee cooldown
   this.lastMeleeTimestamp = 0;
   this.cooldownMs         = 250;
-
-  // reduce fire rate for 'stupid' enemies
-  /*this.fireProbability    = 0.01;
-  this.lastFireTimeStamp  = 0;
-  this.fireCooldownMs     = 10000;*/
   console.log(this);
 };
 
@@ -54,9 +49,11 @@ Darwinator.Enemy.prototype.arm = function(weapon) {
 };
 
 Darwinator.Enemy.prototype.update = function() {
-  if (!this.alive) {
+  Darwinator.Entity.prototype.update.call(this);
+  if (this.dead) {
     return;
   }
+
   this.body.velocity.setTo(0,0);
 
   if (this.surviveMode) {
@@ -99,23 +96,14 @@ Darwinator.Enemy.prototype.update = function() {
       case this.categories.STRONG:
         this.doMove();
         if (this.path.length) {
-          var onCooldown = (Date.now() - this.lastAbilityUse) < this.abilityCooldownMs;
-          if(!onCooldown) {
-            var telRange = Math.min((this.path.length - 1), 5);
-            var targetTile = this.path[telRange];
-            var target = Darwinator.Helpers.tileToPixels(targetTile.x, targetTile.y);
-            target.x   = Math.round(target.x - this.body.width / 2);
-            target.y   = Math.round(target.y - this.body.height / 2);
-            this.reset(target.x, target.y, this.health);
-            this.lastAbilityUse = Date.now();
-          }
+        this.tryTeleport(undefined, undefined, this.telePos.bind(this));
         }
         break;
 
       case this.categories.AGILE:
         this.doMove();
-        if(this.health < this.initialHealth) {
-          this.dodge();
+      if(this.underAttack) {
+        this.tryDodge();
         }
         break;
 
@@ -128,16 +116,17 @@ Darwinator.Enemy.prototype.update = function() {
   // Target (ie. player) takes damage while the target and enemy overlap.
   // If they continuously overlap the target will take damage every 0.25 seconds
   this.game.physics.arcade.overlap(this, this.target, this.meleeAttack, null, this);
-
-  if (this.health <= 0 && this.alive){
-    this.game.time.events.remove(this.dodgeTimer);
-    this.dodging = false;
-    this.alpa = 1;
-    console.log('%c Enemy killed by player! ', 'background: black; color: orange');
-    this.kill();
-  }
-
 };
+
+Darwinator.Enemy.prototype.telePos = function() {
+  var telRange = Math.min((this.path.length - 1), 5);
+  var targetTile = this.path[telRange];
+  var target = Darwinator.Helpers.tileToPixels(targetTile.x, targetTile.y);
+  var pos = { 
+    x: Math.round(target.x - this.body.width  / 2),
+    y: Math.round(target.y - this.body.height / 2) };
+  return pos;
+}
 
 Darwinator.Enemy.prototype.meleeAttack = function(){ //callback for overlapping with target
   var onCooldown = (Date.now() - this.lastMeleeTimestamp) < this.cooldownMs;
@@ -158,9 +147,13 @@ Darwinator.Enemy.prototype.meleeAttack = function(){ //callback for overlapping 
 Darwinator.Enemy.prototype.doMove = function() {
   if (this.shouldUpdatePath()) {
     this.updatePath();
-    this.followPath();
   } else {
     this.lastPathUpdate++;
+  }
+  
+  if(!!this.path.length) {
+    this.followPath();
+  } else {
     this.game.physics.arcade.moveToXY(this, this.target.body.x, this.target.body.y, this.speed);
   }
 };

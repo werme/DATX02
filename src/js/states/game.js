@@ -72,11 +72,10 @@ Darwinator.GameState.prototype = {
 
         this.stopTimers();
 
-        this.game.time.events.remove(this.game.player.dodgeTimer);
-        this.game.player.alpha = 1;
-        this.game.player.dodging = false;
+        this.game.player.resetAbilities();
+        this.game.player.dead = false;
 
-        for(var i = 0; i < this.bullets.length; i++){
+        for(var i = 0; i < this.bullets.length; i++) {
             var bulletGroup = this.bullets.getAt(i);
             bulletGroup.forEachAlive(function(bullet){bullet.kill();}, this);
         }
@@ -153,11 +152,13 @@ Darwinator.GameState.prototype = {
 
     spawnPlayer: function (x, y) {
         // Instanciate new player or reset existing
-        if (!this.game.player) {
-            this.game.player = new Darwinator.Player(this.game, x, y, this.cursors);
+        if (this.game.player) {
+            if (this.game.player.health <= 0) {
+                this.game.player.resetAttributes();
+            }
+            this.game.player.reset(x, y, Darwinator.PLAYER_BASE_HEALTH + this.game.player.attributes.strength);
         } else {
-            this.game.player.reset(x, y, Darwinator.PLAYER_BASE_HEALTH);
-            this.game.player.resetAttributes();
+            this.game.player = new Darwinator.Player(this.game, x, y, this.cursors);
         }
 
         // Add player sprite to stage and focus camera
@@ -166,12 +167,13 @@ Darwinator.GameState.prototype = {
     },
 
     update: function () {
+        var checkDodging = function (bullet, entity) {return !entity.dodging;};
         //console.log(this.crosshair);
         for (var i = 0; i < this.bullets.length; i++) {
             var bulletGroup = this.bullets.getAt(i);
-            this.game.physics.arcade.collide(bulletGroup, this.game.enemies, this.bulletCollisionHandler, null, this);
+            this.game.physics.arcade.collide(bulletGroup, this.game.enemies, this.bulletCollisionHandler, checkDodging, this);
             this.game.physics.arcade.collide(bulletGroup, this.level.collisionLayer, this.bulletCollisionHandler, null, this);
-            this.game.physics.arcade.collide(bulletGroup, this.game.player, this.bulletCollisionHandler, null, this);
+            this.game.physics.arcade.collide(bulletGroup, this.game.player, this.bulletCollisionHandler, checkDodging, this);
         }
 
         this.game.physics.arcade.collide(this.game.player, this.level.collisionLayer);
@@ -184,14 +186,8 @@ Darwinator.GameState.prototype = {
             this.endRound();
         }
 
-        if (this.game.player.health <= 0) {
-            if (this.game.player.immortal) {
-              this.game.player.health = 100;
-            } else {
-              this.game.player.kill();
-              // this.game.player.reset();
-              this.gameover();
-            }
+        if (this.game.player.dead) {
+            this.gameover();
         }
     },
 
@@ -227,7 +223,7 @@ Darwinator.GameState.prototype = {
             }
             return;
         }
-        if (target instanceof Darwinator.Entity && !target.dodging) {
+        if (target instanceof Darwinator.Entity) {
             var dmg = bullet.owner.damage;
             target.takeDamage(dmg);
             if(target instanceof Darwinator.Player){

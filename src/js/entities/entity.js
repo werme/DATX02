@@ -35,20 +35,31 @@ Darwinator.Entity = function(game, x, y, key, health, strength, agility, intelle
   this.aim            = this.attributes.intellect; // Intended to define how well the enemy aims. 0 = "shitty" aim, 100 = "perfect" aim
   this.criticalStrike = this.attributes.intellect / 100; // Critical strike percentage
   this.currBreath     = this.stamina;
-  this.lastAbilityUse     = 0;
+  
   this.abilityCooldownMs  = Darwinator.ENTITY_ABILITY_COOLDOWN;
+  this.lastAbilityUse     = 0;
+
   this.dodging              = false;
   this.dodgeDurationSeconds = 2;
   this.dodgeTimer           = null;
-  this.initialHealth = this.health;
+  this.underAttack          = false;
+
+  // the alive property of Phaser sprites seems to be bugged
+  this.dead = false;
 };
 
 Darwinator.Entity.prototype = Object.create(Phaser.Sprite.prototype);
 
-Darwinator.Entity.prototype.update = function() {};
+Darwinator.Entity.prototype.update = function() {
+  if (this.health <= 0 && !this.dead){
+    this.kill();
+    this.dead = true;
+  }
+};
 
 Darwinator.Entity.prototype.takeDamage = function(amount) {
   this.health = this.health - amount;
+  this.underAttack = true;
 };
 
 Darwinator.Entity.prototype.setAnimations = function(anims) {
@@ -62,12 +73,52 @@ Darwinator.Entity.prototype.setAnimations = function(anims) {
   }
 };
 
-Darwinator.Entity.prototype.dodge = function() {
+/**
+* Attempt to dodge bullets for this.dodgeDurationSeconds seconds. Does nothing if abilities are on cooldown.
+* 
+* @method Darwinator.Entity#tryDodge
+*/
+Darwinator.Entity.prototype.tryDodge = function() {
   if((Date.now() - this.lastAbilityUse) >= this.abilityCooldownMs){
     this.dodging = true;
+    this.underAttack = false;
     this.alpha = 0.5;
     this.lastAbilityUse = Date.now();
     var dodgeCallback = function() {this.dodging = false; this.alpha = 1; };
     this.dodgeTimer = this.game.time.events.add(Phaser.Timer.SECOND * this.dodgeDurationSeconds, dodgeCallback, this);
   }
+};
+
+/**
+* Attempt to teleport the entity to a given position. Does nothing if abilities are on cooldown.
+* 
+* @param {Number}     - [x] The x-coordinate. Optional if a function is given.
+* @param {Number}     - [y] The y-coordinate. Optional if a function is given.
+* @param {Function}   - [posFunction] Optional. A function returning an object with x and y properties.
+* @method Darwinator.Entity#tryTeleport
+*/
+Darwinator.Entity.prototype.tryTeleport = function(x, y, posFunction) {
+  if((Date.now() - this.lastAbilityUse) >= this.abilityCooldownMs){
+    if(posFunction){
+      var pos = posFunction();
+      x = pos.x;
+      y = pos.y;
+    }
+    this.reset(x, y, this.health);
+    this.lastAbilityUse = Date.now();
+  }
+};
+
+/**
+* Resets ability effects as well as the ability cooldown.
+*
+* @method Darwinator.Entity#resetAbilities
+*/
+Darwinator.Entity.prototype.resetAbilities = function(){
+  this.lastAbilityUse = 0;
+
+  this.game.time.events.remove(this.dodgeTimer);
+  this.alpha        = 1;
+  this.dodging      = false;
+  this.underAttack  = false;
 };

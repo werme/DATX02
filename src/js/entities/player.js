@@ -16,52 +16,53 @@ Darwinator.Player = function(game, x, y, cursors) {
     this.dashTimer   = null;
     this.direction   = 90;
     this.dashCounter = 0;
-
     this.useRandomInput = true;
     this.lastRandomInput = Date.now();
     this.lastDirection = [0,0];
 
-    // for development only
-    this.immortal = false;
 }
 
 Darwinator.Player.prototype = Object.create(Darwinator.Entity.prototype);
 
 Darwinator.Player.prototype.update = function () {
+    Darwinator.Entity.prototype.update.call(this);
+    if(this.dead){
+      return;
+    }
     var pointer = this.game.input.activePointer;
     if (pointer.isDown){
         this.weapon.fire(pointer.worldX, pointer.worldY);
     }
 
-    /*
-    *  If dashing, override manual controls and
-    *  just keep the values assigned in dash. Once
-    *  dash is completed, return to normal controls.
-    */
-    if (this.isDashing()) {
-        this.dashCounter--;
-        this.game.physics.arcade.velocityFromAngle(this.direction, this.currentSpeed, this.body.velocity);
+        /*
+        *  If dashing, override manual controls and
+        *  just keep the values assigned in dash. Once
+        *  dash is completed, return to normal controls.
+        */
+        if (this.isDashing()) {
+            this.dashCounter--;
+            this.game.physics.arcade.velocityFromAngle(this.direction, this.currentSpeed, this.body.velocity);
 
-        // Make a fake-dash, and check if colliding. Always reset after, but end dash if collision
-        // would occour.
-        var preX = this.body.x,
-          preY = this.body.y,
-          realVelX = this.body.x + this.body.velocity.x * this.game.time.physicsElapsed,
-          realVelY = this.body.y + this.body.velocity.y * this.game.time.physicsElapsed;
-        this.body.x = realVelX;
-        this.body.y = realVelY;
-        var dashCollide = this.game.physics.arcade.overlap(this, this.game.level.collisionLayer)
-        this.body.x = preX;
-        this.body.y = preY;
-        if(dashCollide) {
-        this.body.velocity.setTo(0,0);
-        this.dashCounter = 0;
-        }
-    } else {
-        this.currentSpeed = this.speed;
-        this.body.velocity.setTo(0,0);
-        var dir = [0,0];
-        var moving = false;
+            // Make a fake-dash, and check if colliding. Always reset after, but end dash if collision
+            // would occour.
+            var preX = this.body.x,
+              preY = this.body.y,
+              realVelX = this.body.x + this.body.velocity.x * this.game.time.physicsElapsed,
+              realVelY = this.body.y + this.body.velocity.y * this.game.time.physicsElapsed;
+            this.body.x = realVelX;
+            this.body.y = realVelY;
+            var dashCollide = this.game.physics.arcade.overlap(this, this.game.level.collisionLayer)
+            this.body.x = preX;
+            this.body.y = preY;
+            if(dashCollide) {
+            this.body.velocity.setTo(0,0);
+            this.dashCounter = 0;
+            }
+        } else {
+            this.currentSpeed = this.speed;
+            this.body.velocity.setTo(0,0);
+            var dir = [0,0];
+            var moving = false;
 
         // Random movement and fire at random in a random direction.
         if (this.useRandomInput) {
@@ -101,49 +102,49 @@ Darwinator.Player.prototype.update = function () {
               moving = true;
             }
         }
-        if (!moving) {
-          this.animations.stop();
-          this.body.frame = 4;
-        } else {
-          //Going upwards
-          if (dir[1] === 1) {
-            this.direction = 270;
-            this.animations.play('walk-up');
-            //Also going right or left
-            if(dir[0] === 1) {
-              this.direction = 315;
-            } else if (dir[0] === -1) {
-              this.direction = 225;
+            if (!moving) {
+              this.animations.stop();
+              this.body.frame = 4;
+            } else {
+              //Going upwards
+              if (dir[1] === 1) {
+                this.direction = 270;
+                this.animations.play('walk-up');
+                //Also going right or left
+                if(dir[0] === 1) {
+                  this.direction = 315;
+                } else if (dir[0] === -1) {
+                  this.direction = 225;
+                }
+              //Going downwards
+              } else if (dir[1] === -1) {
+                this.direction = 90;
+                this.animations.play('walk-down');
+                //Also going right or left
+                if (dir[0] === 1) {
+                  this.direction = 45;
+                } else if (dir[0] === -1) {
+                  this.direction = 135;
+                }
+                //Going right
+              } else if (dir[0] === 1) {
+                this.direction = 0;
+                this.animations.play('walk-right');
+                //Going left
+              } else if (dir[0] === -1) {
+                this.direction = 180;
+                this.animations.play('walk-left');
+              }
+              // Set speed and angle
+              this.game.physics.arcade.velocityFromAngle(this.direction, this.currentSpeed, this.body.velocity);
             }
-          //Going downwards
-          } else if (dir[1] === -1) {
-            this.direction = 90;
-            this.animations.play('walk-down');
-            //Also going right or left
-            if (dir[0] === 1) {
-              this.direction = 45;
-            } else if (dir[0] === -1) {
-              this.direction = 135;
-            }
-            //Going right
-          } else if (dir[0] === 1) {
-            this.direction = 0;
-            this.animations.play('walk-right');
-            //Going left
-          } else if (dir[0] === -1) {
-            this.direction = 180;
-            this.animations.play('walk-left');
-          }
-          // Set speed and angle
-          this.game.physics.arcade.velocityFromAngle(this.direction, this.currentSpeed, this.body.velocity);
         }
+        if (this.sprintKey.isDown && this.currBreath > 1 && moving) {
+            this.body.velocity.multiply(2,2);
+            this.currBreath--;
+        } else if (this.currBreath < this.stamina) {
+            this.currBreath += 0.2;
     }
-    if (this.sprintKey.isDown && this.currBreath > 1 && moving) {
-        this.body.velocity.multiply(2,2);
-        this.currBreath--;
-    } else if (this.currBreath < this.stamina) {
-        this.currBreath += 0.2;
-}
 
 };
 
@@ -157,16 +158,14 @@ Darwinator.Player.prototype.initKeys = function (game) {
     this.telKey    = game.input.keyboard.addKey(Phaser.Keyboard.Q);
     this.dodgeKey  = game.input.keyboard.addKey(Phaser.Keyboard.R);
 
-    this.telKey.onDown.add(function() {
-        var onCooldown = (Date.now() - this.lastAbilityUse) < this.abilityCooldownMs;
-        if (!onCooldown) {
+    this.telKey.onDown.add(
+        function() {
             var pointer = this.game.input.activePointer;
-            this.reset(pointer.worldX, pointer.worldY, this.health);
-            this.lastAbilityUse = Date.now();
+            this.tryTeleport(pointer.worldX, pointer.worldY);
         }
-    }, this);
+      , this);
 
-    this.dodgeKey.onDown.add(this.dodge, this);
+    this.dodgeKey.onDown.add(this.tryDodge, this);
 
     var checkTimer = function (key) {
 
@@ -216,8 +215,8 @@ Darwinator.Player.prototype.updateAttributes = function () {
 
     this.health         = Darwinator.PLAYER_BASE_HEALTH  + this.attributes.strength;
     this.damage         = Darwinator.PLAYER_BASE_DAMAGE  + this.attributes.strength;
-    this.speed          = Darwinator.PLAYER_BASE_SPEED   + this.attributes.agility * 3 - this.attributes.strength;
-    this.stamina        = Darwinator.PLAYER_BASE_STAMINA + this.attributes.agility * 2 - this.attributes.strength / 5;
+    this.speed          = Darwinator.PLAYER_BASE_SPEED   + this.attributes.agility * 3;
+    this.stamina        = Darwinator.PLAYER_BASE_STAMINA + this.attributes.agility * 2;
     this.aim            = this.attributes.intellect; // Intended to define how well the enemy aims. 0 = "shitty" aim, 100 = "perfect" aim
     this.criticalStrike = this.attributes.intellect / 100; // Critical strike percentage
     this.currBreath     = this.stamina;

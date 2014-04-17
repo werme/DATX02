@@ -247,7 +247,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   enemyScore: function(enemy) { 
     var score = undefined;
     if (enemy.surviveMode) {
-      score = enemy.alive ? enemy.damageDone + enemy.initialHealth*2 - enemy.health : enemy.damageDone; 
+      score = enemy.alive ? enemy.initialHealth*2 + enemy.health : enemy.damageDone; 
     } else {
       score = enemy.alive ? enemy.damageDone*2 : enemy.damageDone;
     }

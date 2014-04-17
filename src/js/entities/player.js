@@ -16,12 +16,12 @@ Darwinator.Player = function(game, x, y, cursors) {
     this.dashTimer   = null;
     this.direction   = 90;
     this.dashCounter = 0;
-    this.useRandomInput = false;
+    this.useRandomInput = true;
     this.lastRandomInput = Date.now();
     this.lastDirection = [0,0];
 
     // for development only
-    this.immortal = true;
+    this.immortal = false;
 }
 
 Darwinator.Player.prototype = Object.create(Darwinator.Entity.prototype);
@@ -62,7 +62,7 @@ Darwinator.Player.prototype.update = function () {
         var dir = [0,0];
         var moving = false;
 
-        // Random movement and fire at random in random direction.
+        // Random movement and fire at random in random place on the map.
         if (this.useRandomInput) {
             if ((Date.now() - this.lastRandomInput) > 750) {
                 dir = this.randomInput();

@@ -17,7 +17,7 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
   this.path   = [];
   this.debug  = true;
 
-  this.surviveMode = true;
+  this.surviveMode = false;
   this.lastRandomInput = 0;
   this.lastDir = [0,0];
 
@@ -31,7 +31,6 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
   // melee cooldown
   this.lastMeleeTimestamp = 0;
   this.cooldownMs         = 250;
-  console.log(this);
 };
 
 Darwinator.Enemy.prototype = Object.create(Darwinator.Entity.prototype);

@@ -16,7 +16,8 @@ Darwinator.Player = function(game, x, y, cursors) {
     this.dashTimer   = null;
     this.direction   = 90;
     this.dashCounter = 0;
-    this.useRandomInput = true;
+    
+    this.useRandomInput = false;
     this.lastRandomInput = Date.now();
     this.lastDirection = [0,0];
 

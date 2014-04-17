@@ -16,6 +16,7 @@ Darwinator.Player = function(game, x, y, cursors) {
     this.dashTimer   = null;
     this.direction   = 90;
     this.dashCounter = 0;
+
     this.useRandomInput = true;
     this.lastRandomInput = Date.now();
     this.lastDirection = [0,0];
@@ -62,7 +63,7 @@ Darwinator.Player.prototype.update = function () {
         var dir = [0,0];
         var moving = false;
 
-        // Random movement and fire at random in random place on the map.
+        // Random movement and fire at random in a random direction.
         if (this.useRandomInput) {
             if ((Date.now() - this.lastRandomInput) > 750) {
                 dir = this.randomInput();
@@ -78,9 +79,8 @@ Darwinator.Player.prototype.update = function () {
 
             //Fire at random
             if (Math.random() >= 0.5) {
-                var x = Math.random() * 1440;
-                var y = Math.random() * 1440;
-                this.weapon.fire(x, y);
+                var angle = 360*Math.random();
+                this.weapon.fireInDirection(angle);
             }   
         } else {
             if (this.cursors.left.isDown || this.leftKey.isDown) {

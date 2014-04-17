@@ -16,7 +16,8 @@ Darwinator.GameState = function() {
     this.stats                 = null;
     this.health                = null;
     this.secondsRemaining      = null;
-    this.enemiesRemaining      = null;
+    this.enemies1Remaining     = null;
+    this.enemies2Remaining     = null;
     this.pauseText             = null;
     this.roundSecondsRemaining = null;
     this.endRoundTimer         = null;
@@ -85,6 +86,22 @@ Darwinator.GameState.prototype = {
 
         this.spawnPlayer(160, 620);
         this.game.enemies = this.level.spawnEnemies();
+        var size = this.game.enemies.length;
+        this.game.team1 = [];
+        this.game.team2 = [];
+
+        for (var i = 0; i < size / 2; i++) {
+            var en1 = this.game.enemies.getAt(i);
+            var en2 = this.game.enemies.getAt((size / 2) + 1);
+            en1.team = 1;
+            en2.team = 2;
+            this.game.team1.push(en1);
+            this.game.team2.push(en2);
+        }
+
+        this.game.enemies.callAll("findTarget");
+        this.game.team1.updateCount = this.game.team1.length;
+        this.game.team2.updateCount = this.game.team2.length;
 
         // TODO Find the right way to do this
         this.game.enemies.setAll('alive', true);
@@ -115,13 +132,14 @@ Darwinator.GameState.prototype = {
             x     = this.game.width  / 2,
             y     = this.game.height / 2;
 
-        this.fps              = gui.add(new Phaser.Text(this.game, 16, 16, 'FPS: 0', style));
-        this.stats            = gui.add(new Phaser.Text(this.game, 16, 36, '', style));
-        this.health           = gui.add(new Phaser.Text(this.game, 16, 56, '', style));
-        this.secondsRemaining = gui.add(new Phaser.Text(this.game, 16, 76, 'Seconds remaining: ' + Darwinator.ROUND_LENGTH_SECONDS, style));
-        this.enemiesRemaining = gui.add(new Phaser.Text(this.game, 16, 96, 'Enemies remaining: ', style));
-        this.pauseText        = gui.add(new Phaser.Text(this.game, x, y, 'Game paused', style));
-        this.gameOver         = gui.add(new Phaser.Text(this.game, x, y, 'Game Over', {fontSize: '24px monospace', fill:'#FFF'}));
+        this.fps               = gui.add(new Phaser.Text(this.game, 16, 16, 'FPS: 0', style));
+        this.stats             = gui.add(new Phaser.Text(this.game, 16, 36, '', style));
+        this.health            = gui.add(new Phaser.Text(this.game, 16, 56, '', style));
+        this.secondsRemaining  = gui.add(new Phaser.Text(this.game, 16, 76, 'Seconds remaining: ' + Darwinator.ROUND_LENGTH_SECONDS, style));
+        this.enemies1Remaining = gui.add(new Phaser.Text(this.game, 16, 96, 'Team 1 remaining: ', style));
+        this.enemies2Remaining = gui.add(new Phaser.Text(this.game, 16, 116, 'Team 2 remaining: ', style));
+        this.pauseText         = gui.add(new Phaser.Text(this.game, x, y, 'Game paused', style));
+        this.gameOver          = gui.add(new Phaser.Text(this.game, x, y, 'Game Over', {fontSize: '24px monospace', fill:'#FFF'}));
 
         this.pauseText.anchor.setTo(0.5, 0.5);
         this.gameOver.anchor.setTo(0.5, 0.5);
@@ -178,11 +196,14 @@ Darwinator.GameState.prototype = {
 
         this.game.physics.arcade.collide(this.game.player, this.level.collisionLayer);
         this.game.physics.arcade.collide(this.game.enemies, this.level.collisionLayer);
+        this.game.physics.arcade.collide(this.game.enemies);
 
         this.updateGUI();
 
         // End round when all enemies are dead
-        if (this.game.enemies.countLiving() === 0) {
+        this.updateNrAlive();
+
+        if (this.game.team1.nrAlive === 0 || this.game.team2.nrAlive === 0) {
             this.endRound();
         }
 
@@ -195,7 +216,8 @@ Darwinator.GameState.prototype = {
         this.fps.text = 'FPS: ' + this.game.time.fps;
         this.stats.text = 'Player stamina: ' + Math.round(this.game.player.currBreath) + '/' + Math.round(this.game.player.stamina);
         this.health.text = 'Health: ' + Math.round(this.game.player.health);
-        this.enemiesRemaining.text = 'Enemies remaining: ' + this.game.enemies.countLiving();
+        this.enemies1Remaining.text = 'Team 1 remaining: ' + this.game.team1.nrAlive;
+        this.enemies2Remaining.text = 'Team 2 remaining: ' + this.game.team2.nrAlive;
 
         var pointer = this.game.input.activePointer;
         this.crosshair.x = pointer.x;
@@ -205,6 +227,23 @@ Darwinator.GameState.prototype = {
     updateTimer: function () { // Callback to update time remaining display every second
         this.roundSecondsRemaining--;
         this.secondsRemaining.text = 'Seconds remaining: ' + this.roundSecondsRemaining;
+    },
+
+    updateNrAlive: function() {
+        var alive = 0;
+        for (var i = 0; i < this.game.team1.length; i++) {
+            if(this.game.team1[i].alive) {
+                alive++;
+            }
+        }
+        this.game.team1.nrAlive = alive;
+        alive = 0;
+        for (i = 0; i < this.game.team2.length; i++) {
+            if(this.game.team2[i].alive) {
+                alive++;
+            }
+        }
+        this.game.team2.nrAlive = alive;
     },
 
     bulletCollisionHandler: function (bullet, target) {

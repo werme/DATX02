@@ -57,11 +57,11 @@ Darwinator.Menu.prototype = {
   startGame: function () {
     var state = $('#mode-select').val();
     
-    var settings = {
-      map:          $('#map-select').val(),
-      level:        $('#level-input').val(),
-      immortal:     $('#immortal-check').is(':checked'),
-      randomPlayer: $('#random-check').is(':checked')
+    Darwinator.settings = {
+      map:            $('#map-select').val(),
+      startLevel:     $('#level-input').val(),
+      immortalPlayer: $('#immortal-check').is(':checked'),
+      randomPlayer:   $('#random-check').is(':checked')
     }
 
     $(this.htmlContainer).hide();

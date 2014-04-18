@@ -19,6 +19,8 @@ window.Darwinator = window.Darwinator || {
     game.state.start('boot');
   },
 
+  settings : null,
+
   /*
   * Player Stats 
   */

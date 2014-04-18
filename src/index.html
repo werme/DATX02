@@ -18,7 +18,10 @@
   <script src="http://localhost:35729/livereload.js"></script>
   <!-- /build -->
 
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+
   <!-- build:js main.min.js -->
+  <script src="js/lib/handlebars/handlebars.min.js"></script>
   <script src="js/main.js"></script>
   <script src="js/lib/phaser.js"></script>
   <script src="js/datastructures/binaryheap.js"></script>
@@ -39,6 +42,21 @@
   <script src="js/helpers.js"></script>
   <script src="js/GA/gen_alg.js"></script>
   <!-- /build -->
+
+  
+  <script id="menu-template" type="text/x-handlebars-template">
+    
+    <label for="map-select">Choose your map:</label>
+    <select id="map-select">
+      {{#each maps}}
+        <option value="{{id}}">{{name}}</option>
+      {{/each}}
+    </select>
+    
+    <label for="level-select">Start as level:</label>  
+    <input id="level-select" type="text">
+    
+  </script>
 
   <script>
     window.onload = function () {

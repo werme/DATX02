@@ -1,14 +1,20 @@
+
+$base-font-size: "18px";
+$dark-color: #222d42;
+
 * {
   -webkit-user-select: none;
   user-select: none;
-  box-sizing: border-box; }
+  box-sizing: border-box;
+}
 
 html, body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: #222d42;
-  font: "18px"/1.6 menlo, monospace; }
+  background: $dark-color;
+  font: $base-font-size/1.6 menlo, monospace;
+}
 
 .game, #html-overlay {
   position: absolute;
@@ -17,22 +23,28 @@ html, body {
   margin: -240px auto;
   top: 50%;
   left: 0;
-  right: 0; }
+  right: 0;
+}
 
 #html-overlay {
   padding: 10em 4em 2em;
-  color: white; }
+  color: white;
+}
 
 .group {
+    
   display: block;
-  width: 40%; }
+  width: 40%;
+}
 
 label, input, textarea, select, button {
   display: block;
   float: left;
   margin: 0;
-  padding: 0; }
+  padding: 0;
+}
 
 input, textarea, select, button {
-  font: "18px"/1.6 menlo, monospace;
-  width: 60%; }
+  font: $base-font-size/1.6 menlo, monospace;
+  width: 60%;
+}

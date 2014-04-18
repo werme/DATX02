@@ -75,6 +75,11 @@ module.exports = (grunt) ->
         files:
           '<%= DST_DIR %>/<%= INDEX_FILE %>': '<%= SRC_DIR %>/<%=INDEX_FILE %>'
 
+    sass:
+      dist:
+        files:
+          '<%= SRC_DIR %>/css/main.css': '<%= SRC_DIR %>/sass/main.scss'
+
     connect:
       dev:
         options:
@@ -87,6 +92,10 @@ module.exports = (grunt) ->
         tasks: ['jshint']
         options:
           livereload: true
+
+      css:
+        files: '<%= SRC_DIR %>/sass/*.scss'
+        tasks: ['sass']
 
       all:
         files: [
@@ -106,7 +115,7 @@ module.exports = (grunt) ->
         vendor: 'src/js/lib/*'
         specs : 'test/**/*.js'
 
-
+  @loadNpmTasks 'grunt-contrib-sass'
   @loadNpmTasks 'grunt-contrib-copy'
   @loadNpmTasks 'grunt-contrib-clean'
   @loadNpmTasks 'grunt-contrib-connect'

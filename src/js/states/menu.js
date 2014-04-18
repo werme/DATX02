@@ -26,35 +26,46 @@ Darwinator.Menu.prototype = {
     this.htmlContainer = document.getElementById("html-overlay");
     this.initHtmlOverlay();
 
-    // var startGameButton = this.container.add(new Phaser.Button(this.game, 0, this.game.height - 120, 'start-game-button', this.continueGame, this, 1, 0, 1));
-    // startGameButton.position.x = this.game.width / 2 - startGameButton.width / 2;
-
-    // var buttonText = this.container.add(new Phaser.BitmapText(this.game, 0, this.game.height - 107, 'minecraftia', 'CONTINUE GAME', 20));
-    // buttonText.position.x = this.game.width  / 2 - buttonText.textWidth / 2;
-
     this.game.canvas.style.cursor = "inherit";
 
-    this.input.onDown.add(this.onDown, this);
+    var startGameButton = document.getElementById('start-game-button');
+    $(startGameButton).on('click', this.startGame.bind(this));
   },
 
   initHtmlOverlay: function () {
     var source   = $("#menu-template").html();
     var template = Handlebars.compile(source);
-    var context  = { 
+
+    var settings = { 
+      modes: [
+        { state: "game", name: "Rainbow Unicorn Mode" },
+        { state: "myOtherState", name: "My Other Mode" }
+      ],
       maps: [
         { id: "galapagos", name: "Galapagos" },
         { id: "forest", name: "Forest" }
       ]
     }
-    $(this.htmlContainer).html(template(context));
+
+    $(this.htmlContainer).html(template(settings));
   },
 
   update: function () {
 
   },
 
-  onDown: function () {
-    this.game.state.start('game');
+  startGame: function () {
+    var state = $('#mode-select').val();
+    
+    var settings = {
+      map:          $('#map-select').val(),
+      level:        $('#level-input').val(),
+      immortal:     $('#immortal-check').is(':checked'),
+      randomPlayer: $('#random-check').is(':checked')
+    }
+
+    $(this.htmlContainer).hide();
+    this.game.state.start(state);
   }
 
 };

@@ -1,0 +1,64 @@
+
+$dark-color: #222d42;
+
+* {
+  -webkit-user-select: none;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: $dark-color;
+  font: 16px/1.6 menlo, monospace;
+}
+
+input, textarea, select, button {
+  font: 16px/1.6 menlo, monospace;
+  background: lighten($dark-color, 5%);
+  color: white;
+  border: 2px solid lighten($dark-color, 10%);
+
+  padding: 0 0.4em;
+}
+
+.game, #html-overlay {
+  position: absolute;
+  max-width: 640px;
+  max-height: 480px;
+  margin: -240px auto;
+  top: 50%;
+  left: 0;
+  right: 0;
+}
+
+#html-overlay {
+  padding: 10em 4em 2em;
+  color: white;
+}
+
+.group {
+  label, input, textarea, select, button {
+    display: inline-block;
+  }
+
+  label { 
+    width: 35%;
+    text-align: right;
+  }
+
+  input, textarea, select, button { width: 60%; }
+}
+
+#start-game-button {
+  position: absolute;
+  text-align: center;
+  right: 5em;
+  bottom: 5em;
+
+  &:hover {
+    background: $dark-color;
+  }
+}

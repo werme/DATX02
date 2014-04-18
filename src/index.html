@@ -1,4 +1,5 @@
 
+
 <!doctype html>
 <html>
 <head>
@@ -6,6 +7,7 @@
   <title>Darwinator</title>
 
   <!-- build:css main.min.css -->
+  <link rel="stylesheet" href="css/lib/reset.css">
   <link rel="stylesheet" href="css/main.css">
   <!-- /build -->
 </head>
@@ -18,7 +20,10 @@
   <script src="http://localhost:35729/livereload.js"></script>
   <!-- /build -->
 
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+
   <!-- build:js main.min.js -->
+  <script src="js/lib/handlebars/handlebars.min.js"></script>
   <script src="js/main.js"></script>
   <script src="js/lib/phaser.js"></script>
   <script src="js/datastructures/binaryheap.js"></script>
@@ -39,6 +44,46 @@
   <script src="js/helpers.js"></script>
   <script src="js/GA/gen_alg.js"></script>
   <!-- /build -->
+
+  <script id="menu-template" type="text/x-handlebars-template">
+    
+  <div class="group">
+    <label for="mode-select">Choose game mode:</label>
+    <select id="mode-select">
+      {{#each modes}}
+        <option value="{{state}}">{{name}}</option>
+      {{/each}}
+    </select>
+  </div>
+
+  <div class="group">
+    <label for="map-select">Choose your map:</label>
+    <select id="map-select">
+      {{#each maps}}
+        <option value="{{id}}">{{name}}</option>
+      {{/each}}
+    </select>
+  </div>
+    
+  <div class="group">
+    <label for="level-input">Start as level:</label>  
+    <input id="level-input" type="number" value=0>
+  </div>
+
+  <div class="group">
+    <label for="immortal-check">Immortal:</label>  
+    <input id="immortal-check" type="checkbox" value=0>
+  </div>
+
+  <div class="group">
+    <label for="random-check">Random input:</label>  
+    <input id="random-check" type="checkbox" value=0>
+  </div>
+
+  <button id="start-game-button">Start Game!</button>
+  
+  </script>
+
 
   <script>
     window.onload = function () {

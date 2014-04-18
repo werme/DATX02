@@ -28,6 +28,14 @@ Darwinator.Boot.prototype = {
       this.game.stage.scale.pageAlignHorizontally = true;
       this.game.stage.scale.setScreenSize(true);
     }
+
+    // Initialize html overlay
+    var overlay = document.createElement("div");
+    overlay.setAttribute("id", "html-overlay");
+    overlay.style.width = this.game.width + "px";
+    overlay.style.height = this.game.height + "px";
+    document.body.appendChild(overlay);
+
     this.game.state.start('preloader');
   },
 

@@ -21,6 +21,7 @@ Darwinator.MeleeWeapon.strike = function(target){
     }
     target.takeDamage(dmg);
     this.lastAttack = Date.now();
+    this.knockBack(target);
     return dmg;
   }
 };

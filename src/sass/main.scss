@@ -1,5 +1,4 @@
 
-$base-font-size: "18px";
 $dark-color: #222d42;
 
 * {
@@ -13,7 +12,16 @@ html, body {
   height: 100%;
   overflow: hidden;
   background: $dark-color;
-  font: $base-font-size/1.6 menlo, monospace;
+  font: 16px/1.6 menlo, monospace;
+}
+
+input, textarea, select, button {
+  font: 16px/1.6 menlo, monospace;
+  background: lighten($dark-color, 5%);
+  color: white;
+  border: 2px solid lighten($dark-color, 10%);
+
+  padding: 0 0.4em;
 }
 
 .game, #html-overlay {
@@ -36,12 +44,21 @@ html, body {
     display: inline-block;
   }
 
-  display: block;
-  width: 40%;
+  label { 
+    width: 35%;
+    text-align: right;
+  }
+
+  input, textarea, select, button { width: 60%; }
 }
 
+#start-game-button {
+  position: absolute;
+  text-align: center;
+  right: 5em;
+  bottom: 5em;
 
-input, textarea, select, button {
-  font: $base-font-size/1.6 menlo, monospace;
-  width: 60%;
+  &:hover {
+    background: $dark-color;
+  }
 }

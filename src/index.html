@@ -45,20 +45,45 @@
   <script src="js/GA/gen_alg.js"></script>
   <!-- /build -->
 
-  
   <script id="menu-template" type="text/x-handlebars-template">
     
+  <div class="group">
+    <label for="mode-select">Choose game mode:</label>
+    <select id="mode-select">
+      {{#each modes}}
+        <option value="{{state}}">{{name}}</option>
+      {{/each}}
+    </select>
+  </div>
+
+  <div class="group">
     <label for="map-select">Choose your map:</label>
     <select id="map-select">
       {{#each maps}}
         <option value="{{id}}">{{name}}</option>
       {{/each}}
     </select>
+  </div>
     
-    <label for="level-select">Start as level:</label>  
-    <input id="level-select" type="text">
-    
+  <div class="group">
+    <label for="level-input">Start as level:</label>  
+    <input id="level-input" type="number" value=0>
+  </div>
+
+  <div class="group">
+    <label for="immortal-check">Immortal:</label>  
+    <input id="immortal-check" type="checkbox" value=0>
+  </div>
+
+  <div class="group">
+    <label for="random-check">Random input:</label>  
+    <input id="random-check" type="checkbox" value=0>
+  </div>
+
+  <button id="start-game-button">Start Game!</button>
+  
   </script>
+
 
   <script>
     window.onload = function () {

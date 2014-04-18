@@ -112,9 +112,10 @@ Darwinator.Enemy.prototype.update = function() {
     } 
   }
 
-  // Target (ie. player) takes damage while the target and enemy overlap.
-  // If they continuously overlap the target will take damage every 0.25 seconds
-  this.game.physics.arcade.overlap(this, this.target, this.meleeAttack, null, this);
+  // TODO make this prettier
+  if(this.category !== this.categories.INTELLIGENT){
+    this.game.physics.arcade.overlap(this, this.target, this.meleeAttack, null, this);
+  }
 };
 
 Darwinator.Enemy.prototype.telePos = function() {
@@ -127,20 +128,8 @@ Darwinator.Enemy.prototype.telePos = function() {
   return pos;
 }
 
-Darwinator.Enemy.prototype.meleeAttack = function(){ //callback for overlapping with target
-  var onCooldown = (Date.now() - this.lastMeleeTimestamp) < this.cooldownMs;
-  if (!onCooldown){
-    var crit  = Math.random() - this.criticalStrike;
-    var dmg   = this.damage;
-
-    if (crit < 0){
-      dmg *= 2;
-      console.log('%c Enemy made a critical hit! ', 'background: red; color: white');
-    }
-    this.target.takeDamage(dmg);
-    this.damageDone += dmg;
-    this.lastMeleeTimestamp = Date.now();
-  }
+Darwinator.Enemy.prototype.meleeAttack = function(){
+  this.damage += this.weapon.strike(this.target);
 };
 
 Darwinator.Enemy.prototype.doMove = function() {

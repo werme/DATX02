@@ -11,7 +11,7 @@ Darwinator.MeleeWeapon = function (game, coolDown, damage, owner) {
 
 Darwinator.MeleeWeapon.prototype = Object.create(Darwinator.Weapon.prototype);
 
-Darwinator.MeleeWeapon.strike = function(target){
+Darwinator.MeleeWeapon.prototype.strike = function(target){
   if (!this.onCooldown()){
     var crit  = Math.random() - this.criticalStrike;
     var dmg   = this.damage;
@@ -26,7 +26,7 @@ Darwinator.MeleeWeapon.strike = function(target){
   }
 };
 
-Darwinator.MeleeWeapon.knockBack = function(target){
+Darwinator.MeleeWeapon.prototype.knockBack = function(target){
     var angle           = this.game.physics.arcade.angleBetween(this.owner, target);
     var targetFuturePos = Darwinator.Helpers.calculatePosition(target.x, target.y, this.knockBackDistance, angle);
     target.knockedBack  = true;

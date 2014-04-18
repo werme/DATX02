@@ -93,7 +93,13 @@ Darwinator.GameState.prototype = {
 
         for (var i = 0; i < this.game.enemies.length; i++) {
             var enemy = this.game.enemies.getAt(i);
-            var weapon = new Darwinator.Cannon(this.game, enemy, this.bullets);
+            var weapon;
+            if(enemy.category === enemy.categories.INTELLIGENT){
+                weapon = new Darwinator.Cannon(this.game, enemy, this.bullets);
+            }else{
+                // TODO add a proper subclass here later
+                weapon = new Darwinator.MeleeWeapon(this.game, undefined, undefined, enemy);
+            }
             enemy.arm(weapon);
         }
 

@@ -135,3 +135,13 @@ Darwinator.Entity.prototype.resetAbilities = function(){
   this.dodging      = false;
   this.underAttack  = false;
 };
+
+/**
+* Resets knockback effects.
+*
+* @method Darwinator.Entity#resetKnockBack
+*/
+Darwinator.Entity.prototype.resetKnockBack = function(){
+  this.knockedBack  = false;
+  this.knockBackPos = undefined;
+};

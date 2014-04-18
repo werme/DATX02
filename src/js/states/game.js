@@ -72,6 +72,7 @@ Darwinator.GameState.prototype = {
 
         this.stopTimers();
 
+        this.game.player.resetKnockBack();
         this.game.player.resetAbilities();
         this.game.player.dead = false;
 

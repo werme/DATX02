@@ -183,8 +183,9 @@ Darwinator.GameState.prototype = {
             this.game.physics.arcade.collide(bulletGroup, this.game.player, this.bulletCollisionHandler, checkDodging, this);
         }
 
-        this.game.physics.arcade.collide(this.game.player, this.level.collisionLayer);
-        this.game.physics.arcade.collide(this.game.enemies, this.level.collisionLayer);
+        var collideTerrainCallback = function(entity, tile) { entity.resetKnockBack(); };
+        this.game.physics.arcade.collide(this.game.player, this.level.collisionLayer, collideTerrainCallback);
+        this.game.physics.arcade.collide(this.game.enemies, this.level.collisionLayer, collideTerrainCallback);
 
         this.updateGUI();
 

@@ -2,9 +2,9 @@
 
 Darwinator.RangedWeapon = function (game, coolDown, bulletSpeed, damage, owner) {
     Darwinator.Weapon.call(this, game, coolDown, damage, owner);
-    var baseCoolDown  = coolDown - game.player.attributes.intellect * 20;
+    
+    var baseCoolDown  = coolDown - owner.attributes.intellect * 20;
     this.coolDown     = baseCoolDown > 200 ? baseCoolDown : 100;
-    this.nextFire     = 0;
     this.bullets      = this.game.add.group();
     this.bulletSpeed  = bulletSpeed;
 };
@@ -29,12 +29,12 @@ Darwinator.RangedWeapon.prototype.fireInDirection = function (angle) {
 }
 
 Darwinator.RangedWeapon.prototype.loadGun = function (angle) {
-    if (this.game.time.now > this.nextFire && this.bullets.countDead() > 0) {
-        this.nextFire = this.game.time.now + this.coolDown;
+    if (!this.onCooldown() && this.bullets.countDead() > 0) {
         var bullet    = this.bullets.getFirstDead();
         bullet.reset(this.owner.x, this.owner.y); // resets sprite and body
         bullet.target = Darwinator.Enemy;
         bullet.owner = this.owner;
+        this.lastAttack = Date.now();
         return bullet;
     } else {
         return false;

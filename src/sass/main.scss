@@ -32,17 +32,14 @@ html, body {
 }
 
 .group {
-    
+  label, input, textarea, select, button {
+    display: inline-block;
+  }
+
   display: block;
   width: 40%;
 }
 
-label, input, textarea, select, button {
-  display: block;
-  float: left;
-  margin: 0;
-  padding: 0;
-}
 
 input, textarea, select, button {
   font: $base-font-size/1.6 menlo, monospace;

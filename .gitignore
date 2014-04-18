@@ -5,3 +5,5 @@ node_modules/
 .sass-cache/
 *.psd
 src/css/main.css
+src/js/lib/handlebars/*
+!src/js/lib/handlebars/handlebars.min.js

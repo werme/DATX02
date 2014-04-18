@@ -1,7 +1,7 @@
 'use strict';
 
 Darwinator.Cannon = function(game, owner, bulletsContainer) {
-    Darwinator.Weapon.call(this, game, Darwinator.CANNON_COOLDOWN,
+    Darwinator.RangedWeapon.call(this, game, Darwinator.CANNON_COOLDOWN,
             Darwinator.CANNON_BULLET_SPEED, Darwinator.CANNON_DAMAGE, owner);
 
     this.bullets.createMultiple(30, 'cannonball');
@@ -17,4 +17,4 @@ Darwinator.Cannon = function(game, owner, bulletsContainer) {
     bulletsContainer.add(this.bullets);
 };
 
-Darwinator.Cannon.prototype = Object.create(Darwinator.Weapon.prototype);
+Darwinator.Cannon.prototype = Object.create(Darwinator.RangedWeapon.prototype);

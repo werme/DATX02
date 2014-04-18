@@ -62,10 +62,16 @@ Darwinator.Entity.prototype.update = function() {
   }
 
   if(this.knockedBack){
-    // all entities are knocked with the same speed for now
-    this.game.physics.arcade.moveToXY(this, this.knockBackPos.x, this.knockBackPos.y);
-  }else if(this.knockBackPos && this.x >= this.knockBackPos.x && this.y >= this.knockBackPos.y){
-    this.knockedBack = false;
+    // TODO add formulas for these based on entity attributes
+    var knockbackSpeed      = 1000;
+    var knockbackTolerance  = 10;
+
+    this.game.physics.arcade.moveToXY(this, this.knockBackPos.x, this.knockBackPos.y, knockbackSpeed);
+    
+    if(this.game.physics.arcade.distanceToXY(this, this.knockBackPos.x, this.knockBackPos.y) < knockbackTolerance 
+        || this.x >= this.knockBackPos.x && this.y >= this.knockBackPos.y){
+      this.knockedBack = false;
+    }
   }
 
 };

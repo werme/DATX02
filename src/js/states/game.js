@@ -87,6 +87,10 @@ Darwinator.GameState.prototype = {
         this.spawnPlayer(160, 620);
         this.game.enemies = this.level.spawnEnemies();
 
+        if (Darwinator.settings.enemyVsEnemy) {
+            this.initEnemyVsEnemy();
+        }
+
         // TODO Find the right way to do this
         this.game.enemies.setAll('alive', true);
 
@@ -120,15 +124,17 @@ Darwinator.GameState.prototype = {
         var gui   = this.game.add.group(),
             style = { font: '16px monospace', fill: '#fff' },
             x     = this.game.width  / 2,
-            y     = this.game.height / 2;
+            y     = this.game.height / 2,
+            enemyContent = Darwinator.settings.enemyVsEnemy ? 'Enemies remaining: Team 1: Team 2: ' : 
+                                                              'Enemies remaining: ';
 
-        this.fps              = gui.add(new Phaser.Text(this.game, 16, 16, 'FPS: 0', style));
-        this.stats            = gui.add(new Phaser.Text(this.game, 16, 36, '', style));
-        this.health           = gui.add(new Phaser.Text(this.game, 16, 56, '', style));
-        this.secondsRemaining = gui.add(new Phaser.Text(this.game, 16, 76, 'Seconds remaining: ' + Darwinator.ROUND_LENGTH_SECONDS, style));
-        this.enemiesRemaining = gui.add(new Phaser.Text(this.game, 16, 96, 'Enemies remaining: ', style));
-        this.pauseText        = gui.add(new Phaser.Text(this.game, x, y, 'Game paused', style));
-        this.gameOver         = gui.add(new Phaser.Text(this.game, x, y, 'Game Over', {fontSize: '24px monospace', fill:'#FFF'}));
+        this.fps               = gui.add(new Phaser.Text(this.game, 16, 16, 'FPS: 0', style));
+        this.stats             = gui.add(new Phaser.Text(this.game, 16, 36, '', style));
+        this.health            = gui.add(new Phaser.Text(this.game, 16, 56, '', style));
+        this.secondsRemaining  = gui.add(new Phaser.Text(this.game, 16, 76, 'Seconds remaining: ' + Darwinator.ROUND_LENGTH_SECONDS, style));
+        this.enemiesRemaining  = gui.add(new Phaser.Text(this.game, 16, 96, enemyContent, style));
+        this.pauseText         = gui.add(new Phaser.Text(this.game, x, y, 'Game paused', style));
+        this.gameOver          = gui.add(new Phaser.Text(this.game, x, y, 'Game Over', {fontSize: '24px monospace', fill:'#FFF'}));
 
         this.pauseText.anchor.setTo(0.5, 0.5);
         this.gameOver.anchor.setTo(0.5, 0.5);
@@ -186,12 +192,20 @@ Darwinator.GameState.prototype = {
         var collideTerrainCallback = function(entity, tile) { entity.resetKnockBack(); };
         this.game.physics.arcade.collide(this.game.player, this.level.collisionLayer, collideTerrainCallback);
         this.game.physics.arcade.collide(this.game.enemies, this.level.collisionLayer, collideTerrainCallback);
+        this.game.physics.arcade.collide(this.game.enemies);
 
         this.updateGUI();
 
         // End round when all enemies are dead
-        if (this.game.enemies.countLiving() === 0) {
-            this.endRound();
+        if(Darwinator.settings.enemyVsEnemy) {
+            this.updateNrAlive();
+            if (this.game.team1.nrAlive === 0 || this.game.team2.nrAlive === 0) {
+                this.endRound();
+            }
+        } else {
+            if (this.game.enemies.countLiving() === 0) {
+                this.endRound();
+            }
         }
 
         if (this.game.player.dead) {
@@ -200,12 +214,21 @@ Darwinator.GameState.prototype = {
     },
 
     updateGUI: function () {
+        var t1, t2, enemyContent, pointer;
+        if (Darwinator.settings.enemyVsEnemy) {
+            t1 = this.game.team1.nrAlive,
+            t2 = this.game.team2.nrAlive,
+            enemyContent = 'Enemies remaining: Team 1: ' + t1 + ' Team 2: ' + t2;
+        } else {
+            enemyContent = 'Enemies remaining: ' + this.game.enemies.countLiving();
+        }
+
         this.fps.text = 'FPS: ' + this.game.time.fps;
         this.stats.text = 'Player stamina: ' + Math.round(this.game.player.currBreath) + '/' + Math.round(this.game.player.stamina);
         this.health.text = 'Health: ' + Math.round(this.game.player.health);
-        this.enemiesRemaining.text = 'Enemies remaining: ' + this.game.enemies.countLiving();
+        this.enemiesRemaining.text = enemyContent;
 
-        var pointer = this.game.input.activePointer;
+        pointer = this.game.input.activePointer;
         this.crosshair.x = pointer.x;
         this.crosshair.y = pointer.y;
     },
@@ -213,6 +236,23 @@ Darwinator.GameState.prototype = {
     updateTimer: function () { // Callback to update time remaining display every second
         this.roundSecondsRemaining--;
         this.secondsRemaining.text = 'Seconds remaining: ' + this.roundSecondsRemaining;
+    },
+
+    updateNrAlive: function() {
+        var alive = 0;
+        for (var i = 0; i < this.game.team1.length; i++) {
+            if(!this.game.team1[i].dead) {
+                alive++;
+            }
+        }
+        this.game.team1.nrAlive = alive;
+        alive = 0;
+        for (i = 0; i < this.game.team2.length; i++) {
+            if(!this.game.team2[i].dead) {
+                alive++;
+            }
+        }
+        this.game.team2.nrAlive = alive;
     },
 
     bulletCollisionHandler: function (bullet, target) {
@@ -242,6 +282,28 @@ Darwinator.GameState.prototype = {
         if (!(bullet instanceof Darwinator.Entity)) {
             bullet.kill();
         }
+    },
+
+    initEnemyVsEnemy: function() {
+        var size, i, en1, en2; 
+        size = this.game.enemies.length;
+        this.game.team1 = [];
+        this.game.team2 = [];
+
+        for (i = 0; i < size / 2; i++) {
+            en1 = this.game.enemies.getAt(i);
+            en2 = this.game.enemies.getAt((size / 2) + i);
+            en1.team = 1;
+            en2.team = 2;
+            en1.target = null;
+            en2.target = null;
+            this.game.team1.push(en1);
+            this.game.team2.push(en2);
+        }
+
+        this.game.enemies.callAll("findTarget");
+        this.game.team1.nrAlive = this.game.team1.length;
+        this.game.team2.nrAlive = this.game.team2.length;
     },
 
     endRound: function() {

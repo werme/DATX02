@@ -52,6 +52,9 @@ Darwinator.Enemy.prototype.update = function() {
   if (this.dead || this.knockedBack) {
     return;
   }
+  if(Darwinator.settings.enemyVsEnemy && (!this.target || this.target.dead)) {
+    this.findTarget();
+  }
 
   this.body.velocity.setTo(0,0);
 
@@ -198,6 +201,19 @@ Darwinator.Enemy.prototype.followPath = function() {
 Darwinator.Enemy.prototype.flee = function() {
   var angleFromTarget = this.game.physics.arcade.angleBetween(this, this.target) + Math.PI;
   this.game.physics.arcade.velocityFromRotation(angleFromTarget, this.speed, this.body.velocity);
+};
+
+Darwinator.Enemy.prototype.findTarget = function() {
+  var enemyTeam = this.team === 1 ? this.game.team1 : this.game.team2;
+  var counter = 100;
+
+  if (enemyTeam.nrAlive === 0) {
+    return;
+  }
+  while((!this.target || this.target.dead) && counter) {
+    this.target = enemyTeam[Math.floor(Math.random() * enemyTeam.length)];
+    counter--;
+  }
 };
 
 Darwinator.Enemy.prototype.randomInput = function () {

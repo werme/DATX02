@@ -54,7 +54,9 @@ Darwinator.Entity = function(game, x, y, key, health, strength, agility, intelle
 Darwinator.Entity.prototype = Object.create(Phaser.Sprite.prototype);
 
 Darwinator.Entity.prototype.update = function() {
-  if (this.health <= 0 && !this.dead){
+  if(this.dead){
+    return;
+  }else if (this.health <= 0){
     this.kill();
     this.dead = true;
   }

@@ -254,8 +254,16 @@ Darwinator.Player.prototype.updateAttributes = function () {
 };
 
 Darwinator.Player.prototype.initAnimations = function () {
-    var anims = [['walk-left', [8,9,10,11], 10, true], ['walk-right', [12,13,14,15], 10, true],
-               ['walk-up', [0,1,2,3], 10, true], ['walk-down', [4,5,6,7], 10, true]];
+    var anims = [
+        ['walk-up',     [0,1,2,3],     10, true],
+        ['walk-down',   [4,5,6,7],     10, true],
+        ['walk-left',   [8,9,10,11],   10, true], 
+        ['walk-right',  [12,13,14,15], 10, true],
+        ['slash-up',    [16,17],       10, false],
+        ['slash-down',  [18,19],       10, false],
+        ['slash-left',  [20,21],       10, false],
+        ['slash-right', [22,23],       10, false]
+    ];
 
     this.setAnimations(anims);
 };

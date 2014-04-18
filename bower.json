@@ -1,0 +1,6 @@
+{
+  "name": "Darwinator",
+  "dependencies": {
+    "handlebars": "~2.0.0"
+  }
+}

@@ -4,3 +4,4 @@ dist/
 node_modules/
 .sass-cache/
 *.psd
+src/css/main.css

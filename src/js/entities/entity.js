@@ -46,6 +46,9 @@ Darwinator.Entity = function(game, x, y, key, health, strength, agility, intelle
 
   // the alive property of Phaser sprites seems to be bugged
   this.dead = false;
+
+  this.knockedBack  = false;
+  this.knockBackPos = undefined;
 };
 
 Darwinator.Entity.prototype = Object.create(Phaser.Sprite.prototype);
@@ -55,6 +58,14 @@ Darwinator.Entity.prototype.update = function() {
     this.kill();
     this.dead = true;
   }
+
+  if(this.knockedBack){
+    // all entities are knocked with the same speed for now
+    this.game.physics.arcade.moveToXY(this, this.knockBackPos.x, this.knockBackPos.y);
+  }else if(this.knockBackPos && this.x >= this.knockBackPos.x && this.y >= this.knockBackPos.y){
+    this.knockedBack = false;
+  }
+
 };
 
 Darwinator.Entity.prototype.takeDamage = function(amount) {

@@ -29,7 +29,7 @@ Darwinator.Player.prototype = Object.create(Darwinator.Entity.prototype);
 Darwinator.Player.prototype.update = function () {
     Darwinator.Entity.prototype.update.call(this);
     
-    if (this.dead) {
+    if (this.dead || this.knockedBack) {
         return;
     }
 

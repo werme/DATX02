@@ -26,5 +26,8 @@ Darwinator.MeleeWeapon.strike = function(target){
 };
 
 Darwinator.MeleeWeapon.knockBack = function(target){
-
+    var angle           = this.game.physics.arcade.angleBetween(this.owner, target);
+    var targetFuturePos = Darwinator.Helpers.calculatePosition(target.x, target.y, this.knockBackDistance, angle);
+    target.knockedBack  = true;
+    target.knockBackPos = targetFuturePos;
 };

@@ -49,7 +49,7 @@ Darwinator.Enemy.prototype.arm = function(weapon) {
 
 Darwinator.Enemy.prototype.update = function() {
   Darwinator.Entity.prototype.update.call(this);
-  if (this.dead) {
+  if (this.dead || this.knockedBack) {
     return;
   }
 

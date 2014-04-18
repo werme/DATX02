@@ -6,7 +6,7 @@ Darwinator.MeleeWeapon = function (game, coolDown, damage, owner) {
     // nothing permanent here, just some values to get started with implementation
     this.coolDown           = 250;
     this.damage             = this.owner.damage;
-    this.knockBackDistance  = 2 * this.owner.attributes.strength;
+    this.knockBackDistance  = 100 + 2 * this.owner.attributes.strength;
 };
 
 Darwinator.MeleeWeapon.prototype = Object.create(Darwinator.Weapon.prototype);
@@ -24,6 +24,7 @@ Darwinator.MeleeWeapon.prototype.strike = function(target){
     this.knockBack(target);
     return dmg;
   }
+  return 0;
 };
 
 Darwinator.MeleeWeapon.prototype.knockBack = function(target){

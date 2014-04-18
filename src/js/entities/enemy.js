@@ -52,7 +52,7 @@ Darwinator.Enemy.prototype.update = function() {
   if (this.dead) {
     return;
   }
-  if(!this.target || !this.target.alive) {
+  if(!this.target || this.target.dead) {
     this.findTarget();
   }
 
@@ -216,17 +216,14 @@ Darwinator.Enemy.prototype.flee = function() {
 
 Darwinator.Enemy.prototype.findTarget = function() {
   var enemyTeam = this.team === 1 ? this.game.team1 : this.game.team2;
-  var alive = false;
-  for (var i = 0; i < enemyTeam.length; i++) {
-    if (enemyTeam[i].alive) {
-      alive = true;
-    }
-  }
-  if (!alive) {
+  var counter = 100;
+
+  if (enemyTeam.nrAlive === 0) {
     return;
   }
-  while(!this.target || !this.target.alive) {
+  while((!this.target || this.target.dead) && counter) {
     this.target = enemyTeam[Math.floor(Math.random() * enemyTeam.length)];
+    counter--;
   }
 };
 

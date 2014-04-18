@@ -92,16 +92,18 @@ Darwinator.GameState.prototype = {
 
         for (var i = 0; i < size / 2; i++) {
             var en1 = this.game.enemies.getAt(i);
-            var en2 = this.game.enemies.getAt((size / 2) + 1);
+            var en2 = this.game.enemies.getAt((size / 2) + i);
             en1.team = 1;
             en2.team = 2;
+            en1.target = null;
+            en2.target = null;
             this.game.team1.push(en1);
             this.game.team2.push(en2);
         }
 
         this.game.enemies.callAll("findTarget");
-        this.game.team1.updateCount = this.game.team1.length;
-        this.game.team2.updateCount = this.game.team2.length;
+        this.game.team1.nrAlive = this.game.team1.length;
+        this.game.team2.nrAlive = this.game.team2.length;
 
         // TODO Find the right way to do this
         this.game.enemies.setAll('alive', true);
@@ -232,14 +234,14 @@ Darwinator.GameState.prototype = {
     updateNrAlive: function() {
         var alive = 0;
         for (var i = 0; i < this.game.team1.length; i++) {
-            if(this.game.team1[i].alive) {
+            if(!this.game.team1[i].dead) {
                 alive++;
             }
         }
         this.game.team1.nrAlive = alive;
         alive = 0;
         for (i = 0; i < this.game.team2.length; i++) {
-            if(this.game.team2[i].alive) {
+            if(!this.game.team2[i].dead) {
                 alive++;
             }
         }

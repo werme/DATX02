@@ -52,7 +52,7 @@ Darwinator.Enemy.prototype.update = function() {
   if (this.dead) {
     return;
   }
-  if(!this.target || this.target.dead) {
+  if(Darwinator.settings.enemyVsEnemy && (!this.target || this.target.dead)) {
     this.findTarget();
   }
 

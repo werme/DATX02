@@ -61,7 +61,8 @@ Darwinator.Menu.prototype = {
       map:            $('#map-select').val(),
       startLevel:     $('#level-input').val(),
       immortalPlayer: $('#immortal-check').is(':checked'),
-      randomPlayer:   $('#random-check').is(':checked')
+      randomPlayer:   $('#random-check').is(':checked'),
+      enemyVsEnemy:   $('#enemy-vs-enemy').is(':checked')
     }
 
     $(this.htmlContainer).hide();

@@ -92,6 +92,11 @@ Darwinator.Helpers = {
     var xNew = x + distance * Math.cos(angle);
     var yNew = y + distance * Math.sin(angle);
     return {x: xNew, y: yNew};
+  },
+
+  clearLineToTarget: function(from, to, game) {
+      var rayCast = new Phaser.Line(from.x, from.y, to.x, to.y);
+      return game.level.collisionLayer.getRayCastTiles(rayCast).length === 0;
   }
 
 };

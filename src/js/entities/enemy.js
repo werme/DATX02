@@ -80,18 +80,19 @@ Darwinator.Enemy.prototype.update = function() {
     } else {
     switch(this.category) {
       case this.categories.INTELLIGENT:
-        var currentTile = Darwinator.Helpers.pixelsToTile(this.body.x, this.body.y);
-        var targetTile  = Darwinator.Helpers.pixelsToTile(this.target.body.x, this.target.body.y);
-        var distance    = Darwinator.Helpers.calculateDistance(targetTile, currentTile);
+        var currentTile, targetTile, distance, clearView;
+        currentTile = Darwinator.Helpers.pixelsToTile(this.body.x, this.body.y);
+        targetTile  = Darwinator.Helpers.pixelsToTile(this.target.body.x, this.target.body.y);
+        distance    = Darwinator.Helpers.calculateDistance(targetTile, currentTile);
+        clearView   = Darwinator.Helpers.clearLineToTarget(this, this.target, this.game);
 
-        if (distance > 12) {
-          this.doMove();
-        } else {
+        if (distance < 6) {
+          this.flee();
+        } else if (clearView) {
           this.weapon.fire(this.target.body.x, this.target.body.y);
-          if (distance < 6) {
-            this.flee();
-          }
-        } 
+        } else {
+          this.doMove();
+        }
 
         break;
 

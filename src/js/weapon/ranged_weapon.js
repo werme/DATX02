@@ -31,7 +31,9 @@ Darwinator.RangedWeapon.prototype.fireInDirection = function (angle) {
 Darwinator.RangedWeapon.prototype.loadGun = function (angle) {
     if (!this.onCooldown() && this.bullets.countDead() > 0) {
         var bullet    = this.bullets.getFirstDead();
-        bullet.reset(this.owner.x, this.owner.y); // resets sprite and body
+        var center = {x: this.owner.x + this.owner.width / 2,
+                      y: this.owner.y + this.owner.height / 2};
+        bullet.reset(center.x, center.y); // resets sprite and body
         bullet.target = Darwinator.Enemy;
         bullet.owner = this.owner;
         this.lastAttack = Date.now();

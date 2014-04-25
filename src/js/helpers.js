@@ -94,6 +94,17 @@ Darwinator.Helpers = {
     return {x: xNew, y: yNew};
   },
 
+  /**
+  * Checks whether or not there is a collidable tile between the two targets.
+  * If it's possible to draw a line between the objects without it intersecting
+  * with a collidable tile, true is returned, otherwise, false.
+  * @method Darwinator.Helpers#clearLineToTarget
+  * @param {Obj} - The object containing the starting position
+  * @param {Obj} - The object containing the ending position
+  * @param {Game} - A reference to the game in which the two objects exists
+  * @return {Bool}  True if a line can be drawn between the objects without intersecting
+  *                 a collidable tile, otherwise false.
+  */
   clearLineToTarget: function(from, to, game) {
       var rayCast = new Phaser.Line(from.x, from.y, to.x, to.y);
       return game.level.collisionLayer.getRayCastTiles(rayCast).length === 0;

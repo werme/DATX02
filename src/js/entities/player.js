@@ -47,7 +47,7 @@ Darwinator.Player.prototype.update = function () {
             var strikeEnemy = function(player, enemy){
                 this.weapon.strike(enemy);
             }.bind(this);
-            
+
             this.game.physics.arcade.overlap(this, this.game.enemies, strikeEnemy);
         }
     }
@@ -308,10 +308,10 @@ Darwinator.Player.prototype.randomInput = function () {
     if (rand < 0.25) {
         //Moving left
         dir[0] = -1;
-    } else if (rand >= 0.25 && rand < 0.5) {
+    } else if (rand < 0.5) {
         //Moving right
         dir[0] = 1;
-    } else if (rand >= 0.5 && rand < 0.75) {
+    } else if (rand < 0.75) {
         //Moving up
         dir[1] = 1;
     } else {

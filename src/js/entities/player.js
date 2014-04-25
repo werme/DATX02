@@ -22,7 +22,7 @@ Darwinator.Player = function(game, x, y, cursors) {
     this.lastDirection = [0,0];
 
     this.moving = false;
-}
+};
 
 Darwinator.Player.prototype = Object.create(Darwinator.Entity.prototype);
 
@@ -75,8 +75,6 @@ Darwinator.Player.prototype.update = function () {
         this.body.velocity.setTo(0,0);
         var dir = [0,0];
         this.moving = false;
-
-
         
         if (this.cursors.left.isDown || this.leftKey.isDown) {
             dir[0] = -1;
@@ -151,10 +149,9 @@ Darwinator.Player.prototype.makeMove = function (dir) {
     
     // Set speed and angle
     this.game.physics.arcade.velocityFromAngle(this.direction, this.currentSpeed, this.body.velocity);
-}
+};
 
 Darwinator.Player.prototype.initKeys = function (game) {
-
     this.upKey     = game.input.keyboard.addKey(Phaser.Keyboard.W);
     this.leftKey   = game.input.keyboard.addKey(Phaser.Keyboard.A);
     this.downKey   = game.input.keyboard.addKey(Phaser.Keyboard.S);
@@ -173,7 +170,6 @@ Darwinator.Player.prototype.initKeys = function (game) {
     this.dodgeKey.onDown.add(this.tryDodge, this);
 
     var checkTimer = function (key) {
-
         if (!this.isDashing() && !!key.lastReleased && this.game.time.now - key.lastReleased < 200 && this.currBreath > 30) {
 
             this.dashCounter = 10;
@@ -213,17 +209,15 @@ Darwinator.Player.prototype.initKeys = function (game) {
     this.cursors.down.onDown.add(checkTimer, this);
     this.cursors.right.onDown.add(checkTimer, this);
     this.cursors.left.onDown.add(checkTimer, this);
-
 };
 
 Darwinator.Player.prototype.updateRandomInput = function () {
-    // Random movement and fire at random in a random direction.
-
     this.currentSpeed = this.speed;
     this.body.velocity.setTo(0,0);
     this.moving = false;
     var dir = [0,0];
 
+    // Random movement
     if ((Date.now() - this.lastRandomInput) > 750) {
         dir = this.randomInput();
         this.moving = true;
@@ -248,7 +242,7 @@ Darwinator.Player.prototype.updateRandomInput = function () {
         var angle = 360 * Math.random();
         this.weapon.fireInDirection(angle);
     }   
-}
+};
 
 Darwinator.Player.prototype.updateAttributes = function () {
 
@@ -321,4 +315,4 @@ Darwinator.Player.prototype.randomInput = function () {
     }
     this.lastDirection = dir;
     return dir;
-}
+};

@@ -23,7 +23,7 @@ Darwinator.Player = function(game, x, y, cursors) {
     this.lastDirection = [0,0];
 
     this.moving = false;
-}
+};
 
 Darwinator.Player.prototype = Object.create(Darwinator.Entity.prototype);
 
@@ -50,14 +50,13 @@ Darwinator.Player.prototype.update = function () {
      *  dash is completed, return to normal controls.
      */
     if (this.isDashing()) {
-        this.dash();
+        this.makeMove(this.direction);
+        this.dashCounter--;
     } else {
         this.currentSpeed = this.speed;
         this.body.velocity.setTo(0,0);
         var dir = [0,0];
         this.moving = false;
-
-
         
         if (this.cursors.left.isDown || this.leftKey.isDown) {
             dir[0] = -1;
@@ -133,7 +132,7 @@ Darwinator.Player.prototype.makeMove = function (dir) {
     
     // Set speed and angle
     this.game.physics.arcade.velocityFromAngle(this.direction, this.currentSpeed, this.body.velocity);
-}
+};
 
 Darwinator.Player.prototype.initDashInKeyDirection = function (key) {
 
@@ -150,32 +149,7 @@ Darwinator.Player.prototype.initDashInKeyDirection = function (key) {
     } else if (key === this.cursors.down || key === this.downKey) {
         this.direction = 90;
     }
-},
-
-Darwinator.Player.prototype.dash = function (key) { 
-
-    this.dashCounter--;
-    this.game.physics.arcade.velocityFromAngle(this.direction, this.currentSpeed, this.body.velocity);
-
-    // Make a fake-dash, and check if colliding. Always reset after, but end dash if collision would occour.
-    var preX = this.body.x,
-        preY = this.body.y,
-        realVelX = this.body.x + this.body.velocity.x * this.game.time.physicsElapsed,
-        realVelY = this.body.y + this.body.velocity.y * this.game.time.physicsElapsed;
-    
-    this.body.x = realVelX;
-    this.body.y = realVelY;
-    
-    var dashCollide = this.game.physics.arcade.overlap(this, this.game.level.collisionLayer)
-    
-    this.body.x = preX;
-    this.body.y = preY;
-    
-    if (dashCollide) {
-        this.body.velocity.setTo(0,0);
-        this.dashCounter = 0;
-    }
-},
+};
 
 Darwinator.Player.prototype.initKeys = function () {
 
@@ -232,13 +206,13 @@ Darwinator.Player.prototype.initEventListeners = function () {
 }
 
 Darwinator.Player.prototype.updateRandomInput = function () {
-    // Random movement and fire at random in a random direction.
 
     this.currentSpeed = this.speed;
     this.body.velocity.setTo(0,0);
     this.moving = false;
     var dir = [0,0];
 
+    // Random movement
     if ((Date.now() - this.lastRandomInput) > 750) {
         dir = this.randomInput();
         this.moving = true;
@@ -263,7 +237,7 @@ Darwinator.Player.prototype.updateRandomInput = function () {
         var angle = 360 * Math.random();
         this.weapon.fireInDirection(angle);
     }   
-}
+};
 
 Darwinator.Player.prototype.updateAttributes = function () {
 
@@ -292,6 +266,7 @@ Darwinator.Player.prototype.updateAttributes = function () {
 };
 
 Darwinator.Player.prototype.initAnimations = function () {
+
     var anims = [
         ['walk-up',     [0,1,2,3],     10, true],
         ['walk-down',   [4,5,6,7],     10, true],
@@ -318,6 +293,7 @@ Darwinator.Player.prototype.resetAttributes = function () {
 };
 
 Darwinator.Player.prototype.randomInput = function () {
+    
     this.lastRandomInput = Date.now();
     var rand = Math.random();
     var dir = [0,0];
@@ -336,4 +312,4 @@ Darwinator.Player.prototype.randomInput = function () {
     }
     this.lastDirection = dir;
     return dir;
-}
+};

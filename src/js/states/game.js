@@ -181,7 +181,9 @@ Darwinator.GameState.prototype = {
     },
 
     update: function () {
-        var checkDodging = function (bullet, entity) {return !entity.dodging;};
+        var checkDodging = function (bullet, entity) {
+            return !entity.dodging;
+        };
         //console.log(this.crosshair);
         for (var i = 0; i < this.bullets.length; i++) {
             var bulletGroup = this.bullets.getAt(i);
@@ -190,7 +192,13 @@ Darwinator.GameState.prototype = {
             this.game.physics.arcade.collide(bulletGroup, this.game.player, this.bulletCollisionHandler, checkDodging, this);
         }
 
-        var collideTerrainCallback = function(entity, tile) { entity.resetKnockBack(); };
+        var collideTerrainCallback = function(entity, tile) { 
+            entity.resetKnockBack(); 
+            if (!!entity.isDashing && entity.isDashing()){
+                entity.dashCounter = 0;
+            }
+        };
+
         this.game.physics.arcade.collide(this.game.player, this.level.collisionLayer, collideTerrainCallback);
         this.game.physics.arcade.collide(this.game.enemies, this.level.collisionLayer, collideTerrainCallback);
         this.game.physics.arcade.collide(this.game.enemies);

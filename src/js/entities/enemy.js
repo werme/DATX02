@@ -43,10 +43,6 @@ Darwinator.Enemy.prototype.categories = {
   DEFAULT:      'enemy'
 };
 
-Darwinator.Enemy.prototype.arm = function(weapon) {
-  this.weapon = weapon;
-};
-
 Darwinator.Enemy.prototype.update = function() {
   Darwinator.Entity.prototype.update.call(this);
   if (this.dead || this.knockedBack) {

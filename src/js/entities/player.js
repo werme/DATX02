@@ -52,7 +52,6 @@ Darwinator.Player.prototype.update = function () {
         this.makeMove(this.direction);
         this.dashCounter--;
     } else {
-        this.dashCounter = 10;
         this.currentSpeed = this.speed;
         this.body.velocity.setTo(0,0);
         var dir = [0,0];
@@ -154,7 +153,7 @@ Darwinator.Player.prototype.initKeys = function (game) {
     var checkTimer = function (key) {
         if (!this.isDashing() && !!key.lastReleased && this.game.time.now - key.lastReleased < 200 && this.currBreath > 30) {
 
-            
+            this.dashCounter = 10;
             this.currentSpeed = 1000;
             this.currBreath -= 30;
 

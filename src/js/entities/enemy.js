@@ -219,10 +219,10 @@ Darwinator.Enemy.prototype.randomInput = function () {
   if (rand < 0.25) {
       //Moving left
       this.body.velocity.x = -this.speed;
-  } else if (rand >= 0.25 && rand < 0.5) {
+  } else if (rand < 0.5) {
       //Moving right
       this.body.velocity.x = this.speed;
-  } else if (rand >= 0.5 && rand < 0.75) {
+  } else if (rand < 0.75) {
       //Moving up
       this.body.velocity.y = this.speed;
   } else {

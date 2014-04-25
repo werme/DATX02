@@ -41,7 +41,15 @@ Darwinator.Player.prototype.update = function () {
 
     var pointer = this.game.input.activePointer;
     if (pointer.isDown) {
-        this.weapon.fire(pointer.worldX, pointer.worldY);
+        if(this.weapon instanceof Darwinator.RangedWeapon){
+            this.weapon.fire(pointer.worldX, pointer.worldY);
+        }else{
+            var strikeEnemy = function(player, enemy){
+                this.weapon.strike(enemy);
+            }.bind(this);
+            
+            this.game.physics.arcade.overlap(this, this.game.enemies, strikeEnemy);
+        }
     }
 
     /*

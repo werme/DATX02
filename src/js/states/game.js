@@ -108,7 +108,9 @@ Darwinator.GameState.prototype = {
             enemy.arm(weapon);
         }
 
-        this.game.player.weapon = new Darwinator.Bow(this.game, this.game.player, this.bullets);
+        //var melee = new Darwinator.MeleeWeapon(this.game, undefined, undefined, this.game.player); 
+        var bow = new Darwinator.Bow(this.game, this.game.player, this.bullets);
+        this.game.player.arm(bow);
 
         this.game.world.bringToTop(this.gui);
 
@@ -184,7 +186,7 @@ Darwinator.GameState.prototype = {
         var checkDodging = function (bullet, entity) {
             return !entity.dodging;
         };
-        
+
         for (var i = 0; i < this.bullets.length; i++) {
             var bulletGroup = this.bullets.getAt(i);
             this.game.physics.arcade.collide(bulletGroup, this.game.enemies, this.bulletCollisionHandler, checkDodging, this);

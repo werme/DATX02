@@ -184,7 +184,7 @@ Darwinator.GameState.prototype = {
         var checkDodging = function (bullet, entity) {
             return !entity.dodging;
         };
-        //console.log(this.crosshair);
+        
         for (var i = 0; i < this.bullets.length; i++) {
             var bulletGroup = this.bullets.getAt(i);
             this.game.physics.arcade.collide(bulletGroup, this.game.enemies, this.bulletCollisionHandler, checkDodging, this);

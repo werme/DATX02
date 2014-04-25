@@ -108,6 +108,39 @@ Darwinator.Helpers = {
   clearLineToTarget: function(from, to, game) {
       var rayCast = new Phaser.Line(from.x, from.y, to.x, to.y);
       return game.level.collisionLayer.getRayCastTiles(rayCast).length === 0;
-  }
+  },
+
+  /**
+  * Translates an enemy group of sprites to chromosomes and fitness levels. 
+  * The index of the most fit individual is also provided.
+  *
+  * @method Darwinator.GeneticAlgorithm#translateEnemyWave
+  * @param {Phaser.Group} - A group of enemy sprites
+  * @return {Array} - Chromosomes, fitnessLevels and the index of the fittest individual.
+  *                     as [chromosomes, fitnessLevels, fittestIndex]
+  */
+  enemiesToChromosomes: function(enemyGroup, varRange){
+    // Function for converting a single Phaser.Sprite into a chromosome
+    var enemyToChromosome = function (enemy, varRange){
+      var attrSum = enemy.attributes.strength + enemy.attributes.agility + enemy.attributes.intellect;
+      var chrom = [enemy.attributes.strength, enemy.attributes.agility, enemy.attributes.intellect];
+      
+      // distribute remaining points
+      var i = 0;
+      while(attrSum++ < varRange)
+        chrom[i++ % Darwinator.NUMBER_OF_GENES]++;
+
+      return chrom;
+    };
+
+    var currentSize, population, i, enemy;
+    currentSize = enemyGroup.length; //could add an extra param for this.
+    population  = [];
+    for(i = 0; i < currentSize; i++){
+      enemy = enemyGroup.getAt(i);
+      population[i] = enemyToChromosome(enemy, varRange);
+    }
+    return population;
+  },
 
 };

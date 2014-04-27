@@ -173,6 +173,6 @@ Darwinator.Helpers = {
       enemyGroup.add(enemy);
     }
     return enemyGroup;
-  },
+  }
 
 };

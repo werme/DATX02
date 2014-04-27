@@ -252,6 +252,6 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   evaluateInd: function(enemy, targetFunction) { 
     var fitness = 1 - (1 / targetFunction(enemy));
     return fitness == -Infinity ? 0 : fitness;// maximize fitness based on enemy score
-  },
+  }
 
 };

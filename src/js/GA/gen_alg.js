@@ -243,15 +243,16 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   },
 
   /**
-  * Evaluates an enemy sprite based on its score.
+  * Evaluates an individual based on the given target function. 
+  * A higher target function value will give a higher fitness.
   *
   * @method Darwinator.GeneticAlgorithm#evaluateInd
-  * @param {Phaser.Sprite} - The individual to be evaluated
+  * @param {Array} - The individual to be evaluated
   * @return {Number} - The fitness level of the individual
   */
-  evaluateInd: function(enemy, targetFunction) { 
-    var fitness = 1 - (1 / targetFunction(enemy));
-    return fitness == -Infinity ? 0 : fitness;// maximize fitness based on enemy score
+  evaluateInd: function(individual, targetFunction) { 
+    var fitness = 1 - (1 / targetFunction(individual));
+    return fitness == -Infinity ? 0 : fitness;
   }
 
 };

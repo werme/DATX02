@@ -33,30 +33,50 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @param {Array} [spawnPositions] - The positions on which the enemies are allowed to spawn.
   * @return {Phaser.Group} The new wave of enemies
   */
-  generatePopulation: function(game, target, enemyGroup, singleGeneration, spawnPositions) {
-    var attributes      = target.attributes;
-    this.variableRange  = attributes.strength + attributes.agility + attributes.intellect - this.PLAYER_ADVANTAGE;
-    spawnPositions      = Phaser.Math.shuffleArray(spawnPositions.slice(0));
+  generatePopulation: function(population, options, targetFunction) {
+    var singleGeneration = options.singleGeneration;
+    var fitnessLevels = [];
+    spawnPositions = Phaser.Math.shuffleArray(spawnPositions.slice(0));
 
-    if(!enemyGroup){
-      enemyGroup = game.add.group();
+    if(!population.length){
+      population = this.initPopulation(options.varRange);
       console.log('GA: Enemy group not provided. Initializing with default values.');
-      enemyGroup = this.initPopulation(enemyGroup, game, target, spawnPositions);
-      return enemyGroup;
+      if (singleGeneration) {
+        return population;
+      }
     }
     console.log('GA: Starting GA run..');
-    var translatedEnemies = this.translateEnemyWave(enemyGroup);
-    var population        = translatedEnemies[0];
-    var fitnessLevels     = translatedEnemies[1];
-    var bestIndex         = translatedEnemies[2];
-    var bestIndividual    = population[bestIndex];
+
+    if (options.preEvaluated) {
+      for (var i = 0; i < population.length; i++) {
+        fitnessLevels.push(population[i].fitness);
+      }
+    } else {
+      fitnessLevels = evaluatePopulation();
+    }
     
     // weak population => more mutation
+    if (options.preEvaluated)
     this.mutationRate = fitnessLevels[bestIndex] <= this.POOR_MAX_FITNESS ? 20 : 1;
 
     // algorithm main loop
     for (var i = 0; i < (singleGeneration ? 1 : this.NUMBER_OF_GENERATIONS); i++) {
-      
+
+      var maxFit = 0.0;
+      var bestIndividual = population[0];
+
+      for(var l = 0; l < population.length; l++) {
+        var ind = population[l];
+        fitnessLevels[l] = this.evaluateInd(decodedInd);
+        if(fitnessLevels[l] > maxFit) {
+          maxFit = fitnessLevels[l];
+          bestIndividual = population[l];
+          if (maxFit > totalMaxFit) {
+            totalMaxFit = maxFit;
+          }
+        }
+      }
+
       // clone population
       var tmpPopulation = population.slice(0);
 
@@ -229,97 +249,9 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @param {Phaser.Sprite} - The individual to be evaluated
   * @return {Number} - The fitness level of the individual
   */
-  evaluateInd: function(enemy) { 
-    var fitness = 1 - (1 / this.enemyScore(enemy));
+  evaluateInd: function(enemy, targetFunction) { 
+    var fitness = 1 - (1 / targetFunction(enemy));
     return fitness == -Infinity ? 0 : fitness;// maximize fitness based on enemy score
-  },
-
-  /**
-  * Calculates the score of an enemy based on statistical attributes.
-  *
-  * @method Darwinator.GeneticAlgorithm#enemyScore
-  * @param {Phaser.Sprite} - An enemy sprite
-  * @return {Number} - The score of the enemy for a given game round.
-  */
-  enemyScore: function(enemy) { 
-    var score = undefined;
-    if (enemy.surviveMode) {
-      score = enemy.alive ? enemy.initialHealth*2 + enemy.health : enemy.damageDone; 
-    } else {
-      score = enemy.alive ? enemy.damageDone*2 : enemy.damageDone;
-    }
-    return score;
-  },
-
-  /**
-  *
-  * Use the attributes of an enemy sprite as genes in a real-value chromosome.
-  *
-  * @method Darwinator.GeneticAlgorithm#enemyToChromosome
-  * @param {Phaser.Sprite} - An enemy sprite
-  * @return {Array} - The enemy represented as a real-value chromosome
-  */
-  enemyToChromosome: function (enemy){
-    var attrSum = enemy.attributes.strength + enemy.attributes.agility + enemy.attributes.intellect;
-    var chrom = [enemy.attributes.strength, enemy.attributes.agility, enemy.attributes.intellect];
-    
-    // distribute remaining points
-    var i = 0;
-    while(attrSum++ < this.variableRange)
-      chrom[i++ % this.NUMBER_OF_GENES]++;
-
-    return chrom;
-  },
-
-  /**
-  * Translates an enemy group of sprites to chromosomes and fitness levels. 
-  * The index of the most fit individual is also provided.
-  *
-  * @method Darwinator.GeneticAlgorithm#translateEnemyWave
-  * @param {Phaser.Group} - A group of enemy sprites
-  * @return {Array} - Chromosomes, fitnessLevels and the index of the fittest individual.
-  *                     as [chromosomes, fitnessLevels, fittestIndex]
-  */
-  translateEnemyWave: function(enemyGroup){
-    var currentSize = enemyGroup.length; //could add an extra param for this.
-    var population  = new Array(currentSize);
-    var fitness     = new Array(currentSize);
-    var bestIndex   = 0;
-    for(var i = 0; i < currentSize; i++){
-      var enemy     = enemyGroup.getAt(i);
-      population[i] = this.enemyToChromosome(enemy);
-      fitness[i]    = this.evaluateInd(enemy);
-      if(fitness[i] > fitness[bestIndex]){
-        bestIndex = i;
-      }
-    }
-    return [population, fitness, bestIndex];
-  }, 
-
-  /**
-  * Replaces the given group of enemy sprites to the next generation of sprites.
-  *
-  * @method Darwinator.GeneticAlgorithm#translatePopulation
-  * @param {Array} [population] - The chromosomes of the new generation.
-  * @param {Phaser.Group} [enemyGroup] - The enemy sprite group to replace.
-  * @param {Phaser.Game} [game] - The game that uses the algorithm.
-  * @param {Phaser.Sprite} [target] - The sprite to be attacked by the enemies.
-  * @param {Array} [spawnPositions] - The positions on which the enemies are allowed to spawn.
-  * @return {Phaser.Group} The new group of enemies.
-  */    
-  translatePopulation: function(population, enemyGroup, game, target, spawnPositions){
-    // FIXME possible memory leak, should call destroy but it crashes for some reason..
-    //game.enemies.destroy(true);
-    enemyGroup = game.add.group();
-    for(var i = 0; i < population.length; i++){
-      var pos         = spawnPositions[i % spawnPositions.length];
-      var strength    = population[i][0];
-      var agility     = population[i][1];
-      var intellect   = population[i][2];
-      var enemy       = new Darwinator.Enemy(game, target, pos.x, pos.y, undefined, strength, agility, intellect);
-      enemyGroup.add(enemy);
-    }
-    return enemyGroup;
   },
 
 };

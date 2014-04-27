@@ -61,6 +61,27 @@ window.Darwinator = window.Darwinator || {
   AI_PATH_UPDATE_FREQUENCY : 5,
 
   /*
+  *   Variables for the GA settings
+  */
+  PLAYER_ADVANTAGE: 10,
+  NUMBER_OF_GENES: 3,
+  /**
+  * Calculates the score of an enemy based on statistical attributes.
+  *
+  * @method Darwinator#EVALUATE_ENEMY
+  * @param {Phaser.Sprite} - An enemy sprite
+  * @return {Number} - The score of the enemy for a given game round.
+  */
+  EVALUATE_ENEMY: function(enemy) { 
+    var score = undefined;
+    if (enemy.surviveMode) {
+      score = enemy.alive ? enemy.initialHealth*2 + enemy.health : enemy.damageDone; 
+    } else {
+      score = enemy.alive ? enemy.damageDone*2 : enemy.damageDone;
+    }
+    return score;
+  }, 
+  /*
   * Other Stats 
   */
   ROUND_LENGTH_SECONDS: 60,

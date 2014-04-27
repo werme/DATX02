@@ -114,7 +114,7 @@ Darwinator.Helpers = {
   * Translates an enemy group of sprites to chromosomes and fitness levels. 
   * The index of the most fit individual is also provided.
   *
-  * @method Darwinator.GeneticAlgorithm#translateEnemyWave
+  * @method Darwinator.Helpers#enemiesToChromosomes
   * @param {Phaser.Group} - A group of enemy sprites
   * @return {Array} - Chromosomes, fitnessLevels and the index of the fittest individual.
   *                     as [chromosomes, fitnessLevels, fittestIndex]
@@ -127,8 +127,9 @@ Darwinator.Helpers = {
       
       // distribute remaining points
       var i = 0;
-      while(attrSum++ < varRange)
+      while(attrSum++ < varRange) {
         chrom[i++ % Darwinator.NUMBER_OF_GENES]++;
+      }
 
       return chrom;
     };
@@ -136,11 +137,42 @@ Darwinator.Helpers = {
     var currentSize, population, i, enemy;
     currentSize = enemyGroup.length; //could add an extra param for this.
     population  = [];
+    population.bestIndex = 0;
     for(i = 0; i < currentSize; i++){
       enemy = enemyGroup.getAt(i);
-      population[i] = enemyToChromosome(enemy, varRange);
+      population[i].chromosome = enemyToChromosome(enemy, varRange);
+      population[i].fitness    = Darwinator.EVALUATE_ENEMY(enemy);
+      if (population[i].fitness > population[population.bestIndex].fitness) {
+        population.bestIndex = i;
+      }
     }
     return population;
+  },
+
+    /**
+  * Replaces the given group of enemy sprites to the next generation of sprites.
+  *
+  * @method Darwinator.GeneticAlgorithm#translatePopulation
+  * @param {Array} [population] - The chromosomes of the new generation.
+  * @param {Phaser.Group} [enemyGroup] - The enemy sprite group to replace.
+  * @param {Phaser.Game} [game] - The game that uses the algorithm.
+  * @param {Phaser.Sprite} [target] - The sprite to be attacked by the enemies.
+  * @param {Array} [spawnPositions] - The positions on which the enemies are allowed to spawn.
+  * @return {Phaser.Group} The new group of enemies.
+  */    
+  chromosomesToEnemies: function(population, game, spawnPositions){
+    // FIXME possible memory leak, should call destroy but it crashes for some reason..
+    //game.enemies.destroy(true);
+    var enemyGroup = game.add.group();
+    for(var i = 0; i < population.length; i++){
+      var pos         = spawnPositions[i % spawnPositions.length];
+      var strength    = population[i][0];
+      var agility     = population[i][1];
+      var intellect   = population[i][2];
+      var enemy       = new Darwinator.Enemy(game, undefined, pos.x, pos.y, undefined, strength, agility, intellect);
+      enemyGroup.add(enemy);
+    }
+    return enemyGroup;
   },
 
 };

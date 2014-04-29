@@ -205,7 +205,7 @@ Darwinator.Enemy.prototype.flee = function() {
 };
 
 Darwinator.Enemy.prototype.findTarget = function() {
-  var enemyTeam = this.team === 1 ? this.game.team1 : this.game.team2;
+  var enemyTeam = this.team === 1 ? this.game.team2 : this.game.team1;
   var counter = 100;
 
   if (enemyTeam.nrAlive === 0) {

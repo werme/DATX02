@@ -4,7 +4,8 @@ Darwinator.Player = function(game, x, y, cursors) {
     Darwinator.Entity.call(this, game, x, y, 'player');
     this.cursors = cursors;
     this.anchor.setTo(0.5, 0.5);
-    this.initKeys(game);
+    this.initKeys();
+    this.initEventListeners();
     this.initAnimations();
 
     this.attributes.strength  = Darwinator.PLAYER_BASE_STRENGTH;
@@ -40,7 +41,15 @@ Darwinator.Player.prototype.update = function () {
 
     var pointer = this.game.input.activePointer;
     if (pointer.isDown) {
-        this.weapon.fire(pointer.worldX, pointer.worldY);
+        if(this.weapon instanceof Darwinator.RangedWeapon){
+            this.weapon.fire(pointer.worldX, pointer.worldY);
+        }else{
+            var strikeEnemy = function(player, enemy){
+                this.weapon.strike(enemy);
+            }.bind(this);
+
+            this.game.physics.arcade.overlap(this, this.game.enemies, strikeEnemy);
+        }
     }
 
     /*
@@ -49,27 +58,8 @@ Darwinator.Player.prototype.update = function () {
      *  dash is completed, return to normal controls.
      */
     if (this.isDashing()) {
+        this.makeMove(this.direction);
         this.dashCounter--;
-        this.game.physics.arcade.velocityFromAngle(this.direction, this.currentSpeed, this.body.velocity);
-
-        // Make a fake-dash, and check if colliding. Always reset after, but end dash if collision would occour.
-        var preX = this.body.x,
-            preY = this.body.y,
-            realVelX = this.body.x + this.body.velocity.x * this.game.time.physicsElapsed,
-            realVelY = this.body.y + this.body.velocity.y * this.game.time.physicsElapsed;
-        
-        this.body.x = realVelX;
-        this.body.y = realVelY;
-        
-        var dashCollide = this.game.physics.arcade.overlap(this, this.game.level.collisionLayer)
-        
-        this.body.x = preX;
-        this.body.y = preY;
-        
-        if (dashCollide) {
-            this.body.velocity.setTo(0,0);
-            this.dashCounter = 0;
-        }
     } else {
         this.currentSpeed = this.speed;
         this.body.velocity.setTo(0,0);
@@ -112,6 +102,7 @@ Darwinator.Player.prototype.update = function () {
 };
 
 Darwinator.Player.prototype.makeMove = function (dir) {
+    
     // Going upwards
     if (dir[1] === 1) {
         this.direction = 270;
@@ -151,67 +142,79 @@ Darwinator.Player.prototype.makeMove = function (dir) {
     this.game.physics.arcade.velocityFromAngle(this.direction, this.currentSpeed, this.body.velocity);
 };
 
-Darwinator.Player.prototype.initKeys = function (game) {
-    this.upKey     = game.input.keyboard.addKey(Phaser.Keyboard.W);
-    this.leftKey   = game.input.keyboard.addKey(Phaser.Keyboard.A);
-    this.downKey   = game.input.keyboard.addKey(Phaser.Keyboard.S);
-    this.rightKey  = game.input.keyboard.addKey(Phaser.Keyboard.D);
-    this.sprintKey = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
-    this.telKey    = game.input.keyboard.addKey(Phaser.Keyboard.Q);
-    this.dodgeKey  = game.input.keyboard.addKey(Phaser.Keyboard.R);
+Darwinator.Player.prototype.initDashInKeyDirection = function (key) {
+
+    this.dashCounter  = 10;
+    this.currentSpeed = 1000;
+    this.currBreath  -= 30;
+
+    if (key === this.cursors.left || key === this.leftKey) {
+        this.direction = 180;
+    } else if (key === this.cursors.right || key === this.rightKey) {
+        this.direction = 0;
+    } else if (key === this.cursors.up || key === this.upKey) {
+        this.direction = 270;
+    } else if (key === this.cursors.down || key === this.downKey) {
+        this.direction = 90;
+    }
+};
+
+Darwinator.Player.prototype.initKeys = function () {
+
+    this.upKey     = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
+    this.leftKey   = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
+    this.downKey   = this.game.input.keyboard.addKey(Phaser.Keyboard.S);
+    this.rightKey  = this.game.input.keyboard.addKey(Phaser.Keyboard.D);
+    this.sprintKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
+    this.telKey    = this.game.input.keyboard.addKey(Phaser.Keyboard.Q);
+    this.dodgeKey  = this.game.input.keyboard.addKey(Phaser.Keyboard.R);
+};
+
+Darwinator.Player.prototype.initEventListeners = function () {
+
+    var setLastReleased = function (key) {
+        key.lastReleased = this.game.time.now;
+    };
+
+    var checkLastReleased = function (key) {
+
+        var triedDash = !!key.lastReleased && this.game.time.now - key.lastReleased < 200;
+        var dashReady = !this.isDashing() && this.currBreath > 30;
+
+        if (triedDash && dashReady) {
+            this.initDashInKeyDirection(key);
+        }
+    };
 
     this.telKey.onDown.add(
         function() {
             var pointer = this.game.input.activePointer;
             this.tryTeleport(pointer.worldX, pointer.worldY);
-        }
-      , this);
+        }, this);
 
     this.dodgeKey.onDown.add(this.tryDodge, this);
 
-    var checkTimer = function (key) {
-        if (!this.isDashing() && !!key.lastReleased && this.game.time.now - key.lastReleased < 200 && this.currBreath > 30) {
+    this.upKey.onUp.add(setLastReleased, this);
+    this.leftKey.onUp.add(setLastReleased, this);
+    this.downKey.onUp.add(setLastReleased, this);
+    this.rightKey.onUp.add(setLastReleased, this);
+    this.cursors.up.onUp.add(setLastReleased, this);
+    this.cursors.down.onUp.add(setLastReleased, this);
+    this.cursors.right.onUp.add(setLastReleased, this);
+    this.cursors.left.onUp.add(setLastReleased, this);
 
-            this.dashCounter = 10;
-            this.currentSpeed = 1000;
-            this.currBreath -= 30;
-
-            if (key === this.cursors.left || key === this.leftKey) {
-                this.direction = 180;
-            } else if (key === this.cursors.right || key === this.rightKey) {
-                this.direction = 0;
-            } else if (key === this.cursors.up || key === this.upKey) {
-                this.direction = 270;
-            } else if (key === this.cursors.down || key === this.downKey) {
-                this.direction = 90;
-            }
-        }
-    };
-
-    var addTimer = function(key) {
-        key.lastReleased = this.game.time.now;
-    };
-
-    this.upKey.onUp.add(addTimer, this);
-    this.leftKey.onUp.add(addTimer, this);
-    this.downKey.onUp.add(addTimer, this);
-    this.rightKey.onUp.add(addTimer, this);
-    this.cursors.up.onUp.add(addTimer, this);
-    this.cursors.down.onUp.add(addTimer, this);
-    this.cursors.right.onUp.add(addTimer, this);
-    this.cursors.left.onUp.add(addTimer, this);
-
-    this.upKey.onDown.add(checkTimer, this);
-    this.leftKey.onDown.add(checkTimer, this);
-    this.downKey.onDown.add(checkTimer, this);
-    this.rightKey.onDown.add(checkTimer, this);
-    this.cursors.up.onDown.add(checkTimer, this);
-    this.cursors.down.onDown.add(checkTimer, this);
-    this.cursors.right.onDown.add(checkTimer, this);
-    this.cursors.left.onDown.add(checkTimer, this);
-};
+    this.upKey.onDown.add(checkLastReleased, this);
+    this.leftKey.onDown.add(checkLastReleased, this);
+    this.downKey.onDown.add(checkLastReleased, this);
+    this.rightKey.onDown.add(checkLastReleased, this);
+    this.cursors.up.onDown.add(checkLastReleased, this);
+    this.cursors.down.onDown.add(checkLastReleased, this);
+    this.cursors.right.onDown.add(checkLastReleased, this);
+    this.cursors.left.onDown.add(checkLastReleased, this);
+}
 
 Darwinator.Player.prototype.updateRandomInput = function () {
+
     this.currentSpeed = this.speed;
     this.body.velocity.setTo(0,0);
     this.moving = false;
@@ -271,6 +274,7 @@ Darwinator.Player.prototype.updateAttributes = function () {
 };
 
 Darwinator.Player.prototype.initAnimations = function () {
+
     var anims = [
         ['walk-up',     [0,1,2,3],     10, true],
         ['walk-down',   [4,5,6,7],     10, true],
@@ -297,16 +301,17 @@ Darwinator.Player.prototype.resetAttributes = function () {
 };
 
 Darwinator.Player.prototype.randomInput = function () {
+    
     this.lastRandomInput = Date.now();
     var rand = Math.random();
     var dir = [0,0];
     if (rand < 0.25) {
         //Moving left
         dir[0] = -1;
-    } else if (rand >= 0.25 && rand < 0.5) {
+    } else if (rand < 0.5) {
         //Moving right
         dir[0] = 1;
-    } else if (rand >= 0.5 && rand < 0.75) {
+    } else if (rand < 0.75) {
         //Moving up
         dir[1] = 1;
     } else {

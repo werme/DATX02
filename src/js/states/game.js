@@ -108,7 +108,9 @@ Darwinator.GameState.prototype = {
             enemy.arm(weapon);
         }
 
-        this.game.player.weapon = new Darwinator.Bow(this.game, this.game.player, this.bullets);
+        //var melee = new Darwinator.MeleeWeapon(this.game, undefined, undefined, this.game.player); 
+        var bow = new Darwinator.Bow(this.game, this.game.player, this.bullets);
+        this.game.player.arm(bow);
 
         this.game.world.bringToTop(this.gui);
 
@@ -169,6 +171,7 @@ Darwinator.GameState.prototype = {
             if (this.game.player.health <= 0) {
                 this.game.player.resetAttributes();
             }
+            this.game.player.initEventListeners();
             this.game.player.reset(x, y, Darwinator.PLAYER_BASE_HEALTH + this.game.player.attributes.strength);
         } else {
             this.game.player = new Darwinator.Player(this.game, x, y, this.cursors);
@@ -180,8 +183,10 @@ Darwinator.GameState.prototype = {
     },
 
     update: function () {
-        var checkDodging = function (bullet, entity) {return !entity.dodging;};
-        //console.log(this.crosshair);
+        var checkDodging = function (bullet, entity) {
+            return !entity.dodging;
+        };
+
         for (var i = 0; i < this.bullets.length; i++) {
             var bulletGroup = this.bullets.getAt(i);
             this.game.physics.arcade.collide(bulletGroup, this.game.enemies, this.bulletCollisionHandler, checkDodging, this);
@@ -189,7 +194,13 @@ Darwinator.GameState.prototype = {
             this.game.physics.arcade.collide(bulletGroup, this.game.player, this.bulletCollisionHandler, checkDodging, this);
         }
 
-        var collideTerrainCallback = function(entity, tile) { entity.resetKnockBack(); };
+        var collideTerrainCallback = function(entity, tile) { 
+            entity.resetKnockBack(); 
+            if (!!entity.isDashing && entity.isDashing()){
+                entity.dashCounter = 0;
+            }
+        };
+
         this.game.physics.arcade.collide(this.game.player, this.level.collisionLayer, collideTerrainCallback);
         this.game.physics.arcade.collide(this.game.enemies, this.level.collisionLayer, collideTerrainCallback);
         this.game.physics.arcade.collide(this.game.enemies);

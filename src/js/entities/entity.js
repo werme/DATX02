@@ -72,6 +72,10 @@ Darwinator.Entity.prototype.update = function() {
 
 };
 
+Darwinator.Entity.prototype.arm = function(weapon) {
+  this.weapon = weapon;
+};
+
 Darwinator.Entity.prototype.takeDamage = function(amount) {
   this.health = this.health - amount;
   this.underAttack = true;

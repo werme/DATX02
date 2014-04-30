@@ -207,7 +207,7 @@ Darwinator.GeneticAlgorithm = {
   */
   evaluateInd: function(individual, targetFunction) { 
     var fitness = 1 - (1 / targetFunction(individual));
-    return fitness == -Infinity ? 0 : fitness;
+    return fitness === -Infinity ? 0 : fitness;
   }
 
 };

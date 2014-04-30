@@ -108,6 +108,71 @@ Darwinator.Helpers = {
   clearLineToTarget: function(from, to, game) {
       var rayCast = new Phaser.Line(from.x, from.y, to.x, to.y);
       return game.level.collisionLayer.getRayCastTiles(rayCast).length === 0;
-  }
+  },
+
+  /**
+  * Translates an enemy group of sprites to chromosomes and fitness levels. 
+  * The index of the most fit individual is also provided.
+  *
+  * @method Darwinator.Helpers#enemiesToChromosomes
+  * @param {Phaser.Group} - A group of enemy sprites
+  * @return {Array} - Chromosomes, fitnessLevels and the index of the fittest individual.
+  *                     as [chromosomes, fitnessLevels, fittestIndex]
+  */
+  enemiesToChromosomes: function(enemyGroup, varRange){
+    // Function for converting a single Phaser.Sprite into a chromosome
+    var enemyToChromosome = function (enemy, varRange){
+      var attrSum = enemy.attributes.strength + enemy.attributes.agility + enemy.attributes.intellect;
+      var chrom = [enemy.attributes.strength, enemy.attributes.agility, enemy.attributes.intellect];
+      
+      // distribute remaining points
+      var i = 0;
+      while(attrSum++ < varRange) {
+        chrom[i++ % Darwinator.NUMBER_OF_GENES]++;
+      }
+
+      return chrom;
+    };
+
+    var currentSize, population, i, enemy;
+    currentSize = enemyGroup.length; //could add an extra param for this.
+    population  = [];
+    population.fitness = [];
+    population.maxFit = -Infinity;
+    for(i = 0; i < currentSize; i++){
+      enemy = enemyGroup.getAt(i);
+      population[i] = enemyToChromosome(enemy, varRange);
+      population.fitness[i] = Darwinator.EVALUATE_ENEMY(enemy);
+      if (population.fitness[i] > population.maxFit) {
+        population.bestInd = population[i];
+        population.maxFit = population.fitness[i];
+      }
+    }
+    return population;
+  },
+
+    /**
+  * Replaces the given group of enemy sprites to the next generation of sprites.
+  *
+  * @method Darwinator.GeneticAlgorithm#translatePopulation
+  * @param {Array} [population] - The chromosomes of the new generation.
+  * @param {Phaser.Group} [enemyGroup] - The enemy sprite group to replace.
+  * @param {Phaser.Game} [game] - The game that uses the algorithm.
+  * @param {Phaser.Sprite} [target] - The sprite to be attacked by the enemies.
+  * @param {Array} [spawnPositions] - The positions on which the enemies are allowed to spawn.
+  * @return {Phaser.Group} The new group of enemies.
+  */    
+  chromosomesToSprites: function(population, group ,spawnPositions){
+    console.log(population);
+    for(var i = 0; i < population.length; i++) {
+      var pos         = spawnPositions[i % spawnPositions.length];
+      var strength    = population[i][0];
+      var agility     = population[i][1];
+      var intellect   = population[i][2];
+      var enemy       = new Darwinator.Enemy(group.game, undefined, pos.x, pos.y, undefined, strength, agility, intellect);
+      group.add(enemy);
+    }
+    return group;
+  },
 
 };

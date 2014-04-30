@@ -137,13 +137,15 @@ Darwinator.Helpers = {
     var currentSize, population, i, enemy;
     currentSize = enemyGroup.length; //could add an extra param for this.
     population  = [];
-    population.bestIndex = 0;
+    population.fitness = [];
+    population.maxFit = -Infinity;
     for(i = 0; i < currentSize; i++){
       enemy = enemyGroup.getAt(i);
-      population[i].chromosome = enemyToChromosome(enemy, varRange);
-      population[i].fitness    = Darwinator.EVALUATE_ENEMY(enemy);
-      if (population[i].fitness > population[population.bestIndex].fitness) {
-        population.bestIndex = i;
+      population[i] = enemyToChromosome(enemy, varRange);
+      population.fitness[i] = Darwinator.EVALUATE_ENEMY(enemy);
+      if (population.fitness[i] > population.maxFit) {
+        population.bestInd = population[i];
+        population.maxFit = population.fitness[i];
       }
     }
     return population;
@@ -160,19 +162,17 @@ Darwinator.Helpers = {
   * @param {Array} [spawnPositions] - The positions on which the enemies are allowed to spawn.
   * @return {Phaser.Group} The new group of enemies.
   */    
-  chromosomesToEnemies: function(population, game, spawnPositions){
-    // FIXME possible memory leak, should call destroy but it crashes for some reason..
-    //game.enemies.destroy(true);
-    var enemyGroup = game.add.group();
-    for(var i = 0; i < population.length; i++){
+  chromosomesToSprites: function(population, group ,spawnPositions){
+    console.log(population);
+    for(var i = 0; i < population.length; i++) {
       var pos         = spawnPositions[i % spawnPositions.length];
       var strength    = population[i][0];
       var agility     = population[i][1];
       var intellect   = population[i][2];
-      var enemy       = new Darwinator.Enemy(game, undefined, pos.x, pos.y, undefined, strength, agility, intellect);
-      enemyGroup.add(enemy);
+      var enemy       = new Darwinator.Enemy(group.game, undefined, pos.x, pos.y, undefined, strength, agility, intellect);
+      group.add(enemy);
     }
-    return enemyGroup;
+    return group;
   },
 
 };

@@ -43,24 +43,32 @@ Darwinator.Level.prototype = {
   },
 
   spawnEnemies: function () {
-    var options, varRange, attributes, pop, nextPop;
-    attributes = target.attributes;
-    varRange = attributes.strength + attributes.agility + attributes.intellect - Darwinator.PLAYER_ADVANTAGE;
+    var options, varRange, attributes, pop, nextPop, preEvaluated;
+    if (Darwinator.settings.enemyVsEnemy) {
+      varRange = 10;
+    } else {
+      attributes = this.game.player.attributes;
+      varRange = attributes.strength + attributes.agility + attributes.intellect - Darwinator.PLAYER_ADVANTAGE;
+    }
 
     if (!!this.enemies) {
       pop = Darwinator.Helpers.enemiesToChromosomes(this.enemies, varRange);
+      preEvaluated = true;
     } else {
       pop = [];
+      preEvaluated = false;
     }
 
     options = {
-      singleGeneration: true,
       varRange: varRange,
-      preEvaluated: true
-    }
+      preEvaluated: preEvaluated
+    };
     
     nextPop = Darwinator.GeneticAlgorithm.generatePopulation(pop, options, Darwinator.EVALUATE_ENEMY);
-    this.enemies = Darwinator.Helpers.chromosomesToSprites(nextPop);
+    this.enemies = this.game.add.group();
+
+    this.spawnPositions = Phaser.Math.shuffleArray(this.spawnPositions);
+    Darwinator.Helpers.chromosomesToSprites(nextPop, this.enemies, this.spawnPositions);
     this.enemies.setAll('target', this.game.player);
     return this.enemies;
   },

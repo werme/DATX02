@@ -1,6 +1,6 @@
 'use strict';
 
-window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
+Darwinator.GeneticAlgorithm = {
 
   // GA parameter constants
   POPULATION_SIZE:          10,
@@ -8,7 +8,6 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   MUTATION_PROBABILITY:     0.025,
   TOURNAMENT_PARAMETER:     0.75,
   NUMBER_OF_GENERATIONS:    100,
-  NUMBER_OF_VARIABLES:      3,
   NUMBER_OF_GENES:          3,
   TOURNAMENT_SIZE:          4,
   ELITISM_DEGREE:           2,
@@ -34,84 +33,58 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @return {Phaser.Group} The new wave of enemies
   */
   generatePopulation: function(population, options, targetFunction) {
-    var singleGeneration = options.singleGeneration;
-    var fitnessLevels = [];
-    spawnPositions = Phaser.Math.shuffleArray(spawnPositions.slice(0));
-
     if(!population.length){
       population = this.initPopulation(options.varRange);
       console.log('GA: Enemy group not provided. Initializing with default values.');
-      if (singleGeneration) {
-        return population;
-      }
+      return population;
     }
     console.log('GA: Starting GA run..');
-
-    if (options.preEvaluated) {
-      for (var i = 0; i < population.length; i++) {
-        fitnessLevels.push(population[i].fitness);
-      }
-    } else {
-      fitnessLevels = evaluatePopulation();
-    }
     
     // weak population => more mutation
-    if (options.preEvaluated)
-    this.mutationRate = fitnessLevels[bestIndex] <= this.POOR_MAX_FITNESS ? 20 : 1;
+    this.mutationRate = population.maxFit <= this.POOR_MAX_FITNESS ? 20 : 1;
 
     // algorithm main loop
-    for (var i = 0; i < (singleGeneration ? 1 : this.NUMBER_OF_GENERATIONS); i++) {
+    for (var i = 0; i < (options.preEvaluated ? 1 : this.NUMBER_OF_GENERATIONS); i++) {
 
-      var maxFit = 0.0;
-      var bestIndividual = population[0];
-
-      for(var l = 0; l < population.length; l++) {
-        var ind = population[l];
-        fitnessLevels[l] = this.evaluateInd(decodedInd);
-        if(fitnessLevels[l] > maxFit) {
-          maxFit = fitnessLevels[l];
-          bestIndividual = population[l];
-          if (maxFit > totalMaxFit) {
-            totalMaxFit = maxFit;
-          }
-        }
+      if (!options.preEvaluated) {
+        evaluatePopulation(population, targetFunction);
+        population.bestInd = population[0];
+        population.maxFit = population.bestInd.fitness;
       }
 
-      // clone population
-      var tmpPopulation = population.slice(0);
+      var tmpPopulation = [];
+      tmpPopulation.fitness = population.fitness.slice(0);
 
       // selection
       for(var l = 0; l < population.length; l += 2) {
-        var ind1 = this.selection(fitnessLevels);
-        var ind2 = this.selection(fitnessLevels);
+        var index1 = this.selection(population.fitness);
+        var index2 = this.selection(population.fitness);
         // crossover
         if (Math.random() < this.CROSSOVER_PROBABILITY) {
-          var chromePair        = this.cross(population[ind1], population[ind2]);
+          var chromePair        = this.cross(population[index1], population[index2]);
           tmpPopulation[l]      = chromePair[0];
           tmpPopulation[l + 1]  = chromePair[1];
         } else {
-          tmpPopulation[l]      = population[ind1];
-          tmpPopulation[l + 1]  = population[ind2];
+          tmpPopulation[l]      = population[index1];
+          tmpPopulation[l + 1]  = population[index2];
         }
         // mutation
         tmpPopulation[l]    = this.mutate(tmpPopulation[l]);
         tmpPopulation[l+1]  = this.mutate(tmpPopulation[l+1]);
       }
 
-      if(fitnessLevels[bestIndex] > this.POOR_MAX_FITNESS){
         // elitism
-        for(l = 0; l < this.ELITISM_DEGREE; l++) {
-          tmpPopulation[l] = bestIndividual;
-        }
+      for(l = 0; l < this.ELITISM_DEGREE; l++) {
+        tmpPopulation[l] = population.bestInd;
       }
 
       // replace old population
       population = tmpPopulation;
     }
 
-    var nextGeneration = this.translatePopulation(population, enemyGroup, game, target, spawnPositions);
     console.log('GA: Returning the new generation!');
-    return nextGeneration;
+    console.log("Population: ", population);
+    return population;
   },
 
   /**
@@ -124,35 +97,17 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @param {Array} [spawnPositions] - The positions on which the enemies are allowed to spawn.
   * @return {Array} An enemy population with default attribute values.
   */
-  initPopulation: function(enemyGroup, game, target, spawnPositions) {
-    // 4 different enemy initial set of attributes - just an example, not permanent!
-    var enemiesPerType  = this.POPULATION_SIZE / 5;
-    var pos;
-    var strength, agility, intellect;
-    for(var i = 0; i < this.POPULATION_SIZE; i++){
-      pos = spawnPositions[i % spawnPositions.length];
-      if(i < enemiesPerType){
-        // smart but slow and weak
-        strength  = 0;
-        agility   = 0;
-        intellect = this.variableRange; 
-      }else if(i < enemiesPerType*2){
-        // strong but slow and stupid
-        strength  = this.variableRange;
-        agility   = 0;
-        intellect = 0;
-      }else if(i < enemiesPerType*3){
-        // fast but weak and stupid
-        strength  = 0;
-        agility   = this.variableRange;
-        intellect = 0;
-      }else{
-        // hybrid
-        strength  = agility = intellect = Math.round(this.variableRange / 3);
+  initPopulation: function(variableRange) {
+    var population, i, l;
+    population = [];  
+    for (i = 0; i < this.POPULATION_SIZE; i++) {
+      population[i] = [];
+      for (l = 0; l < this.NUMBER_OF_GENES; l++) {
+        population[i][l] = Math.random() * variableRange;
       }
-      enemyGroup.add(new Darwinator.Enemy(game, target, pos.x, pos.y, undefined, strength, agility, intellect));
     }
-    return enemyGroup;
+
+    return population;
   },
 
   /**
@@ -199,12 +154,12 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   * @return {Number} - The index of the selected individual.
   */
   selection: function(fitnessLevels) {
-    var tournamentParticipants = new Array(this.TOURNAMENT_SIZE);
+    var tournamentParticipants = [];
 
     /* Select individuals at random, and represent them as a touple containing their indexes and their
     * fitness levels. */
     for (var i = 0; i < this.TOURNAMENT_SIZE; i++) {
-      tournamentParticipants[i]    = new Array(2);
+      tournamentParticipants[i]    = [];
       tournamentParticipants[i][0] = Math.round(Math.random() * (this.POPULATION_SIZE - 1));
       tournamentParticipants[i][1] = fitnessLevels[tournamentParticipants[i][0]];
     }
@@ -251,7 +206,7 @@ window.Darwinator.GeneticAlgorithm = window.Darwinator.GeneticAlgorithm || {
   */
   evaluateInd: function(enemy, targetFunction) { 
     var fitness = 1 - (1 / targetFunction(enemy));
-    return fitness == -Infinity ? 0 : fitness;// maximize fitness based on enemy score
-  },
+    return fitness === -Infinity ? 0 : fitness;// maximize fitness based on enemy score
+  }
 
 };

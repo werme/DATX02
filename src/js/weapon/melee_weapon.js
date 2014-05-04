@@ -23,6 +23,7 @@ Darwinator.MeleeWeapon.prototype.strike = function(target){
             dmg *= 2;
         }
         target.takeDamage(dmg);
+        this.owner.damageDone += dmg;
         this.lastAttack = Date.now();
         this.tryKnockBack(target);
     }

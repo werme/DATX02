@@ -359,40 +359,58 @@ Darwinator.GameState.prototype = {
             dmgIntelligence = 0,
             dmgStrength     = 0,
             dmgAgility      = 0,
-            dmgDefault      = 0;        
+            dmgDefault      = 0,
+            scoreAgiltiy    = 0,
+            scoreStrength   = 0,
+            scoreIntellect  = 0,
+            scoreDefault    = 0;        
 
         for (var i = 0; i < this.game.enemies.length; i++){
             var e = this.game.enemies.getAt(i);
-            console.log(e);
             if (e.category === "enemy_intellect") {
                 nbrIntelligence += 1;
                 dmgIntelligence += e.damageDone;
+                scoreIntellect  += e.abilityScore;
             } else if (e.category === "enemy_agility") {
-                nbrAgility += 1;
-                dmgAgility += e.damageDone;
+                nbrAgility   += 1;
+                dmgAgility   += e.damageDone;
+                scoreAgiltiy += e.abilityScore;
             } else if (e.category === "enemy_strength") {
-                nbrStrength += 1;
-                dmgStrength += e.damageDone;
+                nbrStrength   += 1;
+                dmgStrength   += e.damageDone;
+                scoreStrength += e.abilityScore;
             } else {
-                nbrDefault += 1;
-                dmgDefault += e.damageDone;
+                nbrDefault   += 1;
+                dmgDefault   += e.damageDone;
+                scoreDefault += e.abilityScore;
             }
             if (e.alive === true) {
                 nbrAlive +=1;
             }
         }
         console.log("Roundnumber: " + this.numberOfRounds);
-        console.log("Number of Intelligent Enemies: " + nbrIntelligence);
-        console.log("Damage done by Intelligent Enemies: " + dmgIntelligence);
-        console.log("Number of Agile Enemies: " + nbrAgility);
-        console.log("Damage done by Agile Enemies: " + dmgAgility);
-        console.log("Number of Strong Enemies: " + nbrStrength);
-        console.log("Damage done by Strong Enemies: " + dmgStrength);
-        console.log("Number of Default Enemies: " + nbrDefault);
-        console.log("Damage done by Default Enemies: " + dmgDefault);
+        console.log("****   INTELLIGENT   ****")
+        console.log("Number of Enemies: " + nbrIntelligence);
+        console.log("Damage done: " + dmgIntelligence);
+        console.log("Ability Score: " + scoreIntellect);
+        console.log("****   AGILITY   ****")
+        console.log("Number of Enemies: " + nbrAgility);
+        console.log("Damage done: " + dmgAgility);
+        console.log("Ability Score: " + scoreAgiltiy);
+        console.log("****   STRENGTH   ****")
+        console.log("Number of Enemies: " + nbrStrength);
+        console.log("Damage done: " + dmgStrength);
+        console.log("Ability Score: " + scoreStrength);
+        console.log("****   DEFAULT   ****")
+        console.log("Number of Enemies: " + nbrDefault);
+        console.log("Damage done: " + dmgDefault);
+        console.log("Ability Score: " + scoreDefault);
+        console.log("_______SUMMARY_______")
         console.log("Number of Enemies Alive: " + nbrAlive);
-        var dmg = dmgIntelligence + dmgAgility + dmgStrength;
-        console.log("Total Damage: " + dmg);
+        var dmg = dmgIntelligence + dmgAgility + dmgStrength + dmgDefault;
+        console.log("Total Damage Done: " + dmg);
+        var totalScore = scoreDefault + scoreStrength + scoreAgiltiy + scoreIntellect;
+        console.log("Total Score: " + totalScore);
     },
 
 };

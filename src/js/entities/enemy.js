@@ -5,8 +5,10 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
     this.category = this.categories.STRONG;
   } else if (agility > intellect && agility > strength) {
     this.category = this.categories.AGILE;
+    this.speed = Darwinator.ENTITY_BASE_SPEED + this.agility*2;
   } else if (intellect > strength && intellect > agility) {
     this.category = this.categories.INTELLIGENT;
+    this.fleeing = false;
   } else {
     this.category = this.categories.DEFAULT;
   }
@@ -27,6 +29,7 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
 
   // score properties to measure success
   this.damageDone = 0;
+  this.abilityScore = 0;
 
   // melee cooldown
   this.lastMeleeTimestamp = 0;
@@ -84,9 +87,18 @@ Darwinator.Enemy.prototype.update = function() {
 
         if (distance < 6) {
           this.flee();
+          this.fleeing = true;
         } else if (clearView) {
+          if (this.fleeing == true){
+            this.abilityScore += 3;
+            this.fleeing = false;
+          }
           this.weapon.fire(this.target.body.x, this.target.body.y);
         } else {
+          if (this.fleeing == true){
+            this.abilityScore += 3;
+            this.fleeing = false;
+          }
           this.doMove();
         }
 
@@ -95,14 +107,23 @@ Darwinator.Enemy.prototype.update = function() {
       case this.categories.STRONG:
         this.doMove();
         if (this.path.length) {
-        this.tryTeleport(undefined, undefined, this.telePos.bind(this));
+          this.tryTeleport(undefined, undefined, this.telePos.bind(this));
+        }
+        if (this.path.length < 3) {
+          this.abilityScore += 1;
         }
         break;
 
       case this.categories.AGILE:
         this.doMove();
-      if(this.underAttack) {
-        this.tryDodge();
+        if(this.underAttack) {
+          this.tryDodge();
+        }
+        if (this.path.length < 3) {
+          this.abilityScore += 1;
+        } else if (this.path.length > 7) {
+          this.tryDodge();
+          this.lastAbilityUse = Date.now() - Darwinator.ENTITY_DODGE_COOLDOWN / 2;
         }
         break;
 

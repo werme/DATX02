@@ -36,7 +36,8 @@ Darwinator.Entity = function(game, x, y, key, health, strength, agility, intelle
   this.criticalStrike = this.attributes.intellect / 100; // Critical strike percentage
   this.currBreath     = this.stamina;
   
-  this.abilityCooldownMs  = Darwinator.ENTITY_ABILITY_COOLDOWN;
+  this.dodgeCoolDown  = Darwinator.ENTITY_DODGE_COOLDOWN;
+  this.teleportCoolDown = Darwinator.ENTITY_TELEPORT_COOLDOWN;
   this.lastAbilityUse     = 0;
 
   this.dodging              = false;
@@ -102,12 +103,13 @@ Darwinator.Entity.prototype.setAnimations = function(anims) {
 * @method Darwinator.Entity#tryDodge
 */
 Darwinator.Entity.prototype.tryDodge = function() {
-  if((Date.now() - this.lastAbilityUse) >= this.abilityCooldownMs){
+  if((Date.now() - this.lastAbilityUse) >= this.dodgeCoolDown){
     this.dodging = true;
     this.underAttack = false;
     this.alpha = 0.5;
+    this.speed = this.speed * 2;
     this.lastAbilityUse = Date.now();
-    var dodgeCallback = function() {this.dodging = false; this.alpha = 1; };
+    var dodgeCallback = function() {this.dodging = false; this.alpha = 1; this.speed = this.speed / 2 };
     this.dodgeTimer = this.game.time.events.add(Phaser.Timer.SECOND * this.dodgeDurationSeconds, dodgeCallback, this);
   }
 };
@@ -121,7 +123,7 @@ Darwinator.Entity.prototype.tryDodge = function() {
 * @method Darwinator.Entity#tryTeleport
 */
 Darwinator.Entity.prototype.tryTeleport = function(x, y, posFunction) {
-  if((Date.now() - this.lastAbilityUse) >= this.abilityCooldownMs){
+  if((Date.now() - this.lastAbilityUse) >= this.teleportCoolDown){
     if(posFunction){
       var pos = posFunction();
       x = pos.x;

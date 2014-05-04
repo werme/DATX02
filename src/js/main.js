@@ -53,7 +53,8 @@ window.Darwinator = window.Darwinator || {
   ENTITY_BASE_STAMINA     : 50,
   ENTITY_BASE_DAMAGE      : 5,
   ENTITY_BASE_SPEED       : 50,
-  ENTITY_ABILITY_COOLDOWN : 10000,
+  ENTITY_TELEPORT_COOLDOWN : 10000,
+  ENTITY_DODGE_COOLDOWN : 5000,
 
   /*
   * Enemy Stats 
@@ -75,9 +76,27 @@ window.Darwinator = window.Darwinator || {
   EVALUATE_ENEMY: function(enemy) { 
     var score = undefined;
     if (enemy.surviveMode) {
-      score = enemy.alive ? enemy.initialHealth*2 + enemy.health : enemy.damageDone; 
+      score = enemy.alive ? enemy.initialHealth + enemy.health*2 : enemy.damageDone; 
     } else {
-      score = enemy.alive ? enemy.damageDone*2 : enemy.damageDone;
+      if (enemy.category == "enemy_intellect"){
+        score = enemy.alive ? enemy.damageDone*4 + enemy.abilityScore*4 : 
+                              enemy.damageDone*4 + enemy.abilityScore;
+        console.log("intelligence: " + score);
+      } else if (enemy.category == "enemy_strength") {
+        score = enemy.alive ? enemy.damageDone*2 + enemy.abilityScore : 
+                              enemy.damageDone + enemy.abilityScore;  
+        console.log("strength: " + score);
+      }  else if (enemy.category == "enemy_agility") {
+        score = enemy.alive ? enemy.damageDone*2 + enemy.abilityScore: 
+                              enemy.damageDone + enemy.abilityScore;  
+        console.log("agility: " + score);
+      }  else {
+        score = enemy.alive ? enemy.damageDone*2 + enemy.abilityScore : 
+                              enemy.damageDone + enemy.abilityScore;  
+        console.log("default: " + score);
+
+      }
+
     }
     return score;
   }, 

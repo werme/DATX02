@@ -23,6 +23,8 @@ Darwinator.GameState = function() {
     this.displayTimeLeftTimer  = null;
     this.crosshair             = null;
 
+    this.numberOfRounds        = 0;
+
 };
 
 Darwinator.GameState.prototype = {
@@ -318,6 +320,9 @@ Darwinator.GameState.prototype = {
     },
 
     endRound: function() {
+        this.numberOfRounds += 1;
+        this.gatherStatistics();
+
         this.beforeSwitch();
         this.game.state.start('result', false);
     },
@@ -343,6 +348,51 @@ Darwinator.GameState.prototype = {
 
     goFullScreen: function(){
       this.game.scale.startFullScreen();
+    },
+
+    gatherStatistics: function() {
+        var nbrIntelligence = 0,
+            nbrAgility      = 0,
+            nbrStrength     = 0,
+            nbrDefault      = 0,
+            nbrAlive        = 0,
+            dmgIntelligence = 0,
+            dmgStrength     = 0,
+            dmgAgility      = 0,
+            dmgDefault      = 0;        
+
+        for (var i = 0; i < this.game.enemies.length; i++){
+            var e = this.game.enemies.getAt(i);
+            console.log(e);
+            if (e.category === "enemy_intellect") {
+                nbrIntelligence += 1;
+                dmgIntelligence += e.damageDone;
+            } else if (e.category === "enemy_agility") {
+                nbrAgility += 1;
+                dmgAgility += e.damageDone;
+            } else if (e.category === "enemy_strength") {
+                nbrStrength += 1;
+                dmgStrength += e.damageDone;
+            } else {
+                nbrDefault += 1;
+                dmgDefault += e.damageDone;
+            }
+            if (e.alive === true) {
+                nbrAlive +=1;
+            }
+        }
+        console.log("Roundnumber: " + this.numberOfRounds);
+        console.log("Number of Intelligent Enemies: " + nbrIntelligence);
+        console.log("Damage done by Intelligent Enemies: " + dmgIntelligence);
+        console.log("Number of Agile Enemies: " + nbrAgility);
+        console.log("Damage done by Agile Enemies: " + dmgAgility);
+        console.log("Number of Strong Enemies: " + nbrStrength);
+        console.log("Damage done by Strong Enemies: " + dmgStrength);
+        console.log("Number of Default Enemies: " + nbrDefault);
+        console.log("Damage done by Default Enemies: " + dmgDefault);
+        console.log("Number of Enemies Alive: " + nbrAlive);
+        var dmg = dmgIntelligence + dmgAgility + dmgStrength;
+        console.log("Total Damage: " + dmg);
     },
 
 };

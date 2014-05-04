@@ -21,14 +21,14 @@ Darwinator.RangedWeapon.prototype.fire = function (x, y) {
 };
 
 Darwinator.RangedWeapon.prototype.fireInDirection = function (angle) {
-    var bullet = this.loadGun(angle);
+    var bullet = this.loadGun();
     if (bullet) {
         bullet.rotation = angle;
         this.game.physics.arcade.velocityFromRotation(angle, this.bulletSpeed, bullet.body.velocity);
     } 
 }
 
-Darwinator.RangedWeapon.prototype.loadGun = function (angle) {
+Darwinator.RangedWeapon.prototype.loadGun = function () {
     if (!this.onCooldown() && this.bullets.countDead() > 0) {
         var bullet    = this.bullets.getFirstDead();
         var center = {x: this.owner.x + this.owner.width / 2,

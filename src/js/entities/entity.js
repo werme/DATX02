@@ -58,6 +58,7 @@ Darwinator.Entity.prototype.update = function() {
     return;
   }
 
+  /*
   if(this.knockedBack){
     // TODO add formulas for these based on entity attributes
     var knockbackSpeed      = 1000;
@@ -65,11 +66,12 @@ Darwinator.Entity.prototype.update = function() {
 
     this.game.physics.arcade.moveToXY(this, this.knockBackPos.x, this.knockBackPos.y, knockbackSpeed);
     
+    // FIXME logical bug here - can't just check for an increase in coordinates without checking direction
     if(this.game.physics.arcade.distanceToXY(this, this.knockBackPos.x, this.knockBackPos.y) < knockbackTolerance 
         || this.x >= this.knockBackPos.x && this.y >= this.knockBackPos.y){
       this.knockedBack = false;
     }
-  }
+  }*/
 
 };
 

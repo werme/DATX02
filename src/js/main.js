@@ -75,18 +75,20 @@ window.Darwinator = window.Darwinator || {
   */
   EVALUATE_ENEMY: function(enemy) { 
     var score = undefined;
+    var categories = Darwinator.Enemy.prototype.categories;
+
     if (enemy.surviveMode) {
       score = enemy.alive ? enemy.initialHealth + enemy.health*2 : enemy.damageDone; 
     } else {
-      if (enemy.category === "enemy_intellect"){
+      if (enemy.category === categories.INTELLIGENT){
         score = enemy.alive ? enemy.damageDone*4 + enemy.abilityScore*4 : 
                               enemy.damageDone*4 + enemy.abilityScore;
         console.log("intelligence: " + score);
-      } else if (enemy.category === "enemy_strength") {
+      } else if (enemy.category === categories.STRONG) {
         score = enemy.alive ? enemy.damageDone*2 + enemy.abilityScore : 
                               enemy.damageDone + enemy.abilityScore;  
         console.log("strength: " + score);
-      }  else if (enemy.category === "enemy_agility") {
+      }  else if (enemy.category === categories.AGILE) {
         score = enemy.alive ? enemy.damageDone*2 + enemy.abilityScore: 
                               enemy.damageDone + enemy.abilityScore;  
         console.log("agility: " + score);

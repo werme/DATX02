@@ -110,9 +110,10 @@ Darwinator.GameState.prototype = {
             enemy.arm(weapon);
         }
 
-        //var melee = new Darwinator.MeleeWeapon(this.game, undefined, undefined, this.game.player); 
+        var melee = new Darwinator.MeleeWeapon(this.game, undefined, undefined, this.game.player); 
         var bow = new Darwinator.Bow(this.game, this.game.player, this.bullets);
         this.game.player.arm(bow);
+        this.game.player.arm(melee);
 
         this.game.world.bringToTop(this.gui);
 

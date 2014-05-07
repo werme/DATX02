@@ -40,16 +40,16 @@ Darwinator.Player.prototype.update = function () {
 
     var pointer = this.game.input.activePointer;
     if (pointer.isDown) {
-        /*if(this.weapon instanceof Darwinator.RangedWeapon){
-            this.weapon.fire(pointer.worldX, pointer.worldY);
-        }else{
-            var strikeEnemy = function(player, enemy){
-                this.weapon.strike(enemy);
+        this.weapons.ranged.fire(pointer.worldX, pointer.worldY);
+    }
+
+    if(this.meleeKey.isDown){
+        console.log('MELEE');
+        var strikeEnemy = function(player, enemy){
+                this.weapons.melee.strike(enemy);
             }.bind(this);
 
             this.game.physics.arcade.overlap(this, this.game.enemies, strikeEnemy);
-        }*/
-        this.weapons.ranged.fire(pointer.worldX, pointer.worldY);
     }
 
     /*
@@ -166,6 +166,7 @@ Darwinator.Player.prototype.initKeys = function () {
     this.downKey   = this.game.input.keyboard.addKey(Phaser.Keyboard.S);
     this.rightKey  = this.game.input.keyboard.addKey(Phaser.Keyboard.D);
     this.sprintKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
+    this.meleeKey  = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     this.telKey    = this.game.input.keyboard.addKey(Phaser.Keyboard.Q);
     this.dodgeKey  = this.game.input.keyboard.addKey(Phaser.Keyboard.R);
 };

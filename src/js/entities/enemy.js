@@ -93,7 +93,7 @@ Darwinator.Enemy.prototype.update = function() {
             this.abilityScore += 3;
             this.fleeing = false;
           }
-          this.weapon.fire(this.target.body.x, this.target.body.y);
+          this.weapons.ranged.fire(this.target.body.x, this.target.body.y);
         } else {
           if (this.fleeing == true){
             this.abilityScore += 3;
@@ -150,7 +150,7 @@ Darwinator.Enemy.prototype.telePos = function() {
 }
 
 Darwinator.Enemy.prototype.meleeAttack = function(){
-  this.damage += this.weapon.strike(this.target);
+  this.damage += this.weapons.melee.strike(this.target);
 };
 
 Darwinator.Enemy.prototype.doMove = function() {

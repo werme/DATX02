@@ -13,7 +13,6 @@ Darwinator.Player = function(game, x, y, cursors) {
     this.attributes.intellect = Darwinator.PLAYER_BASE_INTELLECT;
     this.updateAttributes();
 
-    this.weapon      = null;
     this.dashTimer   = null;
     this.direction   = 90;
     this.dashCounter = 0;
@@ -41,7 +40,7 @@ Darwinator.Player.prototype.update = function () {
 
     var pointer = this.game.input.activePointer;
     if (pointer.isDown) {
-        if(this.weapon instanceof Darwinator.RangedWeapon){
+        /*if(this.weapon instanceof Darwinator.RangedWeapon){
             this.weapon.fire(pointer.worldX, pointer.worldY);
         }else{
             var strikeEnemy = function(player, enemy){
@@ -49,7 +48,8 @@ Darwinator.Player.prototype.update = function () {
             }.bind(this);
 
             this.game.physics.arcade.overlap(this, this.game.enemies, strikeEnemy);
-        }
+        }*/
+        this.weapons.ranged.fire(pointer.worldX, pointer.worldY);
     }
 
     /*

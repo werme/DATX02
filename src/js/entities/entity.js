@@ -49,6 +49,8 @@ Darwinator.Entity = function(game, x, y, key, health, strength, agility, intelle
 
   this.knockedBack  = false;
   this.knockBackPos = undefined;
+
+  this.weapons = {melee: null, ranged: null};
 };
 
 Darwinator.Entity.prototype = Object.create(Phaser.Sprite.prototype);
@@ -76,7 +78,11 @@ Darwinator.Entity.prototype.update = function() {
 };
 
 Darwinator.Entity.prototype.arm = function(weapon) {
-  this.weapon = weapon;
+  if(weapon instanceof Darwinator.MeleeWeapon){
+    this.weapons.melee = weapon;
+  }else{
+    this.weapons.ranged = weapon;
+  }
 };
 
 Darwinator.Entity.prototype.takeDamage = function(amount) {

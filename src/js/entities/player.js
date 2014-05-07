@@ -44,7 +44,6 @@ Darwinator.Player.prototype.update = function () {
     }
 
     if(this.meleeKey.isDown){
-        console.log('MELEE');
         var strikeEnemy = function(player, enemy){
                 this.weapons.melee.strike(enemy);
             }.bind(this);

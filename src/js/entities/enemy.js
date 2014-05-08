@@ -133,10 +133,7 @@ Darwinator.Enemy.prototype.update = function() {
     } 
   }
 
-  // TODO make this prettier
-  if(this.category !== this.categories.INTELLIGENT){
-    this.game.physics.arcade.overlap(this, this.target, this.meleeAttack, null, this);
-  }
+  this.game.physics.arcade.overlap(this, this.target, this.meleeAttack, null, this);
 };
 
 Darwinator.Enemy.prototype.telePos = function() {

@@ -243,7 +243,7 @@ Darwinator.Player.prototype.updateRandomInput = function () {
     // Fire at random
     if (Math.random() >= 0.5) {
         var angle = 360 * Math.random();
-        this.weapon.fireInDirection(angle);
+        this.weapons.ranged.fireInDirection(angle);
     }   
 };
 

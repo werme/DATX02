@@ -13,11 +13,9 @@ Darwinator.GeneticAlgorithm = {
   ELITISM_DEGREE:           2,
 
   // GA parameter variables
-  variableRange:           undefined,
   mutationRate:            undefined,
 
   // Other constants
-  PLAYER_ADVANTAGE:         10,
   POOR_MAX_FITNESS:         0.1,
 
   /**

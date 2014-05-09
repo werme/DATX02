@@ -21,16 +21,13 @@ Darwinator.GeneticAlgorithm = {
   POOR_MAX_FITNESS:         0.1,
 
   /**
-  * Generates a population of individuals from a given population. The new population is likely to be 
-  * more adapted to find a solution to the enemyScore() function.
+  * Generates a population of individuals. If no population is provided, an initial population will be generated randomly.
   *
   * @method Darwinator.GeneticAlgorithm#generatePopulation
-  * @param {Phaser.Game} [game] - The game that uses the algorithm.
-  * @param {Phaser.Sprite} [target] - The sprite to be attacked by the enemies.
-  * @param {Phaser.Group} [enemyGroup] - Optional. If not provided, a group with default values will be set.
-  * @param {Boolean} [singleGeneration] - If true, only one iteration will be run, else, this.NUMBER_OF_GENERATIONS is used.
-  * @param {Array} [spawnPositions] - The positions on which the enemies are allowed to spawn.
-  * @return {Phaser.Group} The new wave of enemies
+  * @param {Number} [population] - The current population.
+  * @param {Object} [options] - Options for the GA. Supported options: preEvaluated (true/false), varRange
+  * @param {Object} [targetFunction] - The target function used for evaluation. Only used is options.preEvaluated is false.
+  * @return {Array} The next generation of individuals.
   */
   generatePopulation: function(population, options, targetFunction) {
     if(!population.length){
@@ -88,14 +85,11 @@ Darwinator.GeneticAlgorithm = {
   },
 
   /**
-  * Generates a group of enemy sprites with some default values.
+  * Generates a population randomly with gene values within the given range.
   *
   * @method Darwinator.GeneticAlgorithm#initPopulation
-  * @param {Phaser.Group} [enemyGroup] - The enemy group to fill with enemies.
-  * @param {Phaser.Game} [game] - The game that uses the algorithm.
-  * @param {Phaser.Sprite} [target] - The sprite to be attacked by the enemies.
-  * @param {Array} [spawnPositions] - The positions on which the enemies are allowed to spawn.
-  * @return {Array} An enemy population with default attribute values.
+  * @param {Number} [variableRange] - The range in which gene values are allowed to be generated
+  * @return {Array} - A random initial population.
   */
   initPopulation: function(variableRange) {
     var population, i, l;

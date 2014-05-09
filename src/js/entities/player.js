@@ -22,6 +22,10 @@ Darwinator.Player = function(game, x, y, cursors) {
     this.lastDirection = [0,0];
 
     this.moving = false;
+
+    if(Darwinator.settings.immortalPlayer){
+        this.health = Infinity;
+    }
 };
 
 Darwinator.Player.prototype = Object.create(Darwinator.Entity.prototype);

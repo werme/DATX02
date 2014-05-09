@@ -19,7 +19,8 @@ Darwinator.GeneticAlgorithm = {
   POOR_MAX_FITNESS:         0.1,
 
   /**
-  * Generates a population of individuals. If no population is provided, an initial population will be generated randomly.
+  * Generates a population of individuals. If no population is provided, or the population is empty, 
+  * an initial population will be generated randomly.
   *
   * @method Darwinator.GeneticAlgorithm#generatePopulation
   * @param {Number} [population] - The current population.
@@ -28,7 +29,7 @@ Darwinator.GeneticAlgorithm = {
   * @return {Array} The next generation of individuals.
   */
   generatePopulation: function(population, options, targetFunction) {
-    if(!population.length){
+    if(!population || !population.length){
       population = this.initPopulation(options.varRange);
       console.log('GA: Enemy group not provided. Initializing with default values.');
       return population;

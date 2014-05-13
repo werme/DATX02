@@ -219,6 +219,7 @@ Darwinator.GameState.prototype = {
         }
 
         if (this.game.player.dead) {
+            this.gatherStatistics();
             this.gameover();
         }
     },

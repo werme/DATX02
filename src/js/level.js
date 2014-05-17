@@ -49,6 +49,7 @@ Darwinator.Level.prototype = {
     } else {
       attributes = this.game.player.attributes;
       varRange = attributes.strength + attributes.agility + attributes.intellect - Darwinator.PLAYER_ADVANTAGE;
+      varRange =  varRange < 1 ? 1 : varRange; 
     }
 
     if (!!this.enemies) {

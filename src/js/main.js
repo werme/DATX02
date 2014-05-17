@@ -74,38 +74,20 @@ window.Darwinator = window.Darwinator || {
   * @return {Number} - The score of the enemy for a given game round.
   */
   EVALUATE_ENEMY: function(enemy) { 
-    var score = undefined;
+    var score;
     var categories = Darwinator.Enemy.prototype.categories;
 
     if (enemy.surviveMode) {
-      score = enemy.alive ? enemy.initialHealth + enemy.health*2 : enemy.damageDone; 
+      score = enemy.alive ? enemy.initialHealth + enemy.health * 2 : enemy.damageDone; 
     } else {
-      if (enemy.category === categories.INTELLIGENT){
-        score = enemy.alive ? enemy.damageDone*4 + enemy.abilityScore*4 : 
-                              enemy.damageDone*4 + enemy.abilityScore;
-        console.log("intelligence: " + score);
-      } else if (enemy.category === categories.STRONG) {
-        score = enemy.alive ? enemy.damageDone*2 + enemy.abilityScore : 
-                              enemy.damageDone + enemy.abilityScore;  
-        console.log("strength: " + score);
-      }  else if (enemy.category === categories.AGILE) {
-        score = enemy.alive ? enemy.damageDone*2 + enemy.abilityScore: 
-                              enemy.damageDone + enemy.abilityScore;  
-        console.log("agility: " + score);
-      }  else {
-        score = enemy.alive ? enemy.damageDone*2 + enemy.abilityScore : 
-                              enemy.damageDone + enemy.abilityScore;  
-        console.log("default: " + score);
-
-      }
-
+        score = enemy.alive ? (enemy.damageDone * 1.2) : enemy.damageDone;
     }
     return score;
   }, 
   /*
   * Other Stats 
   */
-  ROUND_LENGTH_SECONDS: 60,
+  ROUND_LENGTH_SECONDS: 40,
 
   TILE_WIDTH: 0,
   TILE_HEIGHT: 0,
@@ -116,6 +98,103 @@ window.Darwinator = window.Darwinator || {
   setTileSize: function(w,h) {
     this.TILE_WIDTH = w;
     this.TILE_HEIGHT = h;
+  },
+
+  currentWave: 0,
+  enemyStats: [],
+
+  saveWaveStats: function(population)
+  {
+    var i, enemy, enemyAttr;
+    var wave = [];
+    for (i = 0; i < population.length; i++) 
+    {
+        enemyAttr = population.getAt(i).attributes;
+        enemy = population.getAt(i);
+        wave[i] = {
+            strength: enemyAttr.strength,
+            intelligence: enemyAttr.intellect,
+            agility: enemyAttr.agility,
+            category: enemy.category
+        };
+
+    }
+    this.enemyStats.push(wave);
+  },
+
+  getStats: function(from, to) 
+  {
+    var i, j, wave, levelStats, waveSize;
+    var start = !!from ? from : 0;
+    var stop = !!to ? to : this.enemyStats.length;
+    
+    var total = {
+                str: 0,
+                ag: 0,
+                inte: 0,
+                nrInt: 0,
+                nrAg: 0,
+                nrStr: 0
+             };
+
+    for(i = start; i < stop; i++) 
+    {
+        levelStats = {
+            totInt: 0,
+            totStr: 0,
+            totAg: 0,
+            nrInt: 0,
+            nrAg: 0,
+            nrStr: 0
+        };
+        wave = this.enemyStats[i];
+        waveSize = wave.length;
+        
+        for (j = 0; j < waveSize; j++) 
+        {
+            levelStats.totAg += wave[j].agility;
+            levelStats.totStr += wave[j].strength;
+            levelStats.totInt += wave[j].intelligence;
+            switch(wave[j].category) 
+            {
+                case 'enemy_intellect' :
+                    levelStats.nrInt++;
+                    break;
+                case 'enemy_agility':
+                    levelStats.nrAg++;
+                    break;
+                case 'enemy_strength':
+                    levelStats.nrStr++;
+                    break;
+                default:
+            }
+        }
+
+        total.str += levelStats.totStr;
+        total.ag += levelStats.totAg;
+        total.inte += levelStats.totInt;
+        total.nrStr += levelStats.nrStr;
+        total.nrAg += levelStats.nrAg;
+        total.nrInt += levelStats.nrInt;
+
+
+        console.log('\nGeneration: ' + (i + 1));
+        console.log('Average Strength: ' + levelStats.totStr / 10);
+        console.log('Average Agility: ' + levelStats.totAg / 10);
+        console.log('Average Intelligence: ' + levelStats.totInt / 10);
+        console.log('Total Strength: ' + levelStats.nrStr);
+        console.log('Total Agility: ' + levelStats.nrAg);
+        console.log('Total Intelligence: ' + levelStats.nrInt);
+
+    }
+  console.log('\nTotal over all generations: ');
+  console.log('Total Strength: ' + total.nrStr);
+  console.log('Total Agility: ' + total.nrAg);
+  console.log('Total Intelligence: ' + total.nrInt);
+  console.log('\nAverage enemy over all waves (weighted towards later generations): ');
+  console.log('Strength: ' + total.str / 10);
+  console.log('Agility: ' + total.ag / 10);
+  console.log('Intelligence: ' + total.inte / 10);
   }
 
 };

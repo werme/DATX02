@@ -135,7 +135,7 @@ Darwinator.Helpers = {
     };
 
     var currentSize, population, i, enemy;
-    currentSize = enemyGroup.length; //could add an extra param for this.
+    currentSize = enemyGroup.length; 
     population  = [];
     population.fitness = [];
     population.maxFit = -Infinity;
@@ -163,13 +163,13 @@ Darwinator.Helpers = {
   * @return {Phaser.Group} The new group of enemies.
   */    
   chromosomesToSprites: function(population, group ,spawnPositions){
-    console.log(population);
-    for(var i = 0; i < population.length; i++) {
-      var pos         = spawnPositions[i % spawnPositions.length];
-      var strength    = population[i][0];
-      var agility     = population[i][1];
-      var intellect   = population[i][2];
-      var enemy       = new Darwinator.Enemy(group.game, undefined, pos.x, pos.y, undefined, strength, agility, intellect);
+    var i, pos, strength, agility, intellect, enemy;
+    for(i = 0; i < population.length; i++) {
+      pos         = spawnPositions[i % spawnPositions.length];
+      strength    = population[i][0];
+      agility     = population[i][1];
+      intellect   = population[i][2];
+      enemy       = new Darwinator.Enemy(group.game, undefined, pos.x, pos.y, undefined, strength, agility, intellect);
       group.add(enemy);
     }
     return group;

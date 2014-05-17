@@ -20,7 +20,7 @@ Darwinator.Player = function(game, x, y, cursors) {
     this.useRandomInput = Darwinator.settings.randomPlayer;
     this.lastRandomInput = Date.now();
     this.lastDirection = [0,0];
-
+    this.isImmortal = Darwinator.settings.immortalPlayer;
     this.moving = false;
 };
 

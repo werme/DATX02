@@ -30,10 +30,11 @@ Darwinator.Entity = function(game, x, y, key, health, strength, agility, intelle
 
   this.health         = baseHealth + this.attributes.strength;
   this.damage         = Darwinator.ENTITY_BASE_DAMAGE  + this.attributes.strength / 3;
-  this.speed          = Darwinator.ENTITY_BASE_SPEED   + this.attributes.agility;
-  this.stamina        = Darwinator.ENTITY_BASE_STAMINA + this.attributes.agility * 2;
-  this.aim            = this.attributes.intellect; // Intended to define how well the enemy aims. 0 = "shitty" aim, 100 = "perfect" aim
-  this.criticalStrike = this.attributes.intellect / 100; // Critical strike percentage
+  this.speed          = Darwinator.ENTITY_BASE_SPEED   + this.attributes.agility * 3;   
+  this.stamina        = Darwinator.ENTITY_BASE_STAMINA + this.attributes.agility * 5;
+  this.rangedDmg      = Darwinator.ENTITY_BASE_DAMAGE + this.attributes.intellect;
+  this.aim            = this.attributes.intellect * 3; // Intended to define how well the enemy aims. 0 = "shitty" aim, 100 = "perfect" aim
+  this.criticalStrike = this.attributes.intellect / 50; // Critical strike percentage
   this.currBreath     = this.stamina;
   
   this.dodgeCoolDown  = Darwinator.ENTITY_DODGE_COOLDOWN;
@@ -60,7 +61,7 @@ Darwinator.Entity.prototype.update = function() {
     return;
   }
 
-  /*
+  
   if(this.knockedBack){
     // TODO add formulas for these based on entity attributes
     var knockbackSpeed      = 1000;
@@ -73,7 +74,7 @@ Darwinator.Entity.prototype.update = function() {
         || this.x >= this.knockBackPos.x && this.y >= this.knockBackPos.y){
       this.knockedBack = false;
     }
-  }*/
+  }
 
 };
 
@@ -86,6 +87,9 @@ Darwinator.Entity.prototype.arm = function(weapon) {
 };
 
 Darwinator.Entity.prototype.takeDamage = function(amount) {
+  if(this.isImmortal) {
+    return;
+  }
   this.health = this.health - amount;
   this.underAttack = true;
   if(this.health <= 0 && !this.dead) {

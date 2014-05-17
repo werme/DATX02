@@ -13,6 +13,7 @@ Darwinator.GameState = function() {
 
     // Displayables
     this.fps                   = null;
+    this.waveNr                = null;
     this.stats                 = null;
     this.health                = null;
     this.secondsRemaining      = null;
@@ -134,6 +135,7 @@ Darwinator.GameState.prototype = {
         this.health            = gui.add(new Phaser.Text(this.game, 16, 56, '', style));
         this.secondsRemaining  = gui.add(new Phaser.Text(this.game, 16, 76, 'Seconds remaining: ' + Darwinator.ROUND_LENGTH_SECONDS, style));
         this.enemiesRemaining  = gui.add(new Phaser.Text(this.game, 16, 96, enemyContent, style));
+        this.waveNr            = gui.add(new Phaser.Text(this.game, 16, 116, 'Wave: 0', style));
         this.pauseText         = gui.add(new Phaser.Text(this.game, x, y, 'Game paused', style));
         this.gameOver          = gui.add(new Phaser.Text(this.game, x, y, 'Game Over', {fontSize: '24px monospace', fill:'#FFF'}));
 
@@ -236,6 +238,7 @@ Darwinator.GameState.prototype = {
         this.fps.text = 'FPS: ' + this.game.time.fps;
         this.stats.text = 'Player stamina: ' + Math.round(this.game.player.currBreath) + '/' + Math.round(this.game.player.stamina);
         this.health.text = 'Health: ' + Math.round(this.game.player.health);
+        this.waveNr.text = 'Wave: ' + Darwinator.currentWave;
         this.enemiesRemaining.text = enemyContent;
 
         pointer = this.game.input.activePointer;
@@ -282,7 +285,7 @@ Darwinator.GameState.prototype = {
             return;
         }
         if (target instanceof Darwinator.Entity) {
-            var dmg = bullet.owner.damage;
+            var dmg = bullet.owner instanceof Darwinator.Enemy ? bullet.owner.rangedDmg : bullet.owner.damage;
             target.takeDamage(dmg);
             if(target instanceof Darwinator.Player){
               var enemy = bullet.owner;
@@ -319,6 +322,8 @@ Darwinator.GameState.prototype = {
     endRound: function() {
         this.numberOfRounds += 1;
         this.gatherStatistics();
+        Darwinator.saveWaveStats(this.game.enemies);
+        Darwinator.currentWave++;
 
         this.beforeSwitch();
         this.game.state.start('result', false);

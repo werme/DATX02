@@ -7,7 +7,7 @@ Darwinator.MeleeWeapon = function (game, coolDown, damage, owner) {
     this.coolDown           = 250;
     this.damage             = this.owner.damage;
     this.knockBackDistance  = 100 + 2 * this.owner.attributes.strength;
-    this.knockBackCooldown  = 2000;
+    this.knockBackCooldown  = 0;
     this.lastKnockBack      = 0;
 };
 
@@ -25,7 +25,10 @@ Darwinator.MeleeWeapon.prototype.strike = function(target){
         target.takeDamage(dmg);
         this.owner.damageDone += dmg;
         this.lastAttack = Date.now();
-        // this.tryKnockBack(target);
+    }
+
+    if (this.owner instanceof Darwinator.Player) {
+        this.tryKnockBack(target);
     }
     return dmg;
 };

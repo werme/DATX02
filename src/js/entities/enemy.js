@@ -5,7 +5,6 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
     this.category = this.categories.STRONG;
   } else if (agility > intellect && agility > strength) {
     this.category = this.categories.AGILE;
-    this.speed = Darwinator.ENTITY_BASE_SPEED + this.agility*2;
   } else if (intellect > strength && intellect > agility) {
     this.category = this.categories.INTELLIGENT;
     this.fleeing = false;
@@ -14,7 +13,7 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
   }
   Darwinator.Entity.call(this, game, x, y, this.category, health, strength, agility, intellect);
 
-  this.scale.setTo(0.25,0.25);
+  this.scale.setTo(0.2,0.2);
   this.target = target;
   this.path   = [];
   this.debug  = true;
@@ -34,6 +33,8 @@ Darwinator.Enemy = function(game, target, x, y, health, strength, agility, intel
   // melee cooldown
   this.lastMeleeTimestamp = 0;
   this.cooldownMs         = 250;
+
+  this.isSprinting = false;
 };
 
 Darwinator.Enemy.prototype = Object.create(Darwinator.Entity.prototype);
@@ -85,20 +86,14 @@ Darwinator.Enemy.prototype.update = function() {
         distance    = Darwinator.Helpers.calculateDistance(targetTile, currentTile);
         clearView   = Darwinator.Helpers.clearLineToTarget(this, this.target, this.game);
 
+        if (clearView) {
+            this.weapons.ranged.fire(this.target.body.x, this.target.body.y);
+        }
+
         if (distance < 6) {
           this.flee();
-          this.fleeing = true;
-        } else if (clearView) {
-          if (this.fleeing == true){
-            this.abilityScore += 3;
-            this.fleeing = false;
-          }
-          this.weapons.ranged.fire(this.target.body.x, this.target.body.y);
+          this.abilityScore += 3;
         } else {
-          if (this.fleeing == true){
-            this.abilityScore += 3;
-            this.fleeing = false;
-          }
           this.doMove();
         }
 
@@ -161,6 +156,7 @@ Darwinator.Enemy.prototype.doMove = function() {
     this.followPath();
   } else {
     this.game.physics.arcade.moveToXY(this, this.target.body.x, this.target.body.y, this.speed);
+    this.tryDash();
   }
 };
 
@@ -205,18 +201,42 @@ Darwinator.Enemy.prototype.followPath = function() {
   } else {
     this.game.physics.arcade.moveToXY(this, targetPos.x, targetPos.y, this.speed);
   }
-  if (this.path.length < 5 && this.currBreath > 1) {
-    this.body.velocity.multiply(2,2);
-    this.currBreath--;
-  } else if (this.currBreath < this.stamina) {
-    this.currBreath += 0.2;
-  }
+  this.tryDash();
 };
 
 Darwinator.Enemy.prototype.flee = function() {
   var angleFromTarget = this.game.physics.arcade.angleBetween(this, this.target) + Math.PI;
   this.game.physics.arcade.velocityFromRotation(angleFromTarget, this.speed, this.body.velocity);
+  this.tryDash();
 };
+
+Darwinator.Enemy.prototype.tryDash = function() {
+    var dashDistance, dashRate, regRate;
+
+    dashRate = this.category === this.categories.AGILE ? 3 : 2;
+    dashDistance = this.category === this.categories.AGILE ? 7 : 4;
+    regRate = this.category === this.categories.AGILE ? 0.3 : 0.2;
+
+    if (this.path.length < dashDistance) 
+    {
+        if (this.currBreath > 25 || (this.isSprinting && this.currBreath > 1)) 
+        {
+            this.body.velocity.multiply(dashRate, dashRate);
+            this.currBreath--;
+            this.isSprinting = true;
+        } 
+        else 
+        {
+            this.currBreath += regRate * this.attributes.agility;
+            this.isSprinting = false;
+        }
+    } 
+    else if (this.currBreath < this.stamina) 
+    {
+        this.currBreath += regRate * this.attributes.agility;
+        this.isSprinting = false;
+    }
+}
 
 Darwinator.Enemy.prototype.findTarget = function() {
   var enemyTeam = this.team === 1 ? this.game.team2 : this.game.team1;

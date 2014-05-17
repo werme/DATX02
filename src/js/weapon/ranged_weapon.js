@@ -36,6 +36,7 @@ Darwinator.RangedWeapon.prototype.loadGun = function () {
         bullet.reset(center.x, center.y); // resets sprite and body
         bullet.target = Darwinator.Enemy;
         bullet.owner = this.owner;
+        bullet.lifespan = 3000;
         this.lastAttack = Date.now();
         return bullet;
     } else {
@@ -45,6 +46,6 @@ Darwinator.RangedWeapon.prototype.loadGun = function () {
 
 Darwinator.RangedWeapon.prototype.takeAim = function(x, y) {
     var perfAngle = this.game.physics.arcade.angleToXY(this.owner, x, y);
-    perfAngle += (Math.random() - 0.5) / (Math.round(this.owner.attributes.intellect / 5) + 1);
+    perfAngle += (Math.random() - 0.3) / (Math.round(this.owner.attributes.intellect / 5) + 1);
     return perfAngle;
 };

@@ -119,9 +119,9 @@ Darwinator.Entity.prototype.tryDodge = function() {
     this.dodging = true;
     this.underAttack = false;
     this.alpha = 0.5;
-    this.speed = this.speed * 2;
+    //this.speed = this.speed * 2;
     this.lastAbilityUse = Date.now();
-    var dodgeCallback = function() {this.dodging = false; this.alpha = 1; this.speed = this.speed / 2 };
+    var dodgeCallback = function() {this.dodging = false; this.alpha = 1; this.speed = this.speed};
     this.dodgeTimer = this.game.time.events.add(Phaser.Timer.SECOND * this.dodgeDurationSeconds, dodgeCallback, this);
   }
 };
